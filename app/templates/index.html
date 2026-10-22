@@ -4,6 +4,12 @@
 <section class="hero wrap">
   <h1>Every PDF tool, <span>one tab away</span></h1>
   <p>Merge, split, compress, convert, edit and sign PDFs right in your browser. No sign-up, no watermarks, and your files are deleted automatically.</p>
+  <div class="hero-actions">
+    <a class="btn btn-editor btn-lg" id="home-edit-pdf" href="/pdf-editor">Edit a PDF document <span>— it's free</span>{{ icon("arrow-right") }}</a>
+    <a class="hero-tools-link" href="#all-pdf-tools">or choose from {{ all_tools|length }} PDF tools {{ icon("chevron") }}</a>
+  </div>
+</section>
+<section class="tool-discovery wrap" id="all-pdf-tools" aria-label="Find a PDF tool">
   <label class="search">
     {{ icon("search") }}
     <span class="sr-only">Search tools</span>

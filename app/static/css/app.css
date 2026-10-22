@@ -140,6 +140,15 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--brand); width:
 .hero { padding: 56px 0 28px; text-align: center; }
 .hero h1 span { background: linear-gradient(100deg, var(--brand), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero p { color: var(--ink-2); font-size: 18px; max-width: 640px; margin: 0 auto 26px; }
+.hero-actions { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 32px 0 12px; }
+.btn-editor { background: #008f6b; border-color: #008f6b; color: #fff; font-size: 20px; font-weight: 700; border-radius: 5px; min-height: 54px; box-shadow: var(--shadow-sm); }
+.btn-editor:hover { background: #007b5c; border-color: #007b5c; color: #fff; text-decoration: none; }
+.hero-actions .btn-editor span { font-weight: 400; }
+.hero-tools-link { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-3); }
+.tool-discovery { padding-top: 20px; scroll-margin-top: 85px; }
+@media (max-width: 520px) {
+  .hero-actions .btn-editor { font-size: 17px; padding: 12px 16px; gap: 6px; flex-wrap: wrap; justify-content: center; }
+}
 .search {
   max-width: 520px; margin: 0 auto; position: relative;
 }

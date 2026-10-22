@@ -76,6 +76,8 @@ def main():
 
         def home():
             load("")
+            assert page.locator("#home-edit-pdf").is_visible()
+            assert page.locator("#home-edit-pdf").get_attribute("href") == "/pdf-editor"
             page.locator("#tool-search").fill("compress")
             assert page.locator(".tool-card:visible").count() >= 1
             assert page.locator(".tool-card:visible").filter(has_text="Compress PDF").count() >= 1
@@ -109,6 +111,30 @@ def main():
         def pdf_pages(data):
             with pikepdf.open(io.BytesIO(data)) as doc:
                 return len(doc.pages)
+
+        def editor_entry():
+            load("")
+            page.locator("#home-edit-pdf").click()
+            page.wait_for_url("**/pdf-editor")
+            with page.expect_file_chooser() as pending:
+                page.get_by_role("button", name="Upload PDF file", exact=True).click()
+            pending.value.set_files({"name": "home-entry.pdf", "mimeType": "application/pdf", "buffer": sample_pdf()})
+            page.wait_for_selector(".ed-page canvas.pdf")
+            assert page.locator("#editor-hero").is_visible()
+            assert page.locator(".ed-bar").evaluate("bar => bar.scrollWidth <= bar.clientWidth + 1"), "Desktop editor tools overflow"
+            page.locator('[data-tool="text"]').click()
+            page.locator(".ed-page").first.click(position={"x": 100, "y": 180})
+            page.locator('.obj.text [contenteditable]').fill("Edited from the home page")
+            page.locator('[data-action="save"]').click()
+            page.locator("#stage-result .state-icon.ok").wait_for(timeout=90000)
+            link = page.locator("#stage-result a[download]").first.get_attribute("href")
+            import pypdf
+            saved = pypdf.PdfReader(io.BytesIO(context.request.get(link).body()))
+            assert "Edited from the home page" in saved.pages[0].extract_text()
+            load("pdf-editor")
+            page.get_by_role("button", name="or start with a blank document", exact=True).click()
+            page.wait_for_selector(".ed-page canvas.pdf")
+            assert page.locator(".ed-page").count() == 1
 
         def merge():
             upload("merge-pdf", 2)
@@ -210,6 +236,7 @@ def main():
             page.set_viewport_size({"width": 1365, "height": 900})
 
         check("home search + persistent theme", home)
+        check("home editor button, upload, edit, save and blank document", editor_entry)
         for tool in api.get("/api/tools").json():
             check("page " + tool["slug"], lambda slug=tool["slug"]: shell(slug))
         for slug in ("workflows", "about", "help", "privacy", "terms", "developers", "html-pdf-api"):

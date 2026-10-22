@@ -10,6 +10,12 @@
   const Tool = window.Tool;
   const cfg = Tool.cfg;
   const ed = $("#editor"), pagesEl = $("#ed-pages"), props = $("#ed-props"), statusEl = $("#ed-status");
+  // Desktop tools wrap; keep the properties strip below their actual height.
+  const toolbar = ed.querySelector(".ed-bar");
+  new ResizeObserver(() => {
+    const top = parseFloat(getComputedStyle(toolbar).top) || 0;
+    ed.style.setProperty("--editor-props-top", `${top + toolbar.getBoundingClientRect().height}px`);
+  }).observe(toolbar);
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
   const FONTS = [["Helvetica", "Sans"], ["Times", "Serif"], ["Courier", "Mono"]];
   const CSS_FONT = { Helvetica: "Helvetica, Arial, sans-serif", Times: "'Times New Roman', Times, serif", Courier: "'Courier New', monospace" };

@@ -539,6 +539,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22: Added the requested home-to-editor flow: prominent free editing CTA, green upload/blank-document screen, visible editing heading, wrapped desktop toolbar and centered Apply changes. Added real home-click/file-chooser/edit/download/blank-PDF browser coverage. Local verification: pytest 170 passed (2 warnings), generic browser 63/63, editor/forms/workflows/mobile 8 groups. Files: templates, CSS, `editor.js`, `scripts/browser_regression.py`.
+
 - 2026-10-22: Deployed PDFNova to https://pdf.praritsidana.com in isolated `/opt/pdfnova`. Linux pytest 170, HTTP 58/58, private/public generic browser 62/62 each, editor 8 groups, public mobile save, PDF concurrency 8/8, HTML concurrency 2/2, quota/header isolation, TLS renewal and restart recovery passed. Existing 15 containers and 19 virtual hosts unchanged. Deployment evidence and maintenance instructions recorded in `deploy/hostinger/DEPLOYED.md` and `verification.json`.
 
 

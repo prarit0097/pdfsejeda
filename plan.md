@@ -149,6 +149,13 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Confirm requested domain ownership/DNS; configure existing proxy and HTTPS
 - [x] Verify Linux PDF engines, HTTP/browser flows and existing-app availability
 
+## 3d. Home-to-editor flow requested from screenshots
+
+- [x] Prominent home editing button and secondary tool-directory link
+- [x] Editor upload/blank-document entry and desktop/mobile workspace styling
+- [x] Verify actual upload, edit, saved PDF and blank-document flow; full regression suites
+- [ ] Deploy and verify the updated flow on public HTTPS
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).

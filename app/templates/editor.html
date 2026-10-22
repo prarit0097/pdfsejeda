@@ -2,25 +2,25 @@
 {% from "_macros.html" import icon, tool_ico, tool_card %}
 {% block title %}{{ tool.title }} — free online PDF editor | {{ app_name }}{% endblock %}
 {% block description %}{{ tool.tagline }} Free, no sign-up, no watermark.{% endblock %}
+{% block body_class %}editor-page{% endblock %}
 {% block head %}
 <script type="module" src="/static/js/pdf-loader.js?v=1"></script>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Dancing+Script:wght@600&family=Homemade+Apple&family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/editor.css?v=5">
+<link rel="stylesheet" href="/static/css/editor.css?v=6">
 {% endblock %}
 {% block main %}
 <section class="tool-hero wrap" id="editor-hero">
-  {{ tool_ico(tool) }}
-  <h1>{{ tool.title }}</h1>
-  <p>{{ tool.tagline }}</p>
+  <h1>{% if tool.type == "edit" %}Online PDF editor{% else %}{{ tool.title }}{% endif %}</h1>
+  <p>{% if tool.type == "edit" %}Edit PDF files for free. Fill &amp; sign PDF{% else %}{{ tool.tagline }}{% endif %}</p>
 </section>
 
-<div class="wrap">
+<div class="wrap editor-entry-shell">
   <div class="workspace" id="workspace">
     <section id="stage-upload" class="dropzone">
       <div class="upload-row">
         <div class="split-btn" style="position:relative">
-          <button class="btn btn-primary btn-lg" type="button" data-action="pick">{{ icon("upload") }} Upload a PDF</button>
-          <button class="btn btn-primary btn-lg more" type="button" data-action="upload-menu" aria-label="More upload options">{{ icon("chevron") }}</button>
+          <button class="btn btn-primary btn-editor btn-lg" type="button" data-action="pick">{{ icon("file") }} Upload PDF file</button>
+          <button class="btn btn-primary btn-editor btn-lg more" type="button" data-action="upload-menu" aria-label="More upload options">{{ icon("chevron") }}</button>
           <div class="menu" id="upload-menu" hidden style="top:100%;right:0;margin-top:6px">
             <button type="button" data-action="pick">{{ icon("upload") }} From this device</button>
             <button type="button" data-action="url">{{ icon("link") }} From a web address (URL)</button>
@@ -28,7 +28,13 @@
           </div>
         </div>
       </div>
+      <button class="blank-document-link" type="button" data-action="blank">or start with a blank document</button>
       <p class="drop-hint">or drop a PDF here · up to {{ max_file_mb }} MB</p>
+      <div class="editor-privacy">
+        <p>Files expire automatically after {{ ttl_hours|round|int }} hours. Keep your download links private.</p>
+        <p>Free to use · no sign-up · no watermarks</p>
+        <p><a href="/terms">Terms of use</a> and <a href="/privacy">Privacy policy</a></p>
+      </div>
       <input type="file" id="file-input" hidden accept=".pdf">
     </section>
     <form id="task-form" hidden><ul id="file-list"></ul><strong id="files-title" hidden></strong><button id="submit-btn" hidden></button></form>
@@ -101,7 +107,7 @@
     <span class="muted small" id="ed-status"></span>
     <label class="check small" id="flatten-wrap"><input type="checkbox" id="ed-flatten"> Flatten form fields when saving</label>
     <button class="btn btn-ghost" type="button" data-action="close">Start over</button>
-    <button class="btn btn-primary btn-lg" type="button" data-action="save">{{ icon("check") }} Apply changes</button>
+    <button class="btn btn-primary btn-editor btn-lg" type="button" data-action="save">Apply changes {{ icon("arrow-right") }}</button>
   </div>
   <input type="file" id="ed-image-input" hidden accept="image/*">
 </div>
@@ -121,5 +127,5 @@
 {% endblock %}
 {% block scripts %}
 <script src="/static/js/tool.js?v=3"></script>
-<script src="/static/js/editor.js?v=4"></script>
+<script src="/static/js/editor.js?v=5"></script>
 {% endblock %}
