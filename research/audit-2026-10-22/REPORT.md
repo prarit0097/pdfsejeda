@@ -115,15 +115,15 @@ including pricing, desktop, login, cloud services and language-specific pages.
 
 ## Remaining exact-parity gaps
 
-These are not implemented or not established by the tests above:
+User scope clarification: accounts/billing, cloud integrations and email signing are
+deferred for now. Their absence is not a blocker for the current delivery. Local PDF
+signatures, URL imports and local workflows remain included.
+
+The following remaining items are not implemented or not established by the tests above:
 
 - Sejda's exact visual design, branding, copy, tutorial library and all marketing
   routes. PDFNova retains its original interface and identity.
-- Login/accounts, paid plans, subscriptions, payment flows, account/license
-  management, a native desktop distribution and browser extensions.
-- Google Drive/Dropbox/OneDrive OAuth pickers/export, Gmail integration, email
-  signature requests, outbound support/email flows. These require provider setup
-  and real service configuration; no fake success buttons were added.
+- A native desktop distribution and browser extensions.
 - Translated routes and complete multilingual product copy.
 - Exact arbitrary-document conversion fidelity: Word/Excel reconstruction is
   heuristic; PPT slides contain page images; original embedded-font editing is
@@ -141,3 +141,7 @@ These are not implemented or not established by the tests above:
 
 The verified deliverable is a substantially repaired local PDF toolkit. These
 remaining items prevent calling it an exact, complete Sejda service clone.
+
+Deferred services (excluded by user): login/accounts, paid plans/subscriptions,
+payment/account/license management, cloud OAuth pickers/export and email signing.
+The earlier audit identified their absence; this is now an explicit scope choice.

@@ -15,6 +15,8 @@
 7. **Every tool has a test.** `pytest` must pass before pushing.
 8. **Security defaults stay on:** size/type limits, SSRF-safe URL import, HMAC-signed download links, 2-hour file expiry.
 
+**Current scope (user clarification, 2026-10-22):** accounts/billing, cloud integrations and email signing are deferred. Do not implement them or count their absence as a blocker for the current PDF-tool delivery. Local PDF signing (draw/type/upload signatures), password protection, URL import and local workflows remain in scope.
+
 ---
 
 ## 2. What the app is
@@ -179,6 +181,8 @@ Settings can also live in a `.env` file in the repo root (`KEY=VALUE` lines, loa
 ## 8. Change log
 
 Newest first. One line per change: date — what — where.
+
+- 2026-10-22 — User deferred accounts/billing, cloud integrations and email signing from the current delivery scope; ordinary local PDF signatures remain included — `plan.md`, `sejedarules.md`, audit report
 
 - 2026-10-22 — Fresh REA evidence, clean-install verification, dependency snapshot, browser/API regression scripts, developer guides and result reopening — `research/audit-2026-10-22/`, `scripts/`, `requirements-lock.txt`, `app/web.py`, templates
 - 2026-10-22 — Bounded queue, 160-bit task capabilities, quota refunds, atomic metadata, chunk/expiry/cancellation/continuation regressions and PDFium serialization — platform modules, `tools/common.py`, platform tests

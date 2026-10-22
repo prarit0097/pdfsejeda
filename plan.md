@@ -119,7 +119,7 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 ## 3a. Backlog (after v1)
 - [ ] Translations (Sejda serves 30+ languages under /<lang>/)
 - [ ] Redis/RQ job queue + object storage for multi-server deployments
-- [ ] Accounts and paid plans (higher limits) — not needed for the free tool set
+- Deferred by user: accounts/billing, cloud integrations and email signing. These are excluded from the current delivery scope and are not release blockers.
 - [ ] Desktop/offline build
 - [ ] Edit-text: keep the document's own embedded font where possible
 
