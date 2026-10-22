@@ -1,5 +1,53 @@
 {% extends "base.html" %}
-{% block title %}Workflows | {{ app_name }}{% endblock %}
+{% from "_macros.html" import icon %}
+{% block title %}Workflows — run several PDF tools in one go | {{ app_name }}{% endblock %}
+{% block description %}Save a chain of PDF tools, like flatten then compress, and run it on new files with one click.{% endblock %}
 {% block main %}
-<div class="wrap prose"><h1>Workflows</h1><p class="muted">Coming in a later phase: save a chain of tools and run it on new files.</p></div>
+<section class="tool-hero wrap">
+  <span class="tool-ico" style="--c:var(--cat-pages)">{{ icon("workflow") }}</span>
+  <h1>Workflows</h1>
+  <p>Run a saved chain of tools on new files in one go. Create one by using a tool, choosing “Continue in another tool”, and then “Save as workflow” on the last result.</p>
+</section>
+
+<div class="wrap">
+  <div class="workspace">
+    <div class="card" id="wf-list-card">
+      <div class="panel-head"><strong>Your workflows</strong>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm" type="button" id="wf-import">{{ icon("upload") }} Import</button>
+          <button class="btn btn-sm" type="button" id="wf-export">{{ icon("download") }} Export all</button>
+        </div>
+      </div>
+      <div id="wf-list"></div>
+      <input type="file" id="wf-import-input" accept=".json,application/json" hidden>
+    </div>
+
+    <div id="wf-run" hidden style="margin-top:18px">
+      <div class="alert alert-info" style="margin-bottom:12px">{{ icon("workflow") }}<span id="wf-run-title"></span></div>
+      <section id="stage-upload" class="dropzone">
+        <div class="upload-row"><button class="btn btn-primary btn-lg" type="button" data-action="pick">{{ icon("upload") }} Upload files</button></div>
+        <p class="drop-hint">or drop PDF files here · up to {{ max_file_mb }} MB each</p>
+        <input type="file" id="file-input" hidden multiple accept=".pdf,.png,.jpg,.jpeg,.gif,.tif,.tiff,.bmp,.webp">
+      </section>
+      <form id="task-form" class="card" hidden novalidate>
+        <div class="panel-head"><strong id="files-title">Files</strong>
+          <div style="display:flex;gap:6px"><button class="btn btn-sm" type="button" data-action="pick">{{ icon("plus") }} Add files</button><button class="btn btn-sm btn-ghost" type="button" data-action="reset">Start over</button></div>
+        </div>
+        <ul class="file-list" id="file-list"></ul>
+        <div class="panel-body" id="wf-progress" style="border-top:1px solid var(--line)"></div>
+        <div class="actions-bar"><button class="btn btn-primary btn-lg" type="submit" id="submit-btn">Run workflow {{ icon("arrow-right") }}</button></div>
+      </form>
+      <section id="stage-result" class="card" hidden aria-live="polite"></section>
+      <div class="card recent" id="recent" hidden><div class="panel-head"><strong>Recent results</strong></div><div id="recent-list"></div></div>
+    </div>
+  </div>
+</div>
+<script id="tool-config" type="application/json">{{ {
+  "type": "workflow", "slug": "workflows", "title": "Workflow", "accept": ["pdf", "png", "jpg", "jpeg", "gif", "tif", "tiff", "bmp", "webp"],
+  "multiple": true, "minFiles": 1, "maxFiles": 50, "pageUi": none, "maxFileMb": max_file_mb, "workflow": true
+}|tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/tool.js?v=3"></script>
+<script src="/static/js/workflows.js?v=1"></script>
 {% endblock %}

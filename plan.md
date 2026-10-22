@@ -105,16 +105,23 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [x] Local crash recovery (localStorage draft per file name+size, 48 h)
 
 ### Phase 7 — Platform extras
-- [ ] Workflows (record → replay tool chains, stored in IndexedDB)
-- [ ] Recent files panel, "continue with another tool"
-- [ ] Rate-limit UI (remaining tasks, countdown)
+- [x] Workflows (record → replay tool chains, stored in IndexedDB)
+- [x] Recent files panel, "continue with another tool"
+- [x] Rate-limit UI (remaining tasks, countdown)
 
 ### Phase 8 — Quality & deploy
-- [ ] Full test suite green; sample PDFs generated in tests
-- [ ] Dockerfile + docker-compose; production notes
-- [ ] Security pass (upload size/type limits, SSRF, path traversal, signature checks, CSP headers)
+- [x] Full test suite green; sample PDFs generated in tests
+- [x] Dockerfile + docker-compose; production notes
+- [x] Security pass (upload size/type limits, SSRF, path traversal, signature checks, CSP headers)
 
 ---
+
+## 3a. Backlog (after v1)
+- [ ] Translations (Sejda serves 30+ languages under /<lang>/)
+- [ ] Redis/RQ job queue + object storage for multi-server deployments
+- [ ] Accounts and paid plans (higher limits) — not needed for the free tool set
+- [ ] Desktop/offline build
+- [ ] Edit-text: keep the document's own embedded font where possible
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

@@ -269,6 +269,7 @@
     const ready = Tool.readyFiles();
     if (cfg.type !== "htmlToPdf" && ready.length < cfg.minFiles) return toast(cfg.minFiles > 1 ? `Please add at least ${cfg.minFiles} files` : "Please add a file first", "err");
     for (const v of Tool.validators) { const msg = v(); if (msg) return toast(msg, "err"); }
+    if (cfg.workflow) return document.dispatchEvent(new CustomEvent("workflow-run"));
     submitBody(collect());
   });
 
@@ -282,12 +283,25 @@
       if (r.status === 402) { const j = await r.json(); showQuota(Number(r.headers.get("x-ratelimit-wait") || 0), j.reason); return false; }
       if (r.status === 429) { toast("Too many attempts. Please try again in a little while.", "err"); return false; }
       if (!r.ok) { toast(await r.text() || "The server rejected this task", "err"); return false; }
+      rememberStep(body);
       showProcessing(await r.json());
       return true;
     } catch { toast("You appear to be offline. Check your connection and try again.", "err"); return false; }
     finally { submitting = false; if (btn) btn.disabled = false; }
   }
   Tool.submitBody = submitBody;
+  Tool.showProcessing = id => showProcessing(id);
+
+  // ---------- workflow recording ----------
+  const NOT_RECORDABLE = new Set(["edit", "fillSign", "editForms", "combineReorder", "htmlToPdf"]);
+  const TELEMETRY = ["files", "uri", "rotations", "pageRotationsPerSource", "filePages", "formValues"];
+  function rememberStep(body) {
+    if (NOT_RECORDABLE.has(body.type)) { sessionStorage.removeItem("lastStep"); return; }
+    const step = { ...body, uri: location.pathname, title: cfg.title };
+    TELEMETRY.forEach(k => { if (k !== "uri") delete step[k]; });
+    sessionStorage.setItem("lastStep", JSON.stringify(step));
+  }
+  function workflowChain() { try { return JSON.parse(sessionStorage.getItem("workflowChain") || "[]"); } catch { return []; } }
 
   function showQuota(wait, reason) {
     resultStage.hidden = false;
@@ -348,6 +362,7 @@
         <button class="btn btn-ghost" type="button" id="edit-again">Change options</button>
         <button class="btn btn-ghost" type="button" id="start-over">Start over</button>
         <button class="btn btn-ghost" type="button" id="delete-btn" title="Delete the result from the server now">${icon("trash")} Delete now</button>
+        ${sessionStorage.getItem("lastStep") && !cfg.workflow ? `<button class="btn btn-ghost" type="button" id="save-wf">${icon("workflow")} Save as workflow${workflowChain().length ? ` (${workflowChain().length + 1} steps)` : ""}</button>` : ""}
       </div>
       <div id="preview-slot"></div>
     </div>`;
@@ -358,6 +373,7 @@
     $("#edit-again").onclick = backToForm;
     $("#delete-btn").onclick = async () => { await fetch(`/api/tasks/${t.id}`, { method: "DELETE" }); toast("Deleted from the server"); removeRecent(t.id); resetAll(); };
     $("#continue-btn").onclick = e => { e.stopPropagation(); openContinueMenu(t); };
+    $("#save-wf")?.addEventListener("click", saveWorkflow);
     addRecent(t, dl);
   }
 
@@ -375,9 +391,22 @@
       const r = await fetch(`/api/tasks/${t.id}/continue`, { method: "POST" });
       if (!r.ok) return toast("These files have expired", "err");
       sessionStorage.setItem("continueFiles", JSON.stringify(await r.json()));
+      const last = sessionStorage.getItem("lastStep");
+      if (last) sessionStorage.setItem("workflowChain", JSON.stringify([...workflowChain(), JSON.parse(last)].slice(-10)));
       location.href = "/" + b.dataset.slug;
     };
     document.addEventListener("click", function off(ev) { if (!menu.contains(ev.target)) { menu.hidden = true; document.removeEventListener("click", off); } });
+  }
+
+  async function saveWorkflow() {
+    const steps = [...workflowChain(), JSON.parse(sessionStorage.getItem("lastStep"))];
+    const v = await dialog({ title: "Save as workflow", text: steps.map(x => x.title).join(" → "), fields: [{ name: "name", label: "Name", value: steps.map(x => x.title).join(" + "), required: true }], ok: "Save" });
+    if (!v?.name) return;
+    const list = JSON.parse(localStorage.getItem("workflows") || "[]");
+    list.unshift({ id: Date.now().toString(36), name: v.name.trim(), created: Date.now(), steps });
+    try { localStorage.setItem("workflows", JSON.stringify(list)); } catch { return toast("Could not save: browser storage is full", "err"); }
+    sessionStorage.removeItem("workflowChain");
+    toast("Workflow saved. Find it under Workflows.");
   }
 
   function showFailed(reason) {
@@ -413,6 +442,7 @@
   })), 10 * 60 * 1000);
 
   // ---------- files handed over from another tool ----------
+  if (!sessionStorage.getItem("continueFiles") && !cfg.workflow) sessionStorage.removeItem("workflowChain");
   try {
     const handed = JSON.parse(sessionStorage.getItem("continueFiles") || "null");
     sessionStorage.removeItem("continueFiles");

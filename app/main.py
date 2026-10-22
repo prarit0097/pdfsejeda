@@ -41,6 +41,20 @@ async def lifespan(app: FastAPI):
     task.cancel()
 
 
+CSP = "; ".join([
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
+    "worker-src 'self' blob: https://cdnjs.cloudflare.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' data: https://fonts.gstatic.com",
+    "img-src 'self' data: blob:",
+    "connect-src 'self' https://cdnjs.cloudflare.com",
+    "frame-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+])
+
 app = FastAPI(title=settings.app_name, docs_url="/api/docs", redoc_url=None, lifespan=lifespan)
 
 
@@ -57,6 +71,8 @@ async def security_headers(request: Request, call_next):
             h.setdefault("X-Frame-Options", "SAMEORIGIN")
     else:
         h.setdefault("X-Frame-Options", "SAMEORIGIN")
+        if response.headers.get("content-type", "").startswith("text/html"):
+            h.setdefault("Content-Security-Policy", CSP)
     return response
 
 

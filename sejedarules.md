@@ -115,6 +115,10 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 - **Server side:** builds the page list, groups drawing ops per page and draws them in one `stamp()` per page (order: edited text, shapes, highlights, images, freehand, lines, new text); links become Link annotations (user-space rects); new form fields get appearance streams; `formValues` are filled with pypdf afterwards (checkbox/radio map to their real "on" state); `flattenForms` flattens at the end.
 - `tool.js` exposes `Tool.submitBody(body)`, `Tool.addFiles(files)`, `Tool.reset()` so the editor reuses the upload, result and recent-results flow. Events: `files-changed`, `editor-open`, `editor-close`.
 
+**Workflows** (`templates/workflows.html`, `static/js/workflows.js`, recording in `tool.js`)
+- Every successful task (except editor, organize, HTML→PDF) is remembered in sessionStorage `lastStep` as its task body without files. "Continue in another tool" appends it to sessionStorage `workflowChain` (max 10). The result screen offers "Save as workflow", which stores `{id, name, created, steps[]}` in localStorage `workflows`.
+- `/workflows` lists them (an example is shown when there are none), renames, deletes, exports/imports JSON (`format: pdfnova-workflows-v1`). Running: upload files → step 1 with those ids → wait → `POST /api/tasks/<id>/continue` → PDFs become the next step's files → … → the last task's normal result screen.
+
 **Optional system tools** — detected at runtime by `find_binary()`: LibreOffice (`soffice`), Tesseract (`tesseract`), Playwright Chromium. Tools that need a missing one fail with a clear message instead of crashing.
 
 **Shared building blocks** (`app/tools/`)
@@ -145,10 +149,18 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 | `SECRET_KEY` | random per process | signs download links; set it in production |
 | `WORKERS` | `4` | parallel task threads |
 
+## 7a. Deployment & security
+
+- `Dockerfile` (python:3.12-slim + LibreOffice Writer, Tesseract with eng/hin/spa/fra/deu, Noto/DejaVu/Liberation fonts, Playwright Chromium), runs as a non-root user, data in volume `/data`. `docker-compose.yml` sets the env vars from §7 — **change `SECRET_KEY`**.
+- Behind a proxy/CDN set `TRUST_PROXY=1` so the hourly quota uses the real client IP.
+- Headers: CSP on HTML pages (self + cdnjs for PDF.js + Google Fonts), `X-Frame-Options: SAMEORIGIN` (except result downloads/previews so the preview iframe works), `nosniff`, `no-store` on the API.
+- Upload size limit (`MAX_FILE_MB`), file ids validated by regex (no path traversal), URL import and HTML→PDF block private/loopback addresses on every redirect/request, download links signed with HMAC per task.
+
 ## 8. Change log
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22 — Phase 7–8: workflows (record from "continue in another tool", save, run, import/export), CSP header, Dockerfile + docker-compose + .dockerignore, README run/deploy notes — `app/static/js/workflows.js`, `app/templates/workflows.html`, `app/static/js/tool.js`, `app/main.py`, `Dockerfile`
 - 2026-10-22 — Phase 6: PDF editor / fill & sign / create forms — server handler with pageOrder + 10 operation types + form creation and filling; browser editor with toolbar, overlay objects, edit existing text, signatures, form inputs, page actions, undo, drafts; `tool.js` exposes submitBody/addFiles/reset; aliases pdfToDoc→pdfToOfficeWord, pdfToExcel→pdfToExcelNext — `app/tools/editor.py`, `app/templates/editor.html`, `app/static/js/editor.js`, `app/static/css/editor.css`
 - 2026-10-22 — Phase 5: PDF→JPG/PNG/TIFF, JPG→PDF, extract images, PDF→text, PDF→Excel/CSV, PDF→Word, PDF→PowerPoint, Word→PDF (LibreOffice + fallback), HTML→PDF (Playwright), OCR (Tesseract text layer) — `app/tools/convert.py`, `tests/test_convert.py`
 - 2026-10-22 — Phase 4: compress, crop, resize, n-up, flip, grayscale, deskew, flatten, repair, header/footer, page numbers, Bates, watermark, encrypt, unlock, metadata, bookmarks, delete annotations, rename by text; `/api/files/<id>/outline` and `/metadata`; 38 tests — `app/tools/modify.py`, `stamp.py`, `security_tools.py`
