@@ -25,7 +25,7 @@ Remote: https://github.com/prarit0097/pdfsejeda (push after every completed unit
 | Text / tables | **pdfplumber** (MIT) | extract text, split/rename by text, PDF → Excel |
 | Office output | python-docx, python-pptx, openpyxl | PDF → Word / PPT / Excel |
 | Images | Pillow, numpy | image re-encoding (compress), deskew angle detection |
-| Optional external | LibreOffice (Word→PDF), Tesseract/OCRmyPDF (OCR), Playwright Chromium (HTML→PDF) | detected at runtime; tool shows a clear error if missing; all bundled in the Docker image |
+| Optional external | LibreOffice (Word→PDF), Tesseract (OCR), Playwright Chromium (HTML→PDF) | detected at runtime; supported fallback or failure when unavailable; engines bundled in the Docker image |
 | Job queue | In-process `ThreadPoolExecutor` behind a `JobQueue` interface | zero infra for dev; swappable for Redis/RQ later |
 | Storage | Local disk behind a `FileStore` interface, 2-hour TTL sweeper | mirrors Sejda's "deleted after 2 hours" |
 | Tests | pytest + FastAPI TestClient | every tool gets at least one test |
@@ -68,7 +68,7 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [x] `app/config.py` settings (env-driven: APP_NAME, limits, secrets, storage dir)
 - [x] `app/storage.py` FileStore: ids `<uuid>-<16 chars>_1`, metadata, TTL sweeper, touch
 - [x] `app/pages.py` page-selection parser (`"1-3,7"`, `odd`, `even`, `all`, `5-`, numbers)
-- [x] `app/jobs.py` JobQueue + Task records, ids `<8 chars>-<yyyyMMddHHmm>`, statuses Queued/Processing/Completed/Failed, cancel
+- [x] `app/jobs.py` JobQueue + Task records, ids `<32 random chars>-<yyyyMMddHHmm>`, statuses Queued/Processing/Completed/Failed, cancel
 - [x] `app/security.py` HMAC download signature `web-…`, SSRF-safe URL import
 - [x] `app/ratelimit.py` per-IP tasks-per-hour (402 like Sejda), configurable
 - [x] API routes: upload, upload-chunked, import url, password, touch, view; tasks create/change/download/cancel/delete
@@ -214,6 +214,16 @@ Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 - [x] SEO regression tests and live verification
 - [x] Search notifications/public project links; record account-dependent registrations accurately
 - [ ] Owner-account Google/Bing verification (owner explicitly deferred setup on 2026-10-22; resume when requested) and approved external directory/editorial placements (login/email needed; not claimed completed)
+
+## 3l. Repository review follow-ups (2026-10-22)
+
+Review and evidence limits: [qa/REPOSITORY-REVIEW-2026-10-22.md](qa/REPOSITORY-REVIEW-2026-10-22.md).
+These are identified follow-ups, not completed implementation or new owner scope.
+
+- [ ] Bound Flatten DPI/page pixels and validate finite positive render parameters
+- [ ] Add aggregate upload/storage admission budgets
+- [ ] Offload synchronous upload parsing/chunk writes/result copies and measure polling latency
+- [ ] Handle queue/sweeper shutdown explicitly; assess process isolation for hard deadlines
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

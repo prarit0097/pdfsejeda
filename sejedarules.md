@@ -524,6 +524,7 @@ The repository is the source of version history; use `git log`/`git show` for pr
 
 ### 7.7 Known limitations and remaining work
 
+- Repository/source review on 2026-10-22 identified follow-ups for uncapped Flatten render allocations, aggregate upload/storage admission, synchronous upload/continuation work on the event loop, and explicit queue/sweeper shutdown. These remain unimplemented; no abuse/load or shutdown-hang reproduction was performed. See [repository review](qa/REPOSITORY-REVIEW-2026-10-22.md) for source evidence, priorities and fresh validation. Python suite: 663 passed, zero failures/skips, two warnings (64.15 seconds); dependency consistency passed. Browser/mobile/full-pool, live hosting and hosted CI were not rerun. `plan.md` §3l tracks the open work.
 - Exact UI/visual parity, every advanced option, all marketing/tutorial pages and every document-conversion edge case remain incomplete or unverified. Original branding/copy are retained under §1.
 - Word/Excel extraction reconstructs layout heuristically. PPT output uses rendered page images and text notes; slide elements are not a fully editable reconstruction. Scans generally need OCR before text-oriented conversion.
 - Visual text replacement/whiteout is not redaction; original text can remain extractable. Embedded-font preservation and arbitrary transformed/vertical text editing are not implemented.
@@ -608,6 +609,8 @@ setup or tokens until the owner resumes it. Account-owned registrations remain
 distinct from deployed technical SEO and published content.
 
 ## 8. Change log
+
+- 2026-10-22: Analyzed repository baseline `9e6b3d6` against this guide; recorded architecture, strengths, source-confirmed missing Flatten render bounds and operational follow-ups in [repository review](qa/REPOSITORY-REVIEW-2026-10-22.md). Corrected stale task-ID/OCR-engine descriptions in `plan.md` and added open follow-ups in §3l. Fresh validation: 663 Python tests passed, zero failures/skips, two deprecation warnings (64.15 seconds); `pip check` and `git diff --check` passed. Full staged/browser/mobile/live-server/hosted-CI checks not run; no application code changes, deployment, restart or search submissions. Historical deployed image remains `dee688f`, current health unverified. Existing owner deferrals preserved.
 
 - 2026-10-22: Made completion-time updates to this file mandatory for every task and owner decision, including actual tests, deployment/publication status and pending work; added root `AGENTS.md` so future contributors/agents discover the rule. Added the current handover snapshot, corrected stale default-brand references and documented SEO environment settings. Recorded the owner's explicit Google/Bing account-setup deferral; stop repeated setup/token requests until resumed. Validation: `python -m pytest tests -q --tb=short` passed 663 cases, zero failures/skips, two existing deprecation warnings (62.43 seconds); `git diff --check` and documentation-link checks passed. Documentation-only update: commit/push and server checkout sync; no application image rebuild or service restart needed. The prior deployed app revision remains `dee688f`.
 
