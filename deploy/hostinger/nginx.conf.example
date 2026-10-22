@@ -1,0 +1,22 @@
+# Reference only: use after confirming the server's existing reverse-proxy setup.
+# Keep this app's site separate from existing apps. Backend port must match .env.hostinger.
+# HTTP virtual host; HTTPS configuration/certificate must be added after DNS works.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name pdf.example.com;
+
+    client_max_body_size 101m;
+
+    location / {
+        proxy_pass http://127.0.0.1:8086;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+    }
+}

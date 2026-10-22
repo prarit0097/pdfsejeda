@@ -134,6 +134,7 @@ requirements-test.txt  requirements + optional Playwright testing dependency
 requirements-lock.txt  exact tested Python dependency snapshot
 Dockerfile           image recipe with PDF engines and fonts
 docker-compose.yml   single service + persistent named data volume
+deploy/hostinger/    isolated shared-server Compose/env/proxy examples and runbook
 THIRD_PARTY_NOTICES.md  vendored asset provenance and license pointers
 README.md            short setup entry point
 plan.md              build plan
@@ -418,6 +419,8 @@ The build context excludes `.env`, `.venv`, `data`, QA directories, research and
 
 Deploy with **one Uvicorn process** until the queue, quota and task registry are moved into shared services. Put public deployments behind HTTPS and a trusted proxy; forwarded-header configuration must match the real proxy chain. Set a stable `SECRET_KEY`, keep private-URL access disabled and monitor storage/worker use. Do not assume the current local test results establish production capacity or security for every hosting setup.
 
+**Shared Hostinger server deployment:** `deploy/hostinger/` contains a separate Compose profile, environment example and proxy reference. It is prepared, not yet deployed. Use a new unused app directory/project/volume and an inspected free backend port; do not change or stop existing applications. The profile defaults to loopback port 8086 and limits container resources. The real `.env.hostinger` is ignored by Git/Docker build context. Actual server inventory, DNS, TLS and Linux engine verification must be completed after SSH access is available; see `deploy/hostinger/README.md`.
+
 ### 7.4 Security, retention and concurrency details
 
 - **Access model:** file/task IDs are bearer capabilities; there is no logged-in owner check. Task IDs contain 32 random characters from a 32-character alphabet (160 random bits), plus a UTC timestamp. Task polling can issue a signed download link to anyone who knows that task ID. Downloads check a per-task HMAC signature, but signatures are not an independent owner check. Never claim a signed result is accessible only to its original uploader.
@@ -533,6 +536,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 ## 8. Change log
 
 Newest first. One line per change: date — what — where.
+
+- 2026-10-22 — Prepared an isolated shared-server deployment profile and runbook; deployment pending SSH access and DNS configuration, with no existing server apps changed — `deploy/hostinger/`, `.gitignore`, `.dockerignore`, `sejedarules.md`
 
 - 2026-10-22 — Expanded this file into the complete project guide: product identity/purpose, scope, stack rationale, full layout/API reference, editor/storage contracts, setup/engines/Docker, security/retention, dated verification, contributor workflow, limitations and troubleshooting. Documentation checks covered all 43 registered tools, 13 environment settings and 17 API routes; links/fences passed, and pytest remained 170 passed with 2 deprecation warnings — `sejedarules.md`
 

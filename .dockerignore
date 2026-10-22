@@ -4,6 +4,7 @@ data-*/
 .venv/
 venv/
 .env
+.env.hostinger
 research
 tests
 __pycache__

@@ -141,6 +141,14 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Final full Python, live HTTP, desktop/mobile browser and clean-install checks
 - [x] Record exact remaining product/infrastructure parity gaps in research and rules
 
+## 3c. Shared Hostinger server deployment
+
+- [x] Prepare separate Compose profile, environment example and deployment runbook
+- [ ] Establish SSH access and inspect existing apps/proxy/ports/resources
+- [ ] Deploy into a new unused folder/project/volume without altering other apps
+- [ ] Confirm requested domain ownership/DNS; configure existing proxy and HTTPS
+- [ ] Verify Linux PDF engines, HTTP/browser flows and existing-app availability
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).

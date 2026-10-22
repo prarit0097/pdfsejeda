@@ -1,0 +1,38 @@
+# Separate Compose project; does not change the local-development compose file.
+# From repo root: docker compose --env-file .env.hostinger -p pdfnova -f deploy/hostinger/compose.yml up -d --build
+services:
+  web:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    env_file: ../../.env.hostinger
+    environment:
+      DATA_DIR: /data
+    ports:
+      - "${PDFNOVA_BIND_ADDRESS:-127.0.0.1}:${PDFNOVA_PORT:-8086}:8000"
+    volumes:
+      - pdfnova-data:/data
+    restart: unless-stopped
+    cpus: "${PDFNOVA_CPUS:-1.5}"
+    mem_limit: "${PDFNOVA_MEMORY_LIMIT:-2g}"
+    pids_limit: 256
+    shm_size: 256m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/tools', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--no-access-log"]
+
+volumes:
+  pdfnova-data:
