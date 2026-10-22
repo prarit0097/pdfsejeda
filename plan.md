@@ -202,7 +202,7 @@ Detailed plan: [qa/TEST-PLAN.md](qa/TEST-PLAN.md).
 - [x] Add explicit per-tool semantic scenarios and all-tool UI submissions
 - [x] Add isolated one-command runner and structured coverage/results
 - [x] Run complete pool, repair defects and record remaining limits
-- [ ] Deploy discovered PDF-to-image fix and run bounded public verification
+- [x] Deploy discovered PDF-to-image fix and run bounded public verification
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `0fb90e1` |
+| Image build revision | `d74893f` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -219,6 +219,26 @@ single placement. Public cleanup/colour/actual saved PDF checks: 10/10.
 Image: `sha256:51c6658cc33326ccb5dda4ff49fe28e04e31260b6ea2f5d5bfdec29b5cd7d95b`.
 Healthy, no OOM; 15 existing container identities and 19 host status/redirect
 responses unchanged. Rollback tag: `pdfnova-web:release-547f072`.
+
+## Full test pool and PDF-to-image validation fix (d74893f)
+
+Added the isolated full regression pool documented in `qa/README.md`. All ten
+local integrated stages passed: 576 Python tests (no skips), 43 tool submissions
+and 160 option-control interactions at each desktop/mobile viewport, 51 page
+shells, existing browser 63, shared groups five, editor eight, signatures four,
+cleanup ten, sixteen concurrent jobs and live HTTP/network smoke 58. Counts are
+separate overlapping layers. Python statement coverage 78.82%, branches 64.86%.
+Hosted CI is configured; a hosted CI success is not claimed.
+
+Testing found that PDF-to-image wrongly shared the required-page-selection rule
+with extract/delete. Blank Pages now correctly means all pages; extract/delete
+still require a selection. Only this application behavior fix and its asset
+cache revision affect the production app. Public desktop and mobile submissions
+both downloaded all three generated PNG images with blank Pages.
+
+Image: `sha256:74e72fc18919a22b6d4e936ebc139a51c6e3780918caebcc3de246630d3fd279`.
+Healthy, no OOM; 15 existing container identities and 19 host status/redirect
+responses unchanged. Rollback: `pdfnova-web:release-0fb90e1`.
 
 ## Operations
 

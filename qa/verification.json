@@ -143,5 +143,16 @@
     "tests/test_api_contracts.py": "e894af37b785bf270a125f28f9ba2a1ed63d9104f46b40d653f88e80757ce244",
     "tests/test_page_contracts.py": "45a5357e38f7a60437252bda4492cbe59f2448623f67b2ec540d87bf863e419d",
     "tests/test_tool_catalogue.py": "9fb0ef54528caf552006adefcb07fac67e356ae073946356487ffda74c1345f3"
+  },
+  "release_commit": "d74893f",
+  "public_verification": {
+    "url": "https://pdf.praritsidana.com",
+    "scope": "PDF-to-image blank/all-pages regression only; full pool ran on isolated local server",
+    "desktop_passed": true,
+    "mobile_passed": true,
+    "image": "sha256:74e72fc18919a22b6d4e936ebc139a51c6e3780918caebcc3de246630d3fd279",
+    "healthy": true,
+    "existing_container_identities_preserved": 15,
+    "existing_host_responses_unchanged": 19
   }
 }

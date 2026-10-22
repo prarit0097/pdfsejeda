@@ -57,3 +57,11 @@ Raw run: `data-qa-pool/runs/20261022T171214729720Z/` (ignored), with logs,
 JUnit XML, coverage JSON and per-viewport inventories. Only the compact summary
 and source checksums are committed. No private PDFs/photos or credentials are
 part of the fixtures or committed evidence.
+
+## Public release verification
+
+Implementation `d74893f` deployed to https://pdf.praritsidana.com. Bounded desktop
+and mobile PDF-to-image submissions with blank Pages both passed, each producing
+all three generated PNG images. The exhaustive pool was not run on production.
+Container healthy, no OOM; all 15 existing container identities and 19 host
+status/redirect responses matched baseline. Image identity is in verification.json.

@@ -8,29 +8,36 @@
   "compose_project": "pdfnova",
   "backend": "127.0.0.1:8086",
   "volume": "pdfnova_pdfnova-data",
-  "image_build_revision": "0fb90e1",
-  "image": "sha256:51c6658cc33326ccb5dda4ff49fe28e04e31260b6ea2f5d5bfdec29b5cd7d95b",
+  "image_build_revision": "d74893f",
+  "image": "sha256:74e72fc18919a22b6d4e936ebc139a51c6e3780918caebcc3de246630d3fd279",
   "runtime_profile_revision": "c06399de368b5b58089887a77562d2da3605f560",
   "current_release_checks": {
+    "full_local_test_pool_stages": 10,
     "windows_pytest": {
-      "passed": 170,
+      "passed": 576,
+      "failed": 0,
+      "skipped": 0,
       "warnings": 2
     },
-    "local_signature_scenario_groups": 4,
-    "public_https_signature_scenario_groups": 4,
-    "public_https_signature_cleanup_checks": 10,
-    "cursor_preview_centre_matches_pointer": true,
-    "cursor_preview_tracks_scrolling": true,
-    "cursor_preview_escape_and_placement_cleanup": true,
-    "cursor_preview_no_hover_objects_or_pointer_interception": true,
-    "cursor_preview_and_placed_png_source_match": true,
-    "one_time_placement_desktop_mobile": true,
-    "selected_preview_placement_embedded_pdf_rgba_exact_match": true,
-    "camera_test_source": "synthetic local MediaStream and permission denial; physical camera not accessed",
+    "local_desktop_tool_submissions": 43,
+    "local_mobile_tool_submissions": 43,
+    "local_declared_option_interactions_per_viewport": 160,
+    "local_public_page_shells": 51,
+    "local_browser_checks": 63,
+    "local_shared_feature_groups": 5,
+    "local_editor_groups": 8,
+    "local_signature_groups": 4,
+    "local_signature_cleanup_checks": 10,
+    "local_concurrent_jobs": 16,
+    "local_network_http_checks": 58,
+    "public_pdf_to_image_all_pages_desktop": true,
+    "public_pdf_to_image_all_pages_mobile": true,
     "healthy": true,
     "oom_killed": false,
     "existing_container_identities_preserved": 15,
-    "existing_virtual_host_responses_unchanged": 19
+    "existing_virtual_host_responses_unchanged": 19,
+    "evidence": "qa/verification.json; full pool used isolated local server, not production",
+    "hosted_ci": "configured; outcome not observed"
   },
   "initial_deployment": {
     "date": "2026-10-22",
@@ -230,6 +237,31 @@
       "explicit_signature_reselection_allows_another_placement": true,
       "selected_preview_placement_embedded_pdf_rgba_exact_match": true,
       "mixed_blue_tones_rgb_preserved": true
+    }
+  },
+  "previous_cursor_preview_release": {
+    "image_build_revision": "0fb90e1",
+    "image": "sha256:51c6658cc33326ccb5dda4ff49fe28e04e31260b6ea2f5d5bfdec29b5cd7d95b",
+    "checks": {
+      "windows_pytest": {
+        "passed": 170,
+        "warnings": 2
+      },
+      "local_signature_scenario_groups": 4,
+      "public_https_signature_scenario_groups": 4,
+      "public_https_signature_cleanup_checks": 10,
+      "cursor_preview_centre_matches_pointer": true,
+      "cursor_preview_tracks_scrolling": true,
+      "cursor_preview_escape_and_placement_cleanup": true,
+      "cursor_preview_no_hover_objects_or_pointer_interception": true,
+      "cursor_preview_and_placed_png_source_match": true,
+      "one_time_placement_desktop_mobile": true,
+      "selected_preview_placement_embedded_pdf_rgba_exact_match": true,
+      "camera_test_source": "synthetic local MediaStream and permission denial; physical camera not accessed",
+      "healthy": true,
+      "oom_killed": false,
+      "existing_container_identities_preserved": 15,
+      "existing_virtual_host_responses_unchanged": 19
     }
   }
 }
