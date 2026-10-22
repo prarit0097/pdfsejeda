@@ -11,6 +11,7 @@ import json
 import sys
 import time
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import httpx
 import pikepdf
@@ -187,7 +188,10 @@ def main():
             assert pdf_pages(submit()) == 1
 
         def offline_preview():
-            context.route("https://**/*", lambda route: route.abort())
+            # Keep a deployed HTTPS app reachable while blocking external assets.
+            origin = urlsplit(BASE).netloc
+            context.route("https://**/*", lambda route: route.continue_()
+                          if urlsplit(route.request.url).netloc == origin else route.abort())
             try:
                 upload("extract-pdf-pages")
                 page.wait_for_function("() => Array.from(document.querySelectorAll('#pages-ui canvas')).some(c => c.width > 0 && c.height > 0)")

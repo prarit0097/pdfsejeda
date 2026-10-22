@@ -79,3 +79,9 @@ The optional build setting `PDFNOVA_DEBIAN_MIRROR` selects a Debian mirror host
 `mirror.sg.gs` successfully served the signed Debian and security indexes. APT
 retains signature checking and uses bounded download timeouts/retries. The proxy
 must also clear `CF-Connecting-IP` before enabling `TRUST_PROXY=1`.
+
+`PDFNOVA_PYTHON_PACKAGE_INDEX` can select an HTTPS Python package mirror when the
+official CDN cannot complete wheel downloads (default `https://pypi.org/simple`).
+Versions remain pinned in `requirements-lock.txt`; TLS verification remains enabled.
+Python and browser installations use separate image layers so a browser retry
+does not repeat the Python installation.

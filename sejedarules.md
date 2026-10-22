@@ -537,6 +537,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22: Hostinger deployment in progress. SSH access and pdf.praritsidana.com confirmed; TLS issuance and renewal dry-run passed. Added guarded bootstrap, process init, proxy header sanitization, private baseline exclusions, selectable package mirrors and download retries. HTTPS browser regression now allows its own origin while blocking external assets. Linux processing verification is pending. Files: `Dockerfile`, `deploy/hostinger/`, `scripts/browser_regression.py`.
+
 - 2026-10-22 — Prepared an isolated shared-server deployment profile and runbook; deployment pending SSH access and DNS configuration, with no existing server apps changed — `deploy/hostinger/`, `.gitignore`, `.dockerignore`, `sejedarules.md`
 
 - 2026-10-22 — Expanded this file into the complete project guide: product identity/purpose, scope, stack rationale, full layout/API reference, editor/storage contracts, setup/engines/Docker, security/retention, dated verification, contributor workflow, limitations and troubleshooting. Documentation checks covered all 43 registered tools, 13 environment settings and 17 API routes; links/fences passed, and pytest remained 170 passed with 2 deprecation warnings — `sejedarules.md`

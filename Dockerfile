@@ -13,8 +13,9 @@ RUN printf 'Acquire::http::Timeout "20";\nAcquire::https::Timeout "20";\nAcquire
 
 WORKDIR /app
 COPY requirements.txt requirements-lock.txt ./
-RUN pip install --no-cache-dir -r requirements-lock.txt \
-    && playwright install --with-deps chromium \
+ARG PYTHON_PACKAGE_INDEX=https://pypi.org/simple
+RUN pip install --no-cache-dir --timeout 60 --retries 5 --index-url "${PYTHON_PACKAGE_INDEX}" -r requirements-lock.txt
+RUN playwright install --with-deps chromium \
     && chmod -R a+rX /ms-playwright
 
 COPY app ./app
