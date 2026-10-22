@@ -51,8 +51,8 @@ Machine-readable public evidence: [seo-verification.json](seo-verification.json)
 
 | Destination | Actual status | Remaining dependency |
 | --- | --- | --- |
-| Google Search Console | Not registered; owner confirmed setup is not done | Real Google login and property verification, then sitemap submission |
-| Bing Webmaster Tools | Not registered | Real owner login/property verification or import from Search Console |
+| Google Search Console | Not registered; explicitly deferred by owner on 2026-10-22 | Owner chose "Account setup baad mein karunga"; resume login/property verification only when requested |
+| Bing Webmaster Tools | Not registered; account setup deferred | Resume with owner login/property verification or Search Console import when requested |
 | AlternativeTo | Copy prepared; not submitted | Owner account/email verification and editorial approval |
 | SaaSHub | Copy prepared; not submitted | Submitter/email verification and editorial review |
 | Product Hunt | Launch copy prepared; not submitted | Real personal account, eligibility/onboarding and owner participation |

@@ -213,10 +213,10 @@ Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 - [x] Original PDF guides, internal linking and launch/listing copy
 - [x] SEO regression tests and live verification
 - [x] Search notifications/public project links; record account-dependent registrations accurately
-- [ ] Owner-account Google/Bing verification and approved external directory/editorial placements (login/email needed; not claimed completed)
+- [ ] Owner-account Google/Bing verification (owner explicitly deferred setup on 2026-10-22; resume when requested) and approved external directory/editorial placements (login/email needed; not claimed completed)
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
-2. sejedarules.md updated (what changed, how it works).
+2. sejedarules.md updated before completion is reported: what changed, why/how it works, actual tests, deployment/publication status, owner decisions, pending work and a dated change-log entry. Supporting reports alone do not satisfy this rule.
 3. plan.md checkbox ticked.
 4. Commit + push to `origin main`.

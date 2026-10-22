@@ -34,10 +34,10 @@
 ## 1. Ground rules
 
 1. **Plan first, then build.** The full plan is in [plan.md](plan.md). Work follows its phases in order; tick the checkbox there when a task is done.
-2. **Log everything here.** Every change gets an entry in §8 "Change log" and, if it changes behaviour, an update to the relevant section below.
+2. **Mandatory completion rule: update this file after every task.** Before reporting any task or unit of work as complete, update `E:\coding\Sejda copy\sejedarules.md` with what changed, why, affected files/features, actual test results, deployment/publication status and remaining or deferred work. Add a dated entry to §8 "Change log" and update the relevant current-state sections in the same unit of work. This applies to code, fixes, UI, tests, research, branding, SEO, deployment, documentation and owner decisions. Supporting reports may hold detailed evidence, but their outcome and link must also be recorded here. Do not leave the record only in chat or wait for the owner to remind you. For unfinished work, record the partial outcome and pending dependency accurately; never mark it complete. Every contributor and coding agent must follow this rule; the root `AGENTS.md` points to it.
 3. **Push after every unit of work** to https://github.com/prarit0097/pdfsejeda (`main`).
 4. **Behaviour comes from the research.** [research/SEJDA.md](research/SEJDA.md) describes how sejda.com works. We replicate the *behaviour* (tools, options, API flow, editor model).
-5. **Do not ship copied Sejda branding or application code.** Product-facing name/logo/page copy and application code are original. Research documents may name and cite the reference service. Our default product name is `PDFNova`, set with `APP_NAME`; shipped/obfuscated Sejda JS does not belong in the app.
+5. **Do not ship copied Sejda branding or application code.** Product-facing name/logo/page copy and application code are original. Research documents may name and cite the reference service. Our default product name is `Prarit Sidana PDF`, set with `APP_NAME`; shipped/obfuscated Sejda JS does not belong in the app.
 6. **Licences:** only permissive dependencies (MIT/BSD/Apache/MPL). No AGPL (no PyMuPDF, Ghostscript, Sejda SDK).
 7. **Every tool has a test.** `pytest` must pass before pushing.
 8. **Security defaults stay on:** size/type limits, SSRF-safe URL import, HMAC-signed download links, 2-hour file expiry.
@@ -47,6 +47,21 @@
 12. **Change only the authorized scope.** New external integrations, outbound email, accounts and payments must not be silently enabled. The current exclusions below remain in force until the user changes them.
 
 **Current scope (user clarification, 2026-10-22):** accounts/billing, cloud integrations and email signing are deferred. Do not implement them or count their absence as a blocker for the current PDF-tool delivery. Local PDF signing (type/draw/upload/camera signatures), password protection, URL import and local workflows remain in scope.
+
+### Current handover snapshot (2026-10-22)
+
+| Area | Completed / verified state | Remaining or deliberately deferred |
+| --- | --- | --- |
+| Product and reference | Prarit Sidana PDF, 43 tools; original implementation informed by Sejda research. Repository: https://github.com/prarit0097/pdfsejeda. Architecture and tool inventory are documented below. | Exact parity with every Sejda feature and arbitrary-document conversion fidelity are not established. Accounts/billing, cloud integrations and email signing remain excluded. |
+| Home and editor | Home has the free PDF editing CTA and upload/blank-document entry. Editor includes text, forms, images, annotations and page actions. | Remaining document/browser limits are listed with the relevant features and test reports. |
+| Signatures | Type/draw/upload/camera creation, saved library, image variants, colour-preserving transparency, rotate/duplicate/delete, one placement per selection and a pointer-following preview. Tests compare selected/placed/saved image pixels; compatibility storage keys are retained. | Difficult photographs can still need manual preparation. Physical camera hardware was not tested; automated camera checks use a synthetic stream. |
+| Testing | Latest completed full-pool record: 663 Python cases; 43 tool submissions, 56 page checks and 160 control interactions at each desktop/mobile viewport. Eleven stage types passed after one documented mobile canvas-readiness test-harness retry. See [qa/VERIFICATION.md](qa/VERIFICATION.md). | Generated-fixture coverage is not every option combination or every real PDF. Hosted CI observations are separately dated in the evidence; do not infer a fresh hosted pass from local results. |
+| Hosting | Live at https://pdf.praritsidana.com/ in isolated `/opt/pdfnova`; application image revision `dee688f`. Healthy/no OOM at last deployment verification; 15 existing container identities and 19 existing host responses preserved. See [deployment record](deploy/hostinger/DEPLOYED.md). | Future runtime health needs a fresh check; historical verification is not continuous monitoring. |
+| Branding and public SEO | Domain-aligned name; unique metadata, canonical/social/schema tags, robots.txt, 56-URL sitemap, four published guides and internal links. Public 56-page crawl plus eight responsive checks passed. | No search ranking or Google recommendation position has been established. |
+| Search notification and promotion | IndexNow accepted one verified 56-URL batch with HTTP 202. Public GitHub README/About links, description and topics updated: one referring domain. Listing descriptions, announcements and an article draft are ready. See [SEO status](marketing/SEO-STATUS.md) and [launch kit](marketing/LAUNCH-KIT.md). | Notification acceptance is not indexing. External directory listings/articles are not submitted/published; drafts are not backlinks. |
+| Webmaster accounts: owner decision | Owner explicitly chose **"Account setup baad mein karunga"** on 2026-10-22. Google Search Console/Bing Webmaster setup is deliberately deferred; technical verification hooks and [setup instructions](marketing/SEARCH-SETUP.md) are ready. | Do not repeatedly request login/tokens or attempt registrations while this deferral stands. Resume when the owner asks to proceed or supplies real account-issued verification tokens. |
+
+Completion records must contain useful outcomes rather than raw transcripts. Keep passwords, private environment values, user PDFs/signatures, recovery codes and token-bearing raw evidence out of this file and Git; link to sanitized evidence instead.
 
 ---
 
@@ -337,7 +352,10 @@ This section also covers setup, deployment, security, verification and maintenan
 
 | Env var | Default | Meaning |
 |---|---|---|
-| `APP_NAME` | `PDFNova` | brand name shown in the UI |
+| `APP_NAME` | `Prarit Sidana PDF` | brand name shown in the UI |
+| `SITE_URL` | `https://pdf.praritsidana.com` | trusted canonical origin without credentials, path, query or fragment |
+| `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` | empty | real account-issued homepage verification tokens, when setup resumes |
+| `INDEXNOW_KEY` | empty | optional public ownership key; configured on production for the accepted notification |
 | `DATA_DIR` | `./data` | where uploads and results live |
 | `FILE_TTL_SECONDS` | `7200` | file and result lifetime (2 h) |
 | `MAX_FILE_MB` | `200` | per-file upload limit |
@@ -584,10 +602,14 @@ Google Search Console. Do not submit on every request or every test run.
 SEO checks: `tests/test_seo.py` and read-only `scripts/seo_regression.py [base_url]`.
 The staged pool includes a dedicated SEO stage. Launch copy, submission policies,
 owner login steps and actual publication status are recorded under `marketing/`.
-The owner confirmed webmaster setup is not yet done. Account-owned registrations
-remain distinct from deployed technical SEO and published content.
+The owner confirmed webmaster setup is not yet done and explicitly deferred it
+("Account setup baad mein karunga", 2026-10-22). Do not keep asking for account
+setup or tokens until the owner resumes it. Account-owned registrations remain
+distinct from deployed technical SEO and published content.
 
 ## 8. Change log
+
+- 2026-10-22: Made completion-time updates to this file mandatory for every task and owner decision, including actual tests, deployment/publication status and pending work; added root `AGENTS.md` so future contributors/agents discover the rule. Added the current handover snapshot, corrected stale default-brand references and documented SEO environment settings. Recorded the owner's explicit Google/Bing account-setup deferral; stop repeated setup/token requests until resumed. Validation: `python -m pytest tests -q --tb=short` passed 663 cases, zero failures/skips, two existing deprecation warnings (62.43 seconds); `git diff --check` and documentation-link checks passed. Documentation-only update: commit/push and server checkout sync; no application image rebuild or service restart needed. The prior deployed app revision remains `dee688f`.
 
 - 2026-10-22: Deployed branded SEO release `dee688f`; public 56-page sitemap and eight responsive checks passed, healthy/no OOM, existing 15 containers and 19 host responses unchanged. IndexNow accepted one 56-URL notification with HTTP 202; no Google submission/indexing/ranking claimed. Public GitHub README/About homepage and topics updated. Local 663 Python tests and eleven stage types passed after a documented mobile canvas-readiness harness retry. Google/Bing ownership and external listings still require real account access; exact steps and publication evidence are in `marketing/`.
 
