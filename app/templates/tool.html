@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "_macros.html" import icon, tool_ico, tool_card, render_opt %}
-{% block title %}{{ tool.title }} — free online | {{ app_name }}{% endblock %}
-{% block description %}{{ tool.tagline }} Free online tool, no sign-up. Files are deleted after {{ ttl_hours|round|int }} hours.{% endblock %}
+{% block title %}{{ seo.title }}{% endblock %}
+{% block description %}{{ seo.description }}{% endblock %}
 {% block head %}
 <script type="module" src="/static/js/pdf-loader.js?v=1"></script>
 {% endblock %}
@@ -98,6 +98,7 @@
     <div class="tool-grid">{% for t in related %}{{ tool_card(t) }}{% endfor %}</div>
   </section>
   {% endif %}
+  {% if related_guides %}<section class="prose"><h2>Helpful guides</h2><ul>{% for slug, guide in related_guides.items() %}<li><a href="/guides/{{ slug }}">{{ guide.title }}</a></li>{% endfor %}</ul></section>{% endif %}
 </div>
 <script id="tool-config" type="application/json">{{ {
   "type": tool.type, "slug": tool.slug, "title": tool.title, "accept": tool.accept, "multiple": tool.multiple,

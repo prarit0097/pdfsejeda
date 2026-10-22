@@ -1,4 +1,4 @@
-/* PDFNova design system — tokens, layout, components. Light + dark. */
+/* Prarit Sidana PDF design system — tokens, layout, components. Light + dark. */
 :root {
   --bg: #f7f7fb;
   --bg-elev: #ffffff;
@@ -347,3 +347,7 @@ body.modal-open { overflow: hidden; }
 .skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--brand); color: var(--brand-ink); padding: 8px 14px; border-radius: 8px; font-weight: 600; }
 .skip-link:focus { top: 10px; text-decoration: none; }
 main:focus { outline: none; }
+
+/* Keep the full domain-aligned brand accessible without crowding mobile tools. */
+.brand-short { display: none; }
+@media (max-width: 600px) { .site-header .brand-full { display: none; } .site-header .brand-short { display: inline; } }

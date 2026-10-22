@@ -2,8 +2,8 @@
 {% from "_macros.html" import icon, tool_card %}
 {% block main %}
 <section class="hero wrap">
-  <h1>Every PDF tool, <span>one tab away</span></h1>
-  <p>Merge, split, compress, convert, edit and sign PDFs right in your browser. No sign-up, no watermarks, and your files are deleted automatically.</p>
+  <h1>Free PDF tools, <span>one tab away</span></h1>
+  <p>Merge, split, compress, convert, edit and sign PDFs with {{ app_name }}. No sign-up, no watermarks, and your files are deleted automatically.</p>
   <div class="hero-actions">
     <a class="btn btn-editor btn-lg" id="home-edit-pdf" href="/pdf-editor">Edit a PDF document <span>— it's free</span>{{ icon("arrow-right") }}</a>
     <a class="hero-tools-link" href="#all-pdf-tools">or choose from {{ all_tools|length }} PDF tools {{ icon("chevron") }}</a>
@@ -40,6 +40,11 @@
     <div class="feature"><span class="tool-ico" style="--c:var(--cat-to_pdf)">{{ icon("cloud") }}</span><h3>Works anywhere</h3><p class="muted">Upload from your device or paste a link. Nothing to install.</p></div>
   </section>
 </div>
+<section class="wrap prose">
+  <h2>Practical PDF guides</h2>
+  <p>Choose useful settings and check your result before sharing a document.</p>
+  <ul>{% for slug, guide in guides.items() %}<li><a href="/guides/{{ slug }}">{{ guide.title }}</a></li>{% endfor %}</ul>
+</section>
 {% endblock %}
 {% block scripts %}
 <script src="/static/js/home.js?v=1"></script>

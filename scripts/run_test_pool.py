@@ -36,6 +36,7 @@ def stop(process):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--include-network",action="store_true")
+    parser.add_argument("--stage",action="append",help="Run only named stages; repeat this option for targeted retries")
     parser.add_argument("--output",type=Path,default=ROOT/"data-qa-pool"/"runs")
     args=parser.parse_args()
     run_dir=args.output.resolve()/datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
@@ -65,6 +66,7 @@ def main():
                     ("all-tool-ui",["scripts/tool_ui_regression.py",base],1800),
                     ("all-tool-ui-mobile",["scripts/tool_ui_regression.py",base],1800),
                     ("shared-features",["scripts/shared_feature_regression.py",base],300),
+                    ("seo",["scripts/seo_regression.py",base],300),
                     ("browser",["scripts/browser_regression.py",base],600),
                     ("editor",["scripts/editor_regression.py"],600),
                     ("signature",["scripts/signature_regression.py",base],300),
@@ -72,6 +74,11 @@ def main():
                     ("concurrency",["scripts/concurrency_regression.py",base],300),
                 ]
                 if args.include_network: stages.append(("network-smoke",["scripts/smoke_test.py",base],600))
+                if args.stage:
+                    unknown=set(args.stage)-{name for name,_,_ in stages}
+                    if unknown: raise ValueError("Unknown/disabled stages: "+", ".join(sorted(unknown)))
+                    stages=[stage for stage in stages if stage[0] in args.stage]
+                    report["requested_stages"]=args.stage
                 for name,command,timeout in stages:
                     print("RUN",name,flush=True);started=time.monotonic();started_epoch=time.time()
                     stage_env={**env,"DATA_DIR":str(Path(folder)/name),"EDITOR_BASE_URL":base,"COVERAGE_FILE":str(run_dir/".coverage")}

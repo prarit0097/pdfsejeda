@@ -1,6 +1,7 @@
 """Settings read from environment variables. See sejedarules.md §7."""
 import os
 import secrets
+from urllib.parse import urlsplit
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -28,9 +29,23 @@ def _int(name: str, default: int) -> int:
         return default
 
 
+def _site_url(value: str) -> str:
+    value=value.strip().rstrip("/")
+    if any(ord(c)<32 for c in value): raise ValueError("SITE_URL cannot contain control characters")
+    parsed=urlsplit(value)
+    parsed.port  # validates malformed or out-of-range port numbers
+    if parsed.scheme not in ("http","https") or not parsed.hostname or parsed.username or parsed.password or parsed.path or parsed.query or parsed.fragment:
+        raise ValueError("SITE_URL must be an absolute HTTP(S) origin without credentials, path, query or fragment")
+    return value
+
+
 @dataclass
 class Settings:
-    app_name: str = os.environ.get("APP_NAME", "PDFNova")
+    app_name: str = os.environ.get("APP_NAME", "Prarit Sidana PDF")
+    site_url: str = _site_url(os.environ.get("SITE_URL", "https://pdf.praritsidana.com"))
+    google_site_verification: str = os.environ.get("GOOGLE_SITE_VERIFICATION", "").strip()
+    bing_site_verification: str = os.environ.get("BING_SITE_VERIFICATION", "").strip()
+    indexnow_key: str = os.environ.get("INDEXNOW_KEY", "").strip()
     data_dir: Path = Path(os.environ.get("DATA_DIR", "data")).resolve()
     file_ttl_seconds: int = _int("FILE_TTL_SECONDS", 7200)
     max_file_mb: int = _int("MAX_FILE_MB", 200)

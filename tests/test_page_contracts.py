@@ -10,6 +10,7 @@ import pytest
 from app.main import app
 from app.tools.registry import all_tools
 from app.web import INFO_PAGES
+from app.content import GUIDES
 
 
 class HTML(HTMLParser):
@@ -35,7 +36,7 @@ class HTML(HTMLParser):
 
 client = TestClient(app)
 TOOLS = all_tools()
-PAGES = ["/"] + ["/"+t.slug for t in TOOLS] + ["/workflows"] + ["/"+s for s in INFO_PAGES]
+PAGES = ["/"] + ["/"+t.slug for t in TOOLS] + ["/workflows", "/guides"] + ["/"+s for s in INFO_PAGES] + ["/guides/"+s for s in GUIDES]
 
 
 @lru_cache(maxsize=200)

@@ -1,4 +1,4 @@
-# PDFNova / pdfsejeda — project guide, architecture and working rules
+# Prarit Sidana PDF / pdfsejeda — project guide, architecture and working rules
 
 **Read this first.** This is the main project handover document for the owner, contributors and coding agents. It explains what the app is, why it exists, what is included, how it was built, how to run and test it, and the rules for changing it. Read it before modifying the project. Update affected sections and §8 in the same commit whenever implementation or scope changes.
 
@@ -6,7 +6,8 @@
 
 | Project identity | Value |
 |---|---|
-| Product/display name | **PDFNova** by default; configurable through `APP_NAME` |
+| Product/display name | **Prarit Sidana PDF** by default; configurable through `APP_NAME` |
+| Canonical public site | https://pdf.praritsidana.com/ |
 | Repository/project name | **pdfsejeda** |
 | Local workspace used for development | `E:\coding\Sejda copy` — a local folder name, not a runtime dependency |
 | Git repository | https://github.com/prarit0097/pdfsejeda |
@@ -61,7 +62,7 @@ The browser handles previews, interactions, signature drawing, image preparation
 
 The owner's goal is a working Sejda-style PDF application with closely matching tool capabilities, options and workflows, built in this repository and maintainable without proprietary Sejda code. It brings routine PDF tasks into one interface and supports running that interface on infrastructure controlled by the owner.
 
-The implementation uses original PDFNova branding and copy. Behavioral research guides reconstruction, while the source code and tests establish what this app actually does. Exact visual parity, every advanced option and every document-conversion edge case have not been established; do not describe the current build as a complete Sejda service clone.
+The implementation uses original Prarit Sidana PDF branding and copy. Behavioral research guides reconstruction, while the source code and tests establish what this app actually does. Exact visual parity, every advanced option and every document-conversion edge case have not been established; do not describe the current build as a complete Sejda service clone.
 
 ### 2.2 Included and deferred scope
 
@@ -548,7 +549,47 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 - `app/static/vendor/pdfjs/manifest.json` records the pinned official package, archive hash and selected asset hashes. Retain upstream license/codec/font notices and preserve vendored bytes when upgrading. No Sejda shipped application JavaScript belongs in the app.
 - Keep this guide self-contained for normal use: product identity/purpose, scope, architecture, all tools/routes, setup/configuration, data/access model, tests, contributor rules, limitations and recent changes should remain here. Link supporting evidence instead of copying confidential captures or every implementation line.
 
+### Domain branding and search discovery
+
+The public brand is **Prarit Sidana PDF**, aligned with https://pdf.praritsidana.com/.
+On narrow screens the header displays `PS PDF` with the full accessible name.
+The Git repository remains `pdfsejeda`; deployment folders, Compose service names,
+browser storage keys and `PDFNovaSignatures` are compatibility identifiers and
+must not be renamed just to match display copy. Old release entries retain their
+historical product name.
+
+`app/seo.py` generates canonical metadata from trusted `SITE_URL`, never from the
+request Host header. Public inventory: 56 HTML pages (home, 43 tools, eight info/
+workflow/guide-index pages and four articles). `app/web.py` serves `/robots.txt`,
+`/sitemap.xml`, `/guides` and `/guides/{slug}`. Sitemap lastmod is included only
+for articles with an actual recorded publication/revision date. Do not set all
+lastmod values to today's date on every request. Tool/help/article descriptions,
+Open Graph/Twitter cards and Organization/WebSite/WebPage/Breadcrumb/Article
+JSON-LD describe the real app; never invent ratings, reviews, users or awards.
+Original 1200x630 artwork is in `app/static/img/social-card.png` and its SVG source.
+
+Uploaded files, results, API URLs and unknown/error pages are excluded from the
+sitemap. API and error responses have `X-Robots-Tag: noindex`; result redirects
+are private/no-store/noindex. Indexing controls are not access controls: HMAC
+downloads and random capability IDs remain required.
+
+`GOOGLE_SITE_VERIFICATION` and `BING_SITE_VERIFICATION` render escaped homepage
+verification tags only when real account-issued tokens are configured.
+`INDEXNOW_KEY` exposes a public ownership file at `/indexnow-key.txt` when valid.
+`scripts/submit_indexnow.py` defaults to dry-run, verifies the live key file and
+accepts only canonical public sitemap URLs; `--submit` sends one batch to the
+global endpoint. Receipt does not prove indexing/ranking and does not register
+Google Search Console. Do not submit on every request or every test run.
+
+SEO checks: `tests/test_seo.py` and read-only `scripts/seo_regression.py [base_url]`.
+The staged pool includes a dedicated SEO stage. Launch copy, submission policies,
+owner login steps and actual publication status are recorded under `marketing/`.
+The owner confirmed webmaster setup is not yet done. Account-owned registrations
+remain distinct from deployed technical SEO and published content.
+
 ## 8. Change log
+
+- 2026-10-22: Renamed public branding to Prarit Sidana PDF; added trusted canonical origin, unique metadata/social cards, truthful JSON-LD, 56-URL sitemap, robots directives, private/error noindex headers, four original practical guides and related navigation. Added optional webmaster verification hooks, safe IndexNow notifier, SEO regression contracts and launch/submission documentation. Kept infrastructure/browser compatibility identifiers. Verification and actual submissions are recorded separately after execution in `marketing/SEO-STATUS.md`.
 
 Newest first. One line per change: date — what — where.
 

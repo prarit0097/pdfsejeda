@@ -154,12 +154,15 @@ async def security_headers(request: Request, call_next):
     h.setdefault("Permissions-Policy", "interest-cohort=()")
     if request.url.path.startswith("/api/"):
         h.setdefault("Cache-Control", "no-store, private")
+        h.setdefault("X-Robots-Tag", "noindex, nofollow, noarchive")
         if "/download/" not in request.url.path and "/view" not in request.url.path:
             h.setdefault("X-Frame-Options", "SAMEORIGIN")
     else:
         h.setdefault("X-Frame-Options", "SAMEORIGIN")
         if response.headers.get("content-type", "").startswith("text/html"):
             h.setdefault("Content-Security-Policy", CSP)
+    if response.status_code >= 400:
+        h.setdefault("X-Robots-Tag", "noindex, nofollow")
     return response
 
 

@@ -204,6 +204,16 @@ Detailed plan: [qa/TEST-PLAN.md](qa/TEST-PLAN.md).
 - [x] Run complete pool, repair defects and record remaining limits
 - [x] Deploy discovered PDF-to-image fix and run bounded public verification
 
+## 3k. Domain branding, SEO and launch
+
+Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
+
+- [ ] Domain-aligned display name and deployment environment
+- [ ] Canonical metadata, social previews, truthful schema, sitemap/robots and private-result indexing protection
+- [ ] Original PDF guides, internal linking and launch/listing copy
+- [ ] SEO regression tests and live verification
+- [ ] Search notifications/public project backlinks; record account-dependent registrations accurately
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).

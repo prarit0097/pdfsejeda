@@ -15,6 +15,7 @@ ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT))
 from playwright.sync_api import sync_playwright
 from app.tools.registry import all_tools
+from app.content import GUIDES
 from qa.tool_scenarios import SCENARIOS, scenario_files, validate_output
 
 OUT=ROOT/"data-qa-pool"
@@ -132,7 +133,9 @@ def run():
                     for name,value in case["params"].items():
                         if name=="area":
                             wrap=page.locator(".area-wrap"); wrap.wait_for(); wrap.scroll_into_view_if_needed()
-                            page.wait_for_function("()=>document.querySelector('.area-wrap canvas')?.width>0")
+                            # A fresh canvas already has a 300x150 default size.
+                            # Wait for PDF dimensions before calculating drag coordinates.
+                            page.wait_for_function("()=>!!document.querySelector('.area-wrap canvas')?.style.width")
                             wrap.locator("canvas").evaluate("e=>e.scrollIntoView({block:'start'})")
                             page.evaluate("window.scrollBy(0,-100)")
                             b=wrap.locator("canvas").bounding_box(); x,y,w,h=(value[k] for k in ("x","y","width","height"))
@@ -159,7 +162,7 @@ def run():
                 print("FAIL UI",tool.type,str(e)[:300],flush=True)
         # Responsive shell inventory, separate from desktop document submissions.
         page.set_viewport_size({"width":390,"height":844})
-        for slug in ([] if selected else [""]+[t.slug for t in tools.values()]+["workflows","about","privacy","terms","help","developers","html-pdf-api"]):
+        for slug in ([] if selected else [""]+[t.slug for t in tools.values()]+["workflows","about","privacy","terms","help","developers","html-pdf-api","guides"]+["guides/"+slug for slug in GUIDES]):
             errors.clear()
             try:
                 r=page.goto(BASE+"/"+slug);assert r.status==200

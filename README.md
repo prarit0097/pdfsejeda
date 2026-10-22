@@ -1,8 +1,12 @@
-# PDFNova (pdfsejeda)
+# Prarit Sidana PDF (pdfsejeda)
+
+**Live app: [Prarit Sidana PDF](https://pdf.praritsidana.com/)**
+
+[Edit a PDF](https://pdf.praritsidana.com/pdf-editor) | [Compress a PDF](https://pdf.praritsidana.com/compress-pdf) | [PDF guides](https://pdf.praritsidana.com/guides)
 
 43 online PDF tools built with Python, FastAPI, Jinja2 and vanilla JavaScript: merge, split, compress, convert, edit, sign, OCR, forms and reusable workflows.
 
-Behavior is informed by the local Sejda research; PDFNova uses its own branding and interface. This is not a claim of complete Sejda product parity. See [the verification report](research/audit-2026-10-22/REPORT.md) for tested behavior and remaining gaps.
+Behavior is informed by the local Sejda research; Prarit Sidana PDF uses its own branding and interface. This is not a claim of complete Sejda product parity. See [the verification report](research/audit-2026-10-22/REPORT.md) for tested behavior and remaining gaps.
 
 - [How the app works and contributor rules](sejedarules.md)
 - [Build plan](plan.md)

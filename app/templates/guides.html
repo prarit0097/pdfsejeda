@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ seo.title }}{% endblock %}
+{% block description %}{{ seo.description }}{% endblock %}
+{% block main %}
+<div class="wrap prose">
+  <h1>PDF guides</h1>
+  <p>Choose settings that suit your document, follow the steps and check the result before sharing it.</p>
+  {% for slug, guide in guides.items() %}
+  <article>
+    <h2><a href="/guides/{{ slug }}">{{ guide.title }}</a></h2>
+    <p>{{ guide.description }}</p>
+  </article>
+  {% endfor %}
+  <p>Need help with a specific tool? Browse <a href="/">all PDF tools</a> or read the <a href="/help">help and FAQ</a>.</p>
+</div>
+{% endblock %}
