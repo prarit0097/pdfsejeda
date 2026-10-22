@@ -1,4 +1,7 @@
 # PDFNova — one image with every optional engine (LibreOffice, Tesseract, Chromium).
+FROM scratch AS optional-wheels
+COPY deploy/hostinger/wheelhouse/ /wheels/
+
 FROM python:3.12-slim
 ARG DEBIAN_MIRROR=deb.debian.org
 
@@ -14,7 +17,10 @@ RUN printf 'Acquire::http::Timeout "20";\nAcquire::https::Timeout "20";\nAcquire
 WORKDIR /app
 COPY requirements.txt requirements-lock.txt ./
 ARG PYTHON_PACKAGE_INDEX=https://pypi.org/simple
-RUN pip install --no-cache-dir --timeout 60 --retries 5 --index-url "${PYTHON_PACKAGE_INDEX}" -r requirements-lock.txt
+ARG PYTHON_OFFLINE=0
+RUN --mount=type=bind,from=optional-wheels,source=/wheels,target=/wheels \
+    PIP_NO_INDEX=${PYTHON_OFFLINE} pip install --no-cache-dir --timeout 60 --retries 5 \
+    --find-links=/wheels --index-url "${PYTHON_PACKAGE_INDEX}" -r requirements-lock.txt
 RUN playwright install --with-deps chromium \
     && chmod -R a+rX /ms-playwright
 

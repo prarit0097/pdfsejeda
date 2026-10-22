@@ -3,6 +3,7 @@
 Runs its own temporary FastAPI server and leaves the developer's data untouched.
 Run: python scripts/editor_regression.py
 Set EDITOR_MOBILE_ONLY=1 to run just the touch editor checks.
+Set EDITOR_BASE_URL=https://your-host to exercise an existing deployment instead.
 """
 import io
 import json
@@ -45,8 +46,9 @@ def run():
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
         env = {**os.environ, "NO_DOTENV": "1", "DATA_DIR": folder, "TASKS_PER_HOUR": "0"}
-        server = subprocess.Popen([sys.executable, "-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", str(port)], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        base = f"http://127.0.0.1:{port}"
+        external_base = os.environ.get("EDITOR_BASE_URL", "").rstrip("/")
+        server = None if external_base else subprocess.Popen([sys.executable, "-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", str(port)], cwd=ROOT, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        base = external_base or f"http://127.0.0.1:{port}"
         try:
             for _ in range(100):
                 try:
@@ -262,8 +264,9 @@ def run():
                 print("PASS mobile 390x844 touch: edit existing text, add text+checkbox, access toolbar, scroll, save actual PDF")
                 browser.close()
         finally:
-            server.terminate()
-            server.wait(timeout=10)
+            if server is not None:
+                server.terminate()
+                server.wait(timeout=10)
 
 
 if __name__ == "__main__":

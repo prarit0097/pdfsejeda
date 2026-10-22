@@ -5,11 +5,13 @@ venv/
 .env
 .env.hostinger
 .deploy-baseline.json
+deploy/hostinger/wheelhouse/*.whl
 data/
 .pytest_cache/
 *.egg-info/
 .DS_Store
 Thumbs.db
 data-*/
+data-qa-*.log
 # Raw observations can contain ephemeral tokens; retain locally and publish summaries.
 research/audit-2026-10-22/rea-*-evidence.json

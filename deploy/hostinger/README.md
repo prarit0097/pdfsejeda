@@ -85,3 +85,17 @@ official CDN cannot complete wheel downloads (default `https://pypi.org/simple`)
 Versions remain pinned in `requirements-lock.txt`; TLS verification remains enabled.
 Python and browser installations use separate image layers so a browser retry
 does not repeat the Python installation.
+
+For this server, Python wheels are now prepared separately from image installation.
+`wheelhouse/manifest.json` records 54 official PyPI CPython 3.12/Linux x64 wheel
+URLs, sizes and SHA-256 hashes. On the server, run:
+
+```bash
+python3 deploy/hostinger/fetch-wheels.py --mirror-prefix https://mirrors.aliyun.com/pypi --mirror-prefix https://pypi.tuna.tsinghua.edu.cn
+# Set PDFNOVA_PYTHON_OFFLINE=1 in the private environment after all 54 verify.
+```
+
+The optional mirrors only transport bytes; every wheel must match its official
+PyPI hash. Missing or mismatched files fail the preparation. Binary wheels stay
+out of Git and are bind-mounted only during the image build. Offline pip does not
+consult an index and fails if a compatible dependency is missing.

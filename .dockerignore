@@ -1,6 +1,7 @@
 .git
 data
 data-*/
+data-qa-*.log
 .venv/
 venv/
 .env

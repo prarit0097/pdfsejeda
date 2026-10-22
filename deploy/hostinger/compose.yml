@@ -8,6 +8,7 @@ services:
       args:
         DEBIAN_MIRROR: ${PDFNOVA_DEBIAN_MIRROR:-deb.debian.org}
         PYTHON_PACKAGE_INDEX: ${PDFNOVA_PYTHON_PACKAGE_INDEX:-https://pypi.org/simple}
+        PYTHON_OFFLINE: ${PDFNOVA_PYTHON_OFFLINE:-0}
     env_file: ../../.env.hostinger
     environment:
       DATA_DIR: /data
