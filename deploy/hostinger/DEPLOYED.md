@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `60733fa` |
+| Image build revision | `b01934b` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -82,7 +82,7 @@ The later UI release is verified separately below; counts are not combined.
   exactly matches the committed `nginx.pdfnova.conf`.
 
 Built image identity:
-`sha256:9ae573c4ae749280b49fa0d4358c903a4c38a8ffe15e9aab1b44637ba62c93d5`.
+`sha256:79eab66296efb053f5032bda5e461bc5c1b2e4e00fcebeacf7754ff3626f5cc0`.
 The image's source revision is recorded separately from later proxy/runbook-only
 commits; those changes do not rebuild application code. Machine-readable evidence
 is in [verification.json](verification.json). These are bounded functional and
@@ -106,6 +106,29 @@ Desktop toolbar overflow is checked. The live container is healthy; the 15
 existing container identities and 19 virtual-host responses remain unchanged.
 The previous image is retained locally as `pdfnova-web:release-14a3907` for a
 project-only rollback if needed. No proxy or production limit changes were made.
+
+## Signature release (b01934b)
+
+Sign now opens a saved-signature menu with reuse/remove and New Signature.
+The creation dialog offers Type, Draw, Upload Image and Camera; 12 self-hosted
+font previews; seven colours; pen width/clear; optional device persistence; and
+Original/Transparent A/Transparent B photo previews. Placed signature images can
+be moved/resized, rotated, duplicated or deleted, with existing undo and drafts.
+These are visual signatures. Photo cleanup uses two documented heuristics;
+Original preserves the uploaded picture when cleanup is unsuitable.
+
+Local verification: pytest 170 passed (two existing warnings), generic browser
+63/63, existing editor eight groups and dedicated signatures four groups.
+The dedicated four-group suite also passed against public HTTPS, checking actual
+rendered PDF colour, PDF image transparency masks, saved library reuse/removal,
+unchecked/blocked storage, touch drawing and camera handling. Camera coverage uses
+a synthetic MediaStream and a denied-permission case; no physical camera was
+accessed by the tests. Google Fonts network access was blocked while verifying
+all 12 local signature fonts. Licences and hashes are retained with the assets.
+
+The container is healthy. Existing container identities 15/15 and virtual-host
+responses 19/19 still match the original baseline. Prior UI image rollback tag:
+`pdfnova-web:release-60733fa`. No host proxy, port or quota changes were needed.
 
 ## Operations
 

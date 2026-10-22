@@ -540,6 +540,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22: Signature release `b01934b` deployed to public HTTPS. All four dedicated signature groups passed on the live app, including rendered PDF colour/transparency, saved reuse/removal, camera permission/fallback and synthetic capture cleanup, mobile touch drawing, and disabled local storage. Container healthy; existing 15 containers and 19 virtual-host responses unchanged. Updated deployment evidence and retained the prior UI image for rollback.
+
 - 2026-10-22: Expanded screenshot-guided local signatures: reusable/removable Sign library, Type/Draw/Upload Image/Camera tabs, 12 self-hosted licensed font styles, seven colours, photo transparency alternatives and per-signature rotation/duplication/deletion. Existing images, undo, drafts and PDF output retained. Local pytest 170 passed (2 warnings), generic browser 63/63, editor 8 groups and signature 4 groups passed, including actual PNG/PDF pixels, camera permission/track cleanup with a synthetic stream, mobile drawing and storage-disabled operation. Files: `signatures.js`, editor JS/CSS/template, CSP media policy, vendored fonts and `scripts/signature_regression.py`.
 
 - 2026-10-22: Home/editor UI update deployed at https://pdf.praritsidana.com from `60733fa`. Public browser 63/63 and actual mobile PDF editing/saving passed; current container healthy and existing 15 containers/19 virtual-host responses unchanged. Local pytest 170, browser 63/63 and editor 8 scenario groups passed. Deployment record distinguishes this UI release from the initial Linux engine/API audit.

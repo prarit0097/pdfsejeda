@@ -8,8 +8,8 @@
   "compose_project": "pdfnova",
   "backend": "127.0.0.1:8086",
   "volume": "pdfnova_pdfnova-data",
-  "image_build_revision": "60733fa",
-  "image": "sha256:9ae573c4ae749280b49fa0d4358c903a4c38a8ffe15e9aab1b44637ba62c93d5",
+  "image_build_revision": "b01934b",
+  "image": "sha256:79eab66296efb053f5032bda5e461bc5c1b2e4e00fcebeacf7754ff3626f5cc0",
   "runtime_profile_revision": "c06399de368b5b58089887a77562d2da3605f560",
   "current_release_checks": {
     "windows_pytest": {
@@ -21,11 +21,13 @@
       "total": 63
     },
     "local_editor_scenario_groups": 8,
-    "public_https_browser": {
-      "passed": 63,
-      "total": 63
-    },
-    "public_mobile_actual_pdf_save": true,
+    "local_signature_scenario_groups": 4,
+    "public_https_signature_scenario_groups": 4,
+    "signature_real_pdf_colour_and_transparency": true,
+    "signature_font_files_verified": 12,
+    "signature_external_fonts_blocked": true,
+    "camera_test_source": "synthetic local MediaStream; permission denial also tested; physical camera not accessed",
+    "signature_storage_disabled": true,
     "healthy": true,
     "existing_container_identities_preserved": 15,
     "existing_virtual_host_responses_unchanged": 19
@@ -105,5 +107,28 @@
       "virtual_host_baseline_count": 19
     },
     "limits": "Bounded functional/concurrency checks, not sustained production capacity testing. Queue/quota are process-local; in-flight work is not durable across restarts."
+  },
+  "previous_ui_release": {
+    "image_build_revision": "60733fa",
+    "image": "sha256:9ae573c4ae749280b49fa0d4358c903a4c38a8ffe15e9aab1b44637ba62c93d5",
+    "current_release_checks": {
+      "windows_pytest": {
+        "passed": 170,
+        "warnings": 2
+      },
+      "local_browser": {
+        "passed": 63,
+        "total": 63
+      },
+      "local_editor_scenario_groups": 8,
+      "public_https_browser": {
+        "passed": 63,
+        "total": 63
+      },
+      "public_mobile_actual_pdf_save": true,
+      "healthy": true,
+      "existing_container_identities_preserved": 15,
+      "existing_virtual_host_responses_unchanged": 19
+    }
   }
 }

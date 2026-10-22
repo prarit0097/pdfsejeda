@@ -163,7 +163,7 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Original/Transparent A/Transparent B image variants and camera cleanup/fallback
 - [x] Placed-signature rotate, duplicate, delete, drag/resize and actual PDF verification
 - [x] Local automated, browser, editor and dedicated signature regressions
-- [ ] Deploy and verify the signature flow on public HTTPS
+- [x] Deploy and verify the signature flow on public HTTPS
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
