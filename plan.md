@@ -94,9 +94,9 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [x] encrypt, unlock
 
 ### Phase 5 — Convert tools
-- [ ] pdf→jpg/png/tiff, jpg→pdf, extract images, extract text
-- [ ] pdf→excel/csv, pdf→word, pdf→ppt
-- [ ] word→pdf (LibreOffice), html→pdf (Playwright), OCR (OCRmyPDF/Tesseract)
+- [x] pdf→jpg/png/tiff, jpg→pdf, extract images, extract text
+- [x] pdf→excel/csv, pdf→word, pdf→ppt
+- [x] word→pdf (LibreOffice), html→pdf (Playwright), OCR (OCRmyPDF/Tesseract)
 
 ### Phase 6 — PDF editor, forms, sign
 - [ ] Editor page: PDF.js pages, toolbar (text, edit text, image, whiteout, shapes, line/arrow, draw, highlight/strike/underline, link, form fields, sign, insert/delete/rotate page, undo)

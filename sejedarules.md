@@ -96,6 +96,20 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 - `deleteAnnotations` — `/delete-pdf-annotations` — `annotationTypes` (all or one type), `pages`. Form widgets are never removed.
 - `renameByText` — `/rename-pdf` — `area` (drawn on page 1) + `renamePattern` tokens `[TEXT] [BASENAME] [FILENUMBER] [DATE]`.
 
+**Convert** (`app/tools/convert.py`)
+- `pdfToImage` — `/pdf-to-jpg` — `pages`/`allPages`, `imageFormat` jpg/png/tiff, `resolution` dpi, `imageColorType` rgb/grayscale/black_white, `tiffSingleFileWithAllPages`. Rendered with PDFium.
+- `jpgToPdf` — `/jpg-to-pdf` — `pageSize` auto/a4/…/custom, `pageOrientation`, `pageMargin` none/small/big, `rotations[]` per file, `mergeOutputs`.
+- `extractImages` — `/extract-images-from-pdf` — every distinct image XObject in its native format (JPEG stays JPEG), tiny images skipped.
+- `extractText` — `/extract-text-from-pdf` — PDFium text per page, `pageBreaks` adds form feeds.
+- `pdfToExcelNext` — `/pdf-to-excel` — pdfplumber table detection (ruled lines first, text alignment as fallback), `exportFormat` excel/csv, `singleSheet`. Numeric cells become numbers.
+- `pdfToOfficeWord` — `/pdf-to-word` — pdfplumber words → lines → paragraphs; larger fonts become headings; tables become Word tables; pictures are cropped renders. Output .docx (python-docx).
+- `pdfToPpt` — `/pdf-to-ppt` — one slide per page (page picture, slide size = page size), page text in speaker notes.
+- `docToPdf` — `/word-to-pdf` — LibreOffice headless when installed (isolated profile per task); otherwise a basic built-in DOCX/TXT renderer with a warning.
+- `htmlToPdf` — `/html-to-pdf` — Playwright Chromium; `urls` (one per line), `htmlCode`, uploaded .html files; `pageSize`, `pageOrientation`, `viewportWidth`, `pageMargin`+units, `delay`, `usePrintMedia`. Every request the browser makes is checked against private addresses.
+- `ocr` — `/ocr-pdf` — Tesseract renders each page at 300 dpi and makes a text-only PDF layer (`textonly_pdf=1`) that is overlaid invisibly on the original page; `lang`, `outputFormats` pdf/txt.
+
+**Optional system tools** — detected at runtime by `find_binary()`: LibreOffice (`soffice`), Tesseract (`tesseract`), Playwright Chromium. Tools that need a missing one fail with a clear message instead of crashing.
+
 **Shared building blocks** (`app/tools/`)
 - `common.py` — open/save PDFs with passwords, page sizes, `output_name` (honours `outputFilenamePattern`).
 - `draw.py` — `stamp()` draws with reportlab in *displayed* coordinates (after /Rotate) and merges onto a page; `place_page()` draws one page scaled into a rectangle of another (n-up, resize, normalize). Font picking (`font_for`) falls back to a Unicode TTF for non-Latin text.
@@ -128,6 +142,7 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22 — Phase 5: PDF→JPG/PNG/TIFF, JPG→PDF, extract images, PDF→text, PDF→Excel/CSV, PDF→Word, PDF→PowerPoint, Word→PDF (LibreOffice + fallback), HTML→PDF (Playwright), OCR (Tesseract text layer) — `app/tools/convert.py`, `tests/test_convert.py`
 - 2026-10-22 — Phase 4: compress, crop, resize, n-up, flip, grayscale, deskew, flatten, repair, header/footer, page numbers, Bates, watermark, encrypt, unlock, metadata, bookmarks, delete annotations, rename by text; `/api/files/<id>/outline` and `/metadata`; 38 tests — `app/tools/modify.py`, `stamp.py`, `security_tools.py`
 - 2026-10-22 — Phase 1–3: platform core (config, FileStore, JobQueue, page parser, HMAC links, SSRF-safe URL import, per-IP quota), full `/api` (upload, chunked upload, URL import, password, touch, view, tasks, change, download, cancel, delete, continue, tools), UI (design system, home, generic tool page, thumbnails), 11 organize tools, 21 tests — `app/`, `tests/`
 - 2026-10-22 — Project started: plan.md and sejedarules.md written; Python/FastAPI stack chosen — `plan.md`, `sejedarules.md`
