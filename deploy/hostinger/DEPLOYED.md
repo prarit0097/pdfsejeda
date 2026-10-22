@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `b01934b` |
+| Image build revision | `82a374e` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -129,6 +129,30 @@ all 12 local signature fonts. Licences and hashes are retained with the assets.
 The container is healthy. Existing container identities 15/15 and virtual-host
 responses 19/19 still match the original baseline. Prior UI image rollback tag:
 `pdfnova-web:release-60733fa`. No host proxy, port or quota changes were needed.
+
+## Signature transparency correction (82a374e)
+
+Transparent A now separates pen ink from photographed grey paper using adaptive
+ink/paper classification, local background estimation and colour contrast.
+Transparent B removes near-white margins while retaining grey paper. All three
+previews use the same geometry; the chosen transparent image is trimmed only
+for document placement. Processing retains up to 1800 pixels on the longest edge.
+These are original cleanup algorithms, not a claim of exact reference parity.
+
+Local Python tests: 170 passed, two existing warnings. Both locally and on public
+HTTPS, 9/9 cleanup checks and all four signature scenario groups passed. Checks
+cover eight generated photo cases, consistent preview scale, original alpha,
+pen retention, grey-paper removal and an actual saved PDF on a yellow background.
+The matching original photo was reviewed locally without submitting it for a
+server save: sampled grey paper was fully transparent and 99.27% of dark blue
+core pixels retained alpha above 180/255. Private images/evidence are not in Git.
+
+Image: `sha256:2a1ad9719f339771ada3599a5994760081e7b7d9c719c25b94342a49282abec8`.
+Container healthy, no OOM. Existing 15 container identities and 19 host
+status/redirect responses match baseline. Prior signature image rollback tag:
+`pdfnova-web:release-b01934b`. Host proxy and dependencies were unchanged.
+Previously saved signatures retain their existing pixels; re-upload the original
+photo and choose Transparent A to use the corrected cleanup.
 
 ## Operations
 

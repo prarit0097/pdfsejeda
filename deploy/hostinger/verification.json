@@ -8,27 +8,23 @@
   "compose_project": "pdfnova",
   "backend": "127.0.0.1:8086",
   "volume": "pdfnova_pdfnova-data",
-  "image_build_revision": "b01934b",
-  "image": "sha256:79eab66296efb053f5032bda5e461bc5c1b2e4e00fcebeacf7754ff3626f5cc0",
+  "image_build_revision": "82a374e",
+  "image": "sha256:2a1ad9719f339771ada3599a5994760081e7b7d9c719c25b94342a49282abec8",
   "runtime_profile_revision": "c06399de368b5b58089887a77562d2da3605f560",
   "current_release_checks": {
     "windows_pytest": {
       "passed": 170,
       "warnings": 2
     },
-    "local_browser": {
-      "passed": 63,
-      "total": 63
-    },
-    "local_editor_scenario_groups": 8,
+    "local_signature_cleanup_checks": 9,
+    "public_https_signature_cleanup_checks": 9,
     "local_signature_scenario_groups": 4,
     "public_https_signature_scenario_groups": 4,
-    "signature_real_pdf_colour_and_transparency": true,
-    "signature_font_files_verified": 12,
-    "signature_external_fonts_blocked": true,
-    "camera_test_source": "synthetic local MediaStream; permission denial also tested; physical camera not accessed",
-    "signature_storage_disabled": true,
+    "cleanup_actual_saved_pdf_checked": true,
+    "matching_original_photo_review": "Local only; sampled grey paper alpha zero; 99.27% dark blue core pixels retain alpha above 180/255. Private photo and derived evidence excluded from Git and server saves.",
+    "camera_test_source": "synthetic local MediaStream and permission denial; physical camera not accessed",
     "healthy": true,
+    "oom_killed": false,
     "existing_container_identities_preserved": 15,
     "existing_virtual_host_responses_unchanged": 19
   },
@@ -126,6 +122,31 @@
         "total": 63
       },
       "public_mobile_actual_pdf_save": true,
+      "healthy": true,
+      "existing_container_identities_preserved": 15,
+      "existing_virtual_host_responses_unchanged": 19
+    }
+  },
+  "previous_signature_release": {
+    "image_build_revision": "b01934b",
+    "image": "sha256:79eab66296efb053f5032bda5e461bc5c1b2e4e00fcebeacf7754ff3626f5cc0",
+    "checks": {
+      "windows_pytest": {
+        "passed": 170,
+        "warnings": 2
+      },
+      "local_browser": {
+        "passed": 63,
+        "total": 63
+      },
+      "local_editor_scenario_groups": 8,
+      "local_signature_scenario_groups": 4,
+      "public_https_signature_scenario_groups": 4,
+      "signature_real_pdf_colour_and_transparency": true,
+      "signature_font_files_verified": 12,
+      "signature_external_fonts_blocked": true,
+      "camera_test_source": "synthetic local MediaStream; permission denial also tested; physical camera not accessed",
+      "signature_storage_disabled": true,
       "healthy": true,
       "existing_container_identities_preserved": 15,
       "existing_virtual_host_responses_unchanged": 19
