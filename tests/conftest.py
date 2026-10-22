@@ -8,6 +8,7 @@ from pathlib import Path
 
 os.environ.setdefault("DATA_DIR", tempfile.mkdtemp(prefix="pdfnova-test-"))
 os.environ.setdefault("ALLOW_PRIVATE_URLS", "0")
+os.environ["NO_DOTENV"] = "1"  # tests must not pick up the developer's .env
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import pikepdf  # noqa: E402

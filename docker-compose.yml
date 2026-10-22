@@ -3,13 +3,9 @@ services:
     build: .
     ports:
       - "8000:8000"
+    env_file: .env          # SECRET_KEY and other settings; see .env.example
     environment:
-      APP_NAME: PDFNova
-      SECRET_KEY: change-me-to-a-long-random-string
-      TASKS_PER_HOUR: "0"
-      MAX_FILE_MB: "200"
-      WORKERS: "4"
-      TRUST_PROXY: "0"
+      DATA_DIR: /data
     volumes:
       - pdfnova-data:/data
     restart: unless-stopped

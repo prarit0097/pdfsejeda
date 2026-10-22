@@ -41,7 +41,8 @@ app/
   tools/             one module per tool group; registry maps task type → handler
   templates/         Jinja2 pages
   static/            css, js, images
-tests/               pytest suite
+tests/               pytest suite (unit + API, run with `pytest -q`)
+scripts/smoke_test.py  live end-to-end check of every tool against a running server
 research/            reverse-engineering notes (input, not shipped)
 plan.md              build plan
 sejedarules.md       this file
@@ -149,6 +150,8 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 | `SECRET_KEY` | random per process | signs download links; set it in production |
 | `WORKERS` | `4` | parallel task threads |
 
+Settings can also live in a `.env` file in the repo root (`KEY=VALUE` lines, loaded by `app/config.py`; real environment variables win). `.env` is git-ignored; `.env.example` is the template. `docker-compose.yml` reads the same file via `env_file`. Tests set `NO_DOTENV=1` so they never read it.
+
 ## 7a. Deployment & security
 
 - `Dockerfile` (python:3.12-slim + LibreOffice Writer, Tesseract with eng/hin/spa/fra/deu, Noto/DejaVu/Liberation fonts, Playwright Chromium), runs as a non-root user, data in volume `/data`. `docker-compose.yml` sets the env vars from §7 — **change `SECRET_KEY`**.
@@ -160,6 +163,7 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22 — `.env` support (+ `.env.example`, compose `env_file`), live smoke test of all tools over HTTP — `app/config.py`, `scripts/smoke_test.py`, `docker-compose.yml`
 - 2026-10-22 — Phase 7–8: workflows (record from "continue in another tool", save, run, import/export), CSP header, Dockerfile + docker-compose + .dockerignore, README run/deploy notes — `app/static/js/workflows.js`, `app/templates/workflows.html`, `app/static/js/tool.js`, `app/main.py`, `Dockerfile`
 - 2026-10-22 — Phase 6: PDF editor / fill & sign / create forms — server handler with pageOrder + 10 operation types + form creation and filling; browser editor with toolbar, overlay objects, edit existing text, signatures, form inputs, page actions, undo, drafts; `tool.js` exposes submitBody/addFiles/reset; aliases pdfToDoc→pdfToOfficeWord, pdfToExcel→pdfToExcelNext — `app/tools/editor.py`, `app/templates/editor.html`, `app/static/js/editor.js`, `app/static/css/editor.css`
 - 2026-10-22 — Phase 5: PDF→JPG/PNG/TIFF, JPG→PDF, extract images, PDF→text, PDF→Excel/CSV, PDF→Word, PDF→PowerPoint, Word→PDF (LibreOffice + fallback), HTML→PDF (Playwright), OCR (Tesseract text layer) — `app/tools/convert.py`, `tests/test_convert.py`

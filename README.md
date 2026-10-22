@@ -9,6 +9,7 @@ A full-featured online PDF toolkit — 45+ tools: merge, split, compress, conver
 
 ```bash
 pip install -r requirements.txt
+cp .env.example .env        # then put a long random SECRET_KEY in .env
 uvicorn app.main:app --reload
 # open http://127.0.0.1:8000
 ```
@@ -28,10 +29,11 @@ docker compose up --build
 # open http://localhost:8000
 ```
 
-Set `SECRET_KEY` in `docker-compose.yml` first. All settings are listed in [sejedarules.md §7](sejedarules.md).
+Create `.env` from `.env.example` and set `SECRET_KEY` first (compose reads it). Docker needs CPU virtualization enabled in the BIOS. All settings are listed in [sejedarules.md §7](sejedarules.md).
 
 ## Test
 
 ```bash
-pytest -q
+pytest -q                                   # unit + API tests
+python scripts/smoke_test.py http://127.0.0.1:8000   # every tool, live, against a running server
 ```
