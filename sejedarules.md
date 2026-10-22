@@ -318,12 +318,12 @@ Browser storage is local to that browser/profile/origin; there is no account syn
 ### 6.3 Frontend
 
 - `templates/base.html` — header (logo, "All tools" mega menu, theme toggle), footer, SVG icon sprite (`_icons.html`).
-- `templates/index.html` — hero, search, category chips, tool cards (filtering is client-side).
+- `templates/index.html`: home hero with the prominent green "Edit a PDF document - it's free" link to `/pdf-editor`, a secondary tool-directory anchor, search, category chips and tool cards.
 - `templates/tool.html` — generic tool page: drop zone (device / URL), file list, page thumbnails (`#pages-ui`), options (basic + "More options"), submit, result panel, recent results, how-to, FAQ, related tools.
 - `static/js/site.js` — `window.UI`: theme, mega menu, toasts, modal dialogs, helpers.
 - `static/js/tool.js` — `window.Tool`: uploads (simple ≤5 MB, chunked >5 MB, 3 parallel chunks, link import, password prompt), file reorder/rotate (merge), `show_if` conditional options, form → JSON, submit, 402 countdown, polling every 3 s, result screen (download, preview, ZIP items, continue in another tool, delete now), recent results in localStorage, keep-alive `touch` every 10 min, files handed over via sessionStorage `continueFiles`.
 - `static/js/pages-ui.js` — PDF.js thumbnails, selectors, rotations, organization, split marks, area/crop drawing, metadata and bookmark prefill.
-- `static/js/editor.js` + `static/css/editor.css` — document editor, form overlays, signatures, text search/replacement, drafts and mobile touch interaction.
+- `templates/editor.html`, `static/js/editor.js`, `static/css/editor.css`: green upload entry with device/URL menu and direct blank-document option; automatic editor opening after upload; visible heading, wrapped desktop blue outlined tools, toolbar-height-aware properties strip and centered green Apply changes. Mobile keeps a scrolling touch toolbar. Form overlays, signatures, find/replace and drafts remain available.
 - `static/js/workflows.js` — saved-chain management, import/export, credential prompts and step execution.
 - `static/js/home.js` / `theme.js` — home search/filtering and early theme application.
 - `static/js/pdf-loader.js` + `static/vendor/pdfjs/` — ES-module preview renderer, worker, fonts, CMaps and codecs; no CDN script is required.
@@ -457,12 +457,12 @@ Last recorded full verification, **2026-10-22**:
 |---|---|
 | Clean Windows/Python 3.13 pytest | 170 passed, 0 failed; 2 deprecation warnings |
 | Live HTTP smoke | 58/58 passed, including real LibreOffice, Tesseract and Chromium |
-| Generic Chromium UI | 62/62 passed, including all 43 tool pages and real downloads |
+| Generic Chromium UI | 63/63 passed, including all 43 tool pages and real downloads |
 | Editor/forms/workflows/mobile Chromium | 8 scenario groups passed |
 | Concurrent HTTP jobs | 16/16 passed with downloaded output checks |
 | Dependency consistency / asset hashes | `pip check` passed; 201 vendored PDF.js asset hashes verified |
 | Docker/Linux build | Python 3.12.15 image built; 170 pytest passed (3 warnings), HTTP smoke 58/58; pip check passed |
-| Hostinger HTTPS/browser/restart | Public UI 62/62, mobile editor saved a real PDF, spoofed proxy headers could not reset quota, restart/download checks passed |
+| Hostinger HTTPS/browser/restart | Public UI 63/63, mobile editor saved a real PDF, spoofed proxy headers could not reset quota, restart/download checks passed |
 | Hostinger native concurrency/isolation | 8/8 simultaneous PDF jobs, 2/2 HTML jobs; existing containers 15/15 and virtual hosts 19/19 unchanged |
 
 Evidence: `research/audit-2026-10-22/verification.json`, `REPORT.md`, compact REA summaries and reproducible scripts. Raw evidence and QA screenshots remain local/ignored. These results are a historical baseline; update this table and evidence when behavior changes and fresh verification is run. Do not increase counts by counting assertions, aliases or screenshots as additional independent tests.
@@ -538,6 +538,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 ## 8. Change log
 
 Newest first. One line per change: date — what — where.
+
+- 2026-10-22: Home/editor UI update deployed at https://pdf.praritsidana.com from `60733fa`. Public browser 63/63 and actual mobile PDF editing/saving passed; current container healthy and existing 15 containers/19 virtual-host responses unchanged. Local pytest 170, browser 63/63 and editor 8 scenario groups passed. Deployment record distinguishes this UI release from the initial Linux engine/API audit.
 
 - 2026-10-22: Added the requested home-to-editor flow: prominent free editing CTA, green upload/blank-document screen, visible editing heading, wrapped desktop toolbar and centered Apply changes. Added real home-click/file-chooser/edit/download/blank-PDF browser coverage. Local verification: pytest 170 passed (2 warnings), generic browser 63/63, editor/forms/workflows/mobile 8 groups. Files: templates, CSS, `editor.js`, `scripts/browser_regression.py`.
 

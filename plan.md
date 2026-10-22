@@ -154,7 +154,7 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Prominent home editing button and secondary tool-directory link
 - [x] Editor upload/blank-document entry and desktop/mobile workspace styling
 - [x] Verify actual upload, edit, saved PDF and blank-document flow; full regression suites
-- [ ] Deploy and verify the updated flow on public HTTPS
+- [x] Deploy and verify the updated flow on public HTTPS
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

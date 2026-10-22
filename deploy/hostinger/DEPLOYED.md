@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `14a3907` |
+| Image build revision | `60733fa` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -50,6 +50,9 @@ this server build. Wheel binaries stay out of Git and the final runtime layers.
 
 ## Verification
 
+The initial Linux engine/API/resource checks below were recorded on `14a3907`.
+The later UI release is verified separately below; counts are not combined.
+
 - DNS A record points to this server; no conflicting AAAA record was found.
 - TLS 1.3 and trusted hostname verification passed from the development PC.
 - HTTP redirects to the final HTTPS hostname.
@@ -79,11 +82,30 @@ this server build. Wheel binaries stay out of Git and the final runtime layers.
   exactly matches the committed `nginx.pdfnova.conf`.
 
 Built image identity:
-`sha256:80fb0be661a8c9087b236cdafe5243669b6195af51c3fd8f6b7beedda52da6ec`.
+`sha256:9ae573c4ae749280b49fa0d4358c903a4c38a8ffe15e9aab1b44637ba62c93d5`.
 The image's source revision is recorded separately from later proxy/runbook-only
 commits; those changes do not rebuild application code. Machine-readable evidence
 is in [verification.json](verification.json). These are bounded functional and
 concurrency checks, not a guarantee for sustained production load or every PDF.
+
+## Home/editor UI release (60733fa)
+
+The home hero now offers the requested free editing button. It opens the editor
+upload screen, where device upload, URL import, drag/drop and a direct blank
+PDF action remain available. Upload opens the workspace with visible heading,
+blue outlined desktop tools, touch-friendly mobile tools and a centered green
+Apply changes button. Asset version URLs changed so existing browsers fetch the
+updated CSS and editor JavaScript.
+
+Verification on this release: Windows pytest 170 passed (two existing warnings),
+local generic browser 63/63, local editor/forms/workflow/mobile eight groups,
+public HTTPS generic browser 63/63 and public mobile actual PDF editing/saving.
+The added browser scenario clicks the home CTA, uses the native file chooser,
+adds text, saves and checks the downloaded PDF, then opens a blank document.
+Desktop toolbar overflow is checked. The live container is healthy; the 15
+existing container identities and 19 virtual-host responses remain unchanged.
+The previous image is retained locally as `pdfnova-web:release-14a3907` for a
+project-only rollback if needed. No proxy or production limit changes were made.
 
 ## Operations
 
