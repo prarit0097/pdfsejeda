@@ -1,0 +1,40 @@
+{
+  "date_utc": "2026-10-22T17:56:56.278283+00:00",
+  "release_commit": "dee688f",
+  "public_crawl": {
+    "base_url": "https://pdf.praritsidana.com",
+    "public_pages": 56,
+    "responsive_checks": 8,
+    "status": "passed"
+  },
+  "indexnow": {
+    "host": "pdf.praritsidana.com",
+    "url_count": 56,
+    "key_file_verified": true,
+    "submitted": true,
+    "meaning": "Notification acceptance is not crawling, indexing or ranking confirmation",
+    "http_status": 202,
+    "accepted": true
+  },
+  "isolation": {
+    "existing_containers": 15,
+    "preserved_containers": 15,
+    "missing_containers": [],
+    "existing_sites": 19,
+    "matching_sites": 19,
+    "site_mismatches": [],
+    "image": "sha256:e274d85bba86ca924a0164b30c3ac34a5f1d0604caa16340c29d80c80360f4ca",
+    "healthy": "healthy",
+    "oom_killed": false
+  },
+  "github_project": {
+    "url": "https://github.com/prarit0097/pdfsejeda",
+    "public": true,
+    "readme_links_verified": true,
+    "homepage": "https://pdf.praritsidana.com",
+    "description_and_topics_updated_http": 200,
+    "referring_domains": 1
+  },
+  "account_registrations_completed": [],
+  "rankings_measured": false
+}

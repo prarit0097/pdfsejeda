@@ -15,8 +15,37 @@ Canonical origin: https://pdf.praritsidana.com.
 - 82 new SEO unit/HTTP contracts, plus sitemap crawling and responsive browser
   checks integrated into the application test pool.
 
-Deployment, fresh full-pool and notification results will be recorded below
-after execution. This file does not claim indexing or ranking.
+## Published and verified
+
+Implementation `dee688f` is live at https://pdf.praritsidana.com/. A public HTTPS
+crawl verified all **56 sitemap pages**, matching canonicals, unique metadata,
+valid JSON-LD and **eight desktop/mobile branding/layout checks**. The container
+is healthy with no OOM event; all 15 pre-existing container identities and all
+19 existing host status/redirect responses match baseline.
+
+- [XML sitemap](https://pdf.praritsidana.com/sitemap.xml)
+- [Robots discovery](https://pdf.praritsidana.com/robots.txt)
+- [Four published PDF guides](https://pdf.praritsidana.com/guides)
+- [Public project README and About link](https://github.com/prarit0097/pdfsejeda)
+
+The GitHub README, homepage, description and relevant repository topics were
+updated and read back successfully. This is **one referring domain**, owned
+project promotion, not several independent endorsements or guaranteed link equity.
+The four hosted guides are internal content, not external backlinks.
+
+**IndexNow:** one batch of **56 URLs** sent after verifying the live ownership
+file; endpoint returned **HTTP 202**, accepted. Participating engines were
+notified through the global endpoint. This is not a Google submission and does
+not prove any URL is indexed, crawled, recommended or ranked.
+
+**Regression:** 663 Python tests passed (zero failures/skips, two existing
+deprecation warnings). Eleven stage types passed after one targeted mobile test
+harness retry. Both viewports completed 43 tool submissions, 56 page checks and
+160 declared control interactions. SEO contracts account for 82 Python cases.
+Current-release Ubuntu CI remains in progress; no hosted success is claimed.
+The initial failed mobile run is retained and explained in
+[the test report](../qa/VERIFICATION.md); it is not represented as a clean first run.
+Machine-readable public evidence: [seo-verification.json](seo-verification.json).
 
 ## Account-dependent registrations and editorial placements
 

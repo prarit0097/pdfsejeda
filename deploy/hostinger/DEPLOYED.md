@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `d74893f` |
+| Image build revision | `dee688f` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -261,3 +261,25 @@ To stop PDFNova, use the same Compose arguments followed by `stop web`. Its volu
 and other applications remain intact. A code rollback should restore the chosen
 previous image/revision for this project while preserving the private environment
 and data volume. In-flight jobs are not durable across process restarts.
+
+## Domain branding and search release (dee688f)
+
+The live display name is Prarit Sidana PDF. Only this app's environment was updated
+with APP_NAME, trusted SITE_URL and a generated public IndexNow ownership key;
+other private values and the stable download secret were preserved. Compatibility
+folder/service/storage identifiers remain unchanged.
+
+The new image is `sha256:e274d85bba86ca924a0164b30c3ac34a5f1d0604caa16340c29d80c80360f4ca`.
+The preceding image is tagged `pdfnova-web:release-d74893f`; its environment backup
+is `/root/.pdfnova-env-before-seo` (mode 600, outside the repository). No Nginx,
+firewall, certificate or other application setting changed. Healthy/no OOM;
+15/15 pre-existing containers and 19/19 host responses match baseline.
+
+Local verification: 663 Python tests and eleven stage types passed after one
+targeted mobile harness retry (see qa/VERIFICATION.md). Public verification was
+read-only: 56 sitemap URLs and eight desktop/mobile branding/layout checks passed.
+One verified IndexNow batch of 56 public URLs returned HTTP 202; this does not
+confirm indexing and is not a Google Search Console registration. Google/Bing
+account verification and editorial listings remain pending owner login/email.
+Actual publication/notification evidence is in marketing/SEO-STATUS.md and
+marketing/seo-verification.json.

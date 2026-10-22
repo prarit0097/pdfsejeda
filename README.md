@@ -10,6 +10,8 @@ Behavior is informed by the local Sejda research; Prarit Sidana PDF uses its own
 
 - [How the app works and contributor rules](sejedarules.md)
 - [Build plan](plan.md)
+- [Search launch evidence and pending account setup](marketing/SEO-STATUS.md)
+- [Verified Hostinger deployment](deploy/hostinger/DEPLOYED.md)
 
 ## Run locally on Windows
 

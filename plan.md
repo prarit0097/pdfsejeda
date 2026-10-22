@@ -208,11 +208,12 @@ Detailed plan: [qa/TEST-PLAN.md](qa/TEST-PLAN.md).
 
 Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 
-- [ ] Domain-aligned display name and deployment environment
-- [ ] Canonical metadata, social previews, truthful schema, sitemap/robots and private-result indexing protection
-- [ ] Original PDF guides, internal linking and launch/listing copy
-- [ ] SEO regression tests and live verification
-- [ ] Search notifications/public project backlinks; record account-dependent registrations accurately
+- [x] Domain-aligned display name and deployment environment
+- [x] Canonical metadata, social previews, truthful schema, sitemap/robots and private-result indexing protection
+- [x] Original PDF guides, internal linking and launch/listing copy
+- [x] SEO regression tests and live verification
+- [x] Search notifications/public project links; record account-dependent registrations accurately
+- [ ] Owner-account Google/Bing verification and approved external directory/editorial placements (login/email needed; not claimed completed)
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

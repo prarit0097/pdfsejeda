@@ -8,21 +8,22 @@
   "compose_project": "pdfnova",
   "backend": "127.0.0.1:8086",
   "volume": "pdfnova_pdfnova-data",
-  "image_build_revision": "d74893f",
-  "image": "sha256:74e72fc18919a22b6d4e936ebc139a51c6e3780918caebcc3de246630d3fd279",
+  "image_build_revision": "dee688f",
+  "image": "sha256:e274d85bba86ca924a0164b30c3ac34a5f1d0604caa16340c29d80c80360f4ca",
   "runtime_profile_revision": "c06399de368b5b58089887a77562d2da3605f560",
   "current_release_checks": {
-    "full_local_test_pool_stages": 10,
+    "local_test_pool_stages_after_targeted_retry": 11,
     "windows_pytest": {
-      "passed": 576,
+      "passed": 663,
       "failed": 0,
       "skipped": 0,
       "warnings": 2
     },
+    "mobile_harness_retry": "Default canvas dimensions race fixed; full stage rerun passed, first failure retained",
     "local_desktop_tool_submissions": 43,
     "local_mobile_tool_submissions": 43,
     "local_declared_option_interactions_per_viewport": 160,
-    "local_public_page_shells": 51,
+    "local_public_page_shells": 56,
     "local_browser_checks": 63,
     "local_shared_feature_groups": 5,
     "local_editor_groups": 8,
@@ -30,14 +31,17 @@
     "local_signature_cleanup_checks": 10,
     "local_concurrent_jobs": 16,
     "local_network_http_checks": 58,
-    "public_pdf_to_image_all_pages_desktop": true,
-    "public_pdf_to_image_all_pages_mobile": true,
-    "healthy": true,
-    "oom_killed": false,
-    "existing_container_identities_preserved": 15,
-    "existing_virtual_host_responses_unchanged": 19,
-    "evidence": "qa/verification.json; full pool used isolated local server, not production",
-    "hosted_ci": "configured; outcome not observed"
+    "public_seo_pages": 56,
+    "public_responsive_branding_checks": 8,
+    "existing_containers": 15,
+    "preserved_containers": 15,
+    "missing_containers": [],
+    "existing_sites": 19,
+    "matching_sites": 19,
+    "site_mismatches": [],
+    "image": "sha256:e274d85bba86ca924a0164b30c3ac34a5f1d0604caa16340c29d80c80360f4ca",
+    "healthy": "healthy",
+    "oom_killed": false
   },
   "initial_deployment": {
     "date": "2026-10-22",
@@ -263,5 +267,52 @@
       "existing_container_identities_preserved": 15,
       "existing_virtual_host_responses_unchanged": 19
     }
+  },
+  "previous_release_checks": {
+    "revision": "d74893f",
+    "image": "sha256:74e72fc18919a22b6d4e936ebc139a51c6e3780918caebcc3de246630d3fd279",
+    "checks": {
+      "full_local_test_pool_stages": 10,
+      "windows_pytest": {
+        "passed": 576,
+        "failed": 0,
+        "skipped": 0,
+        "warnings": 2
+      },
+      "local_desktop_tool_submissions": 43,
+      "local_mobile_tool_submissions": 43,
+      "local_declared_option_interactions_per_viewport": 160,
+      "local_public_page_shells": 51,
+      "local_browser_checks": 63,
+      "local_shared_feature_groups": 5,
+      "local_editor_groups": 8,
+      "local_signature_groups": 4,
+      "local_signature_cleanup_checks": 10,
+      "local_concurrent_jobs": 16,
+      "local_network_http_checks": 58,
+      "public_pdf_to_image_all_pages_desktop": true,
+      "public_pdf_to_image_all_pages_mobile": true,
+      "healthy": true,
+      "oom_killed": false,
+      "existing_container_identities_preserved": 15,
+      "existing_virtual_host_responses_unchanged": 19,
+      "evidence": "qa/verification.json; full pool used isolated local server, not production",
+      "hosted_ci": "configured; outcome not observed"
+    }
+  },
+  "seo_launch": {
+    "brand": "Prarit Sidana PDF",
+    "canonical_origin": "https://pdf.praritsidana.com",
+    "indexnow": {
+      "host": "pdf.praritsidana.com",
+      "url_count": 56,
+      "key_file_verified": true,
+      "submitted": true,
+      "meaning": "Notification acceptance is not crawling, indexing or ranking confirmation",
+      "http_status": 202,
+      "accepted": true
+    },
+    "google_search_console": "Not registered; owner login/setup required",
+    "bing_webmaster_tools": "Not registered; owner login/setup required"
   }
 }

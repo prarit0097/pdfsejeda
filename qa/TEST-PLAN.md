@@ -87,4 +87,6 @@ Track page rendering, declared option presence/interaction, successful tool subm
 
 ## Completion evidence
 
-All ten final integrated stages passed. See [VERIFICATION.md](VERIFICATION.md) and [verification.json](verification.json) for counts, measured coverage, the PDF-to-image defect and remaining evidence boundaries.
+The initial ten-stage baseline passed; the SEO release adds an eleventh stage and five public pages. Eleven stage types passed after a documented targeted mobile canvas-readiness harness retry. See [VERIFICATION.md](VERIFICATION.md) and [verification.json](verification.json) for counts, measured coverage, the PDF-to-image defect and remaining evidence boundaries.
+
+SEO extension: 56 public pages; 82 canonical/metadata/sitemap/noindex/token/ownership contracts, plus read-only public crawl and eight responsive branding checks. Use `--stage NAME` for explicit isolated retries; retain the initial failed run.
