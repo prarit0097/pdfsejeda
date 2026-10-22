@@ -1,6 +1,6 @@
 # Hostinger deployment record
 
-Date: 2026-10-22. Status: **build/verification in progress; processing not public yet**.
+Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 
 ## Location and isolation
 
@@ -11,6 +11,8 @@ Date: 2026-10-22. Status: **build/verification in progress; processing not publi
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
 | Image build revision | `14a3907` |
+| Runtime profile revision | `c06399d` |
+| Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
 | Backend | `127.0.0.1:8086` to container port 8000 |
 | Persistent volume | `pdfnova_pdfnova-data` mounted at `/data` |
@@ -20,8 +22,8 @@ Date: 2026-10-22. Status: **build/verification in progress; processing not publi
 
 Existing Docker and Nginx installations were reused. No existing site file was
 replaced, no existing application was restarted, and no firewall rule was changed.
-Before first application startup, all 15 existing container identities and all
-19 baseline virtual-host responses matched their predeployment records.
+After deployment and restart verification, all 15 existing container identities
+and all 19 baseline virtual-host responses matched their predeployment records.
 
 ## Runtime settings
 
@@ -33,15 +35,18 @@ child-process init and rotated logs (three 10 MB files). One Uvicorn process own
 the in-memory queue. Restart policy is `unless-stopped`.
 
 Uploads are limited to 100 MiB; JSON requests to 64 MiB. File retention is two
-hours; task timeout is 900 seconds. The intended production quota is 20 tasks per
-IP per hour. It is temporarily disabled while the backend is private for tests;
-it must be restored before public processing is enabled. Private-network URL
-imports remain disabled. Nginx must overwrite forwarded IP headers and clear
-`CF-Connecting-IP` before `TRUST_PROXY=1` is enabled.
+hours; task timeout is 900 seconds. The production quota is 20 tasks per IP per hour. It was disabled only for the
+private prepublic checks and restored before public activation. Private-network
+URL imports remain disabled. `TRUST_PROXY=1` and Uvicorn proxy scheme parsing are
+enabled behind the loopback-only host proxy, which overwrites IP/protocol headers
+and clears `CF-Connecting-IP`. Do not expose this trusted backend port publicly.
 
 The server's default Debian/Python CDNs stalled during downloads. This build uses
-`mirror.sg.gs` and `https://mirrors.aliyun.com/pypi/simple/`, keeping Debian package
-signatures, Python version pins and HTTPS certificate verification enabled.
+`mirror.sg.gs` for signed Debian packages and an offline wheelhouse for Python.
+All 54 Linux wheels were checked against official PyPI SHA-256 hashes recorded in
+`wheelhouse/manifest.json`; HTTPS mirrors were used only to transport matching
+bytes. No dependency version was downgraded. `PDFNOVA_PYTHON_OFFLINE=1` is set for
+this server build. Wheel binaries stay out of Git and the final runtime layers.
 
 ## Verification
 
@@ -51,11 +56,34 @@ signatures, Python version pins and HTTPS certificate verification enabled.
 - Let's Encrypt certificate expires 2027-01-20; renewal dry-run passed.
 - Existing `certbot.timer` is active; the separate `pdfnova-nginx-reload` deploy
   hook reloads Nginx only when this domain's certificate renews.
-- Linux image built; private pytest 170 passed, HTTP smoke 58/58, browser 62/62,
-  editor/mobile 8 groups, concurrent PDF 8/8 and simultaneous HTML 2/2 passed.
-  Cgroup peak before final editor run: 578289664 bytes, 168 PIDs, zero OOM events.
-  Public activation verification remains pending.
-- Final existing-app comparison after startup: pending.
+- Linux container pytest: 170 passed, 3 warnings (including a read-only copied-test
+  cache warning); dependency consistency check passed.
+- Linux live HTTP: 58/58 passed, with real LibreOffice, Chromium, Tesseract,
+  editor/forms, imports, signed downloads and SSRF rejection.
+- Generic browser: 62/62 passed through the private tunnel, then 62/62 passed
+  against public HTTPS, including every tool page, actual outputs and mobile layout.
+- Editor/forms/workflows/mobile: eight private scenario groups passed; public
+  390x844 touch editing, checkbox creation and saved PDF content also passed.
+- Eight simultaneous native PDF jobs and two simultaneous HTML jobs passed.
+  The observed private test cgroup peak before the final editor run was
+  578289664 bytes (about 552 MiB) and 168 PIDs, with zero OOM events.
+- Public forged `CF-Connecting-IP`, `X-Real-IP` and `X-Forwarded-For` headers
+  did not reset quota: remaining tasks decreased 7, 6, 5 across three real jobs.
+  Invalid download signatures were rejected.
+- Intentional app restart recovered to healthy; a fresh HTTPS upload, processing
+  and downloaded PDF check passed afterward. Production quota was confirmed at 20
+  and private-network URL import remained blocked. Test quota usage was reset by
+  that restart; the final verification used one task.
+- Final existing-app comparison: containers 15/15 preserved; virtual-host
+  status/redirect responses 19/19 unchanged. The installed PDFNova Nginx site
+  exactly matches the committed `nginx.pdfnova.conf`.
+
+Built image identity:
+`sha256:80fb0be661a8c9087b236cdafe5243669b6195af51c3fd8f6b7beedda52da6ec`.
+The image's source revision is recorded separately from later proxy/runbook-only
+commits; those changes do not rebuild application code. Machine-readable evidence
+is in [verification.json](verification.json). These are bounded functional and
+concurrency checks, not a guarantee for sustained production load or every PDF.
 
 ## Operations
 

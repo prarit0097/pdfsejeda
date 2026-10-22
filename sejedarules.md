@@ -389,7 +389,7 @@ Open `http://127.0.0.1:8000`. Stop the foreground server with Ctrl+C. Add `--rel
 
 `requirements-lock.txt` installs the exact tested dependency snapshot, including Playwright and test dependencies. For compatible version ranges instead, install `requirements.txt`; add Playwright separately or install `requirements-test.txt`. A Python package install does not install LibreOffice, Tesseract or Chromium automatically. The browser-install command above installs Chromium for the current environment/user.
 
-On macOS/Linux, create the environment with `python3 -m venv .venv` and use `.venv/bin/python` for the remaining Python commands. Windows x64/Python 3.13 was clean-install tested; the Docker recipe uses Python 3.12, and a Linux/Docker build has not yet been verified.
+On macOS/Linux, create the environment with `python3 -m venv .venv` and use `.venv/bin/python` for the remaining Python commands. Windows x64/Python 3.13 was clean-install tested; the Docker recipe uses Python 3.12, and the Hostinger image was verified on Linux with Python 3.12.15 on 2026-10-22.
 
 Generate a secret locally with `python -c "import secrets; print(secrets.token_hex(32))"`, put it in `.env`, and do not commit or share its value. No private `.env` contents belong in this document.
 
@@ -415,11 +415,11 @@ docker compose up --build
 
 Compose exposes port 8000 and persists `/data` in the `pdfnova-data` named volume. The image installs locked Python dependencies, LibreOffice Writer, Tesseract with eng/hin/spa/fra/deu, fonts and Chromium, then runs as the unprivileged `pdfnova` user. `PLAYWRIGHT_BROWSERS_PATH=/ms-playwright` makes the installed browser accessible to that user. The health check requests `/api/tools`.
 
-The build context excludes `.env`, `.venv`, `data`, QA directories, research and tests. Changing source requires rebuilding/restarting the container. Stopping a container does not remove its named data volume; do not delete that volume as a routine fix. **The image recipe has been reviewed, but Docker build/run is still unverified because Docker was unavailable on the audited workstation.**
+The build context excludes `.env`, `.venv`, `data`, QA directories, research and tests. Changing source requires rebuilding/restarting the container. Stopping a container does not remove its named data volume; do not delete that volume as a routine fix. **The image was built and run successfully on the Hostinger Linux server on 2026-10-22; container pytest passed 170 tests and live HTTP smoke passed 58/58.**
 
 Deploy with **one Uvicorn process** until the queue, quota and task registry are moved into shared services. Put public deployments behind HTTPS and a trusted proxy; forwarded-header configuration must match the real proxy chain. Set a stable `SECRET_KEY`, keep private-URL access disabled and monitor storage/worker use. Do not assume the current local test results establish production capacity or security for every hosting setup.
 
-**Shared Hostinger server deployment:** `deploy/hostinger/` contains a separate Compose profile, environment example and proxy reference. It is prepared, not yet deployed. Use a new unused app directory/project/volume and an inspected free backend port; do not change or stop existing applications. The profile defaults to loopback port 8086 and limits container resources. The real `.env.hostinger` is ignored by Git/Docker build context. Actual server inventory, DNS, TLS and Linux engine verification must be completed after SSH access is available; see `deploy/hostinger/README.md`.
+**Shared Hostinger server deployment:** Live at https://pdf.praritsidana.com on `187.127.132.106`, in `/opt/pdfnova`. Dedicated Compose project/container `pdfnova` / `pdfnova-web-1`, volume `pdfnova_pdfnova-data`, and loopback-only backend `127.0.0.1:8086` keep it separate from other apps. The host Nginx site is `/etc/nginx/sites-available/pdfnova`; its exact configuration is committed as `deploy/hostinger/nginx.pdfnova.conf`. Let's Encrypt issuance, renewal dry-run, automatic renewal timer and domain-specific reload hook are verified. Production uses two processing threads, queue size eight, 1.5 CPUs, 2 GiB RAM, 256 PIDs, a nonroot user and child-process init. Quota is 20 tasks/IP/hour, uploads 100 MiB, retention two hours and private URL imports disabled. Nginx overwrites client-IP/protocol headers and clears `CF-Connecting-IP`; only this loopback-bound profile trusts forwarded headers. Keep the actual `.env.hostinger` private (mode 600, ignored by Git/build). Build options include `PDFNOVA_DEBIAN_MIRROR`, `PDFNOVA_PYTHON_PACKAGE_INDEX` and `PDFNOVA_PYTHON_OFFLINE`; the deployed image used 54 offline wheels checked against committed official PyPI SHA-256 hashes after CDN failures. See `deploy/hostinger/DEPLOYED.md` and `verification.json` for the image identity, evidence, operations and restart limitations. All 15 existing containers and 19 virtual-host responses matched the predeployment baseline.
 
 ### 7.4 Security, retention and concurrency details
 
@@ -461,7 +461,9 @@ Last recorded full verification, **2026-10-22**:
 | Editor/forms/workflows/mobile Chromium | 8 scenario groups passed |
 | Concurrent HTTP jobs | 16/16 passed with downloaded output checks |
 | Dependency consistency / asset hashes | `pip check` passed; 201 vendored PDF.js asset hashes verified |
-| Docker/Linux build | Not verified |
+| Docker/Linux build | Python 3.12.15 image built; 170 pytest passed (3 warnings), HTTP smoke 58/58; pip check passed |
+| Hostinger HTTPS/browser/restart | Public UI 62/62, mobile editor saved a real PDF, spoofed proxy headers could not reset quota, restart/download checks passed |
+| Hostinger native concurrency/isolation | 8/8 simultaneous PDF jobs, 2/2 HTML jobs; existing containers 15/15 and virtual hosts 19/19 unchanged |
 
 Evidence: `research/audit-2026-10-22/verification.json`, `REPORT.md`, compact REA summaries and reproducible scripts. Raw evidence and QA screenshots remain local/ignored. These results are a historical baseline; update this table and evidence when behavior changes and fresh verification is run. Do not increase counts by counting assertions, aliases or screenshots as additional independent tests.
 
@@ -495,7 +497,7 @@ The repository is the source of version history; use `git log`/`git show` for pr
 - Visual text replacement/whiteout is not redaction; original text can remain extractable. Embedded-font preservation and arbitrary transformed/vertical text editing are not implemented.
 - Advanced gaps include font subsetting, a full interactive bookmark-tree editor, arbitrary watermark positioning and evidence-backed per-source repeat semantics.
 - Translated routes/copy, a native desktop installer and browser extensions are not implemented. Running the web app locally is different from shipping a desktop application.
-- Multi-process/shared durable jobs/storage, aggregate disk quotas, hard termination of native hangs, production load testing and a verified Docker/Linux build remain work for a later deployment phase.
+- Multi-process/shared durable jobs/storage, aggregate disk quotas, hard termination of native hangs, and sustained production load testing remain work for a later phase. The single-server Docker/Linux deployment is verified within the recorded scenarios and resource limits.
 - HTML printing does not provide US/EU hosted-browser selection or automatic orientation. Authenticated sessions, complex redirected module scripts and some external-site rendering can differ from a normal browser.
 - Accounts/billing, cloud integrations and email signing are **deliberately deferred by the user**, not current blockers. Do not reintroduce them through a roadmap item or fake working UI.
 
@@ -537,13 +539,11 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
-- 2026-10-22: Linux image built successfully with verified offline wheels. Private server verification passed: pytest 170, HTTP smoke 58/58, generic browser 62/62, editor/mobile 8 groups, concurrent PDF jobs 8/8 and simultaneous HTML 2/2. Added the dedicated HTTPS vhost and proxy scheme trust for the loopback-only backend; public activation verification pending. Files: `deploy/hostinger/`.
+- 2026-10-22: Deployed PDFNova to https://pdf.praritsidana.com in isolated `/opt/pdfnova`. Linux pytest 170, HTTP 58/58, private/public generic browser 62/62 each, editor 8 groups, public mobile save, PDF concurrency 8/8, HTML concurrency 2/2, quota/header isolation, TLS renewal and restart recovery passed. Existing 15 containers and 19 virtual hosts unchanged. Deployment evidence and maintenance instructions recorded in `deploy/hostinger/DEPLOYED.md` and `verification.json`.
 
-- 2026-10-22: Added optional offline Linux wheel preparation with 54 official PyPI SHA-256 hashes after CDN timeouts and an incomplete alternate index prevented image installation; added an external deployment mode to editor browser checks. Deployment remains under verification. Files: `deploy/hostinger/`, `Dockerfile`, `scripts/editor_regression.py`.
 
-- 2026-10-22: Hostinger deployment in progress. SSH access and pdf.praritsidana.com confirmed; TLS issuance and renewal dry-run passed. Added guarded bootstrap, process init, proxy header sanitization, private baseline exclusions, selectable package mirrors and download retries. HTTPS browser regression now allows its own origin while blocking external assets. Linux processing verification is pending. Files: `Dockerfile`, `deploy/hostinger/`, `scripts/browser_regression.py`.
 
-- 2026-10-22 — Prepared an isolated shared-server deployment profile and runbook; deployment pending SSH access and DNS configuration, with no existing server apps changed — `deploy/hostinger/`, `.gitignore`, `.dockerignore`, `sejedarules.md`
+
 
 - 2026-10-22 — Expanded this file into the complete project guide: product identity/purpose, scope, stack rationale, full layout/API reference, editor/storage contracts, setup/engines/Docker, security/retention, dated verification, contributor workflow, limitations and troubleshooting. Documentation checks covered all 43 registered tools, 13 environment settings and 17 API routes; links/fences passed, and pytest remained 170 passed with 2 deprecation warnings — `sejedarules.md`
 

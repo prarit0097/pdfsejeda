@@ -144,10 +144,10 @@ The current pass preserves existing work and verifies actual files and browser i
 ## 3c. Shared Hostinger server deployment
 
 - [x] Prepare separate Compose profile, environment example and deployment runbook
-- [ ] Establish SSH access and inspect existing apps/proxy/ports/resources
-- [ ] Deploy into a new unused folder/project/volume without altering other apps
-- [ ] Confirm requested domain ownership/DNS; configure existing proxy and HTTPS
-- [ ] Verify Linux PDF engines, HTTP/browser flows and existing-app availability
+- [x] Establish SSH access and inspect existing apps/proxy/ports/resources
+- [x] Deploy into a new unused folder/project/volume without altering other apps
+- [x] Confirm requested domain ownership/DNS; configure existing proxy and HTTPS
+- [x] Verify Linux PDF engines, HTTP/browser flows and existing-app availability
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

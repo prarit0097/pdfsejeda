@@ -1,11 +1,10 @@
 # Isolated Hostinger deployment
 
-Status: **deployment in progress; public availability not yet verified**. The
-server inventory confirmed an existing Docker/Nginx setup and a free loopback port
-8086. The app uses a new `/opt/pdfnova` folder and separate Compose project. DNS
-points the user-confirmed `pdf.praritsidana.com` at the server, and its TLS
-certificate has been issued. Linux image and processing verification are pending. See the eventual deployment
-record for the actual release and verification results.
+Status: **live and verified** at https://pdf.praritsidana.com. The application runs
+in `/opt/pdfnova` with its own Compose project, data volume and loopback port 8086.
+The existing host Nginx provides HTTPS. See [DEPLOYED.md](DEPLOYED.md) and
+[verification.json](verification.json) for the deployed image, test results and
+maintenance commands. Existing server applications were preserved.
 
 Use a new application folder, normally `/opt/pdfnova`, a separate Compose project
 `pdfnova`, and its own named data volume. If any name/path/port already exists,
@@ -71,8 +70,9 @@ ownership and routing are working. Never replace another app's virtual host.
 - To roll back, use the recorded previous release/image for this project, preserving
   its data volume and existing server applications.
 
-The image bundles LibreOffice, Tesseract and Chromium. These were locally tested
-on Windows; a successful server image build and Linux output tests are still needed.
+The image bundles LibreOffice, Tesseract and Chromium. Real Linux outputs from
+all three engines passed the live smoke checks; public HTTPS and browser flows
+were verified as recorded in DEPLOYED.md.
 
 The optional build setting `PDFNOVA_DEBIAN_MIRROR` selects a Debian mirror host
 (default `deb.debian.org`). During this deployment, the default CDN stalled;
