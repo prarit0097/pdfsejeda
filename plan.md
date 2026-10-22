@@ -172,6 +172,13 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Local original-photo review without committing private images
 - [x] Deploy and verify cleanup and signature regressions on public HTTPS
 
+## 3g. Signature controls and original ink colour
+
+- [x] Scope shape SVG layout to prevent overlapping signature action icons
+- [x] Preserve original foreground RGB during photo cleanup
+- [x] Verify distinct desktop/mobile controls, actions, colour and real PDF output
+- [ ] Deploy and verify these corrections on public HTTPS
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).

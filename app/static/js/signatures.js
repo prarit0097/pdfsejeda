@@ -108,8 +108,10 @@
         const colourAlpha = Math.pow(Math.min(1, Math.max(0, (projection - paperColour - colourNoise) / Math.max(8, norm - paperColour - colourNoise))), 0.8);
         alpha = y >= 245 ? 0 : Math.max(colourAlpha, alpha);
       }
-      // Reconstruct pen colour to avoid retaining grey-paper RGB in soft edges.
-      out[i] = ink[0]; out[i + 1] = ink[1]; out[i + 2] = ink[2]; out[i + 3] = source[i + 3] * alpha;
+      // Remove paper through alpha only. Retain each original ink pixel colour;
+      // painting everything with the darkest core turns navy/blue pens black.
+      const paperEdge = photographedPaper && y > (lowMean + highMean) / 2;
+      out[i] = paperEdge ? ink[0] : source[i]; out[i + 1] = paperEdge ? ink[1] : source[i + 1]; out[i + 2] = paperEdge ? ink[2] : source[i + 2]; out[i + 3] = source[i + 3] * alpha;
     }
     return out;
   }

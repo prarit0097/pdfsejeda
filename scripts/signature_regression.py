@@ -90,6 +90,18 @@ def main():
         page.get_by_role("dialog").wait_for(state="hidden")
         assert page.evaluate("JSON.parse(localStorage.signatures).length") == 1
         place()
+        # SVG icons must fit distinct buttons rather than inherit full-object SVG positioning.
+        def check_actions(target):
+            buttons = target.locator(".signature-object.sel [data-object-action]")
+            assert buttons.count() == 3
+            bounds = [buttons.nth(i).bounding_box() for i in range(3)]
+            for i, box in enumerate(bounds):
+                icon = buttons.nth(i).locator("svg").bounding_box()
+                assert box and icon and 14 <= icon["width"] <= 24 and 14 <= icon["height"] <= 24
+                assert box["x"] <= icon["x"] and icon["x"] + icon["width"] <= box["x"] + box["width"] + 1
+                if i: assert box["x"] >= bounds[i-1]["x"] + bounds[i-1]["width"] - 1
+            target.screenshot(path=str(OUT / ("actions-mobile.png" if target.viewport_size["width"] < 600 else "actions-desktop.png")))
+        check_actions(page)
         original = page.locator(".signature-object img").get_attribute("src")
         image = Image.open(io.BytesIO(base64.b64decode(original.split(",", 1)[1])))
         page.get_by_role("button", name="Rotate signature", exact=True).click()
@@ -202,6 +214,11 @@ def main():
         touch.locator("[data-remember]").uncheck()
         touch.locator("[data-ok]").tap()
         place(touch)
+        check_actions(touch)
+        touch.get_by_role("button", name="Duplicate signature", exact=True).tap()
+        assert touch.locator(".signature-object").count() == 2
+        touch.get_by_role("button", name="Delete signature", exact=True).tap()
+        assert touch.locator(".signature-object").count() == 1
         save_pdf(touch, mobile)
         upload(touch)
         create(touch)

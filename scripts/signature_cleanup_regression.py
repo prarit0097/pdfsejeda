@@ -100,6 +100,12 @@ def main():
             images, seconds = versions(blob, name + (".png" if options.get("transparent") else ".jpg"))
             alpha = np.asarray(images[1])[:, :, 3]
             retained = float((alpha[ink] >= 140).mean())
+            original_rgb = np.asarray(images[0])[:, :, :3]
+            cleaned_rgb = np.asarray(images[1])[:, :, :3]
+            # Canvas premultiplied-alpha roundtrips can round RGB by 1-2 levels.
+            visible = ink & (alpha >= 140)
+            colour_error = np.abs(original_rgb[visible].astype(int) - cleaned_rgb[visible].astype(int))
+            assert colour_error.max() <= 2, (name, "Ink RGB changed", colour_error.max())
             residual = float(alpha[paper].mean())
             assert retained > .96, (name, "Lost ink", retained)
             assert residual < 5, (name, "Paper remains", residual)

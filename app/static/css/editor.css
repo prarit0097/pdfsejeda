@@ -92,7 +92,7 @@
 .obj.link { border: 1.5px dashed #2f6fed; background: rgba(47, 111, 237, .08); cursor: move; }
 .obj.link .tag { position: absolute; left: 0; top: -18px; font-size: 11px; color: #2f6fed; white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
 .obj.field { border: 1.5px solid #7b61ff; background: rgba(123, 97, 255, .1); cursor: move; font-size: 11px; color: #5b47d6; padding: 1px 3px; overflow: hidden; }
-.obj svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.obj > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .obj.svgobj { cursor: move; }
 .edit-span { position: absolute; color: transparent; white-space: pre; cursor: text; border-radius: 2px; transform-origin: 0 0; }
 .edit-span:hover { background: rgba(75, 63, 224, .14); outline: 1px solid rgba(75, 63, 224, .5); }
@@ -166,9 +166,11 @@ input[type="checkbox"].formfield { margin: 0; accent-color: var(--brand); }
 .signature-modal footer { text-align: center; padding: 14px 24px 20px; border-top: 1px solid var(--line); }
 .signature-modal footer p { color: var(--ink-3); font-size: 13px; margin: 0 0 12px; }
 .signature-modal footer .btn { min-width: 130px; }
-.signature-object-actions { display: none; position: absolute; left: 0; top: -40px; background: var(--bg-elev); border: 1px solid #1586d7; border-radius: 4px; overflow: hidden; box-shadow: var(--shadow-sm); }
+.signature-object-actions { width: max-content; z-index: 3; display: none; position: absolute; left: 0; top: -40px; background: var(--bg-elev); border: 1px solid #1586d7; border-radius: 4px; overflow: hidden; box-shadow: var(--shadow-sm); }
 .signature-object.sel .signature-object-actions { display: flex; }
-.signature-object-actions button { min-width: 40px; height: 36px; display: grid; place-items: center; color: #0878bd; border: 0; border-right: 1px solid var(--line); background: var(--bg-elev); cursor: pointer; }
+.signature-object-actions button { flex: 0 0 40px; padding: 0; min-width: 40px; height: 36px; display: grid; place-items: center; color: #0878bd; border: 0; border-right: 1px solid var(--line); background: var(--bg-elev); cursor: pointer; }
+.signature-object-actions .icon { position: static; width: 20px; height: 20px; }
+.signature-object-actions button:hover, .signature-object-actions button:focus-visible { background: #dcefff; }
 .signature-object > .x { display: none !important; }
 @media (max-width: 600px) {
   .signature-back { padding: 8px; }
