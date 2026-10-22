@@ -41,7 +41,10 @@ def page_metadata(path, status=200, tool=None):
     if len(description)>165: description=description[:162].rsplit(" ",1)[0]+"\u2026"
     canonical=settings.site_url+path if indexable else None
     publisher={"@type":"Organization","@id":settings.site_url+"/#organization","name":name,"url":settings.site_url+"/","logo":{"@type":"ImageObject","url":settings.site_url+"/static/img/logo.svg"}}
-    graph=[publisher,{"@type":"WebSite","@id":settings.site_url+"/#website","name":name,"url":settings.site_url+"/","publisher":{"@id":publisher["@id"]}}]
+    website={"@type":"WebSite","@id":settings.site_url+"/#website","name":name,"url":settings.site_url+"/","publisher":{"@id":publisher["@id"]}}
+    if name == "Prarit Sidana PDF":
+        website["alternateName"] = "PS PDF"
+    graph=[publisher,website]
     if indexable:
         graph.append({"@type":"WebPage","@id":canonical+"#webpage","name":title,"description":description,"url":canonical,"isPartOf":{"@id":settings.site_url+"/#website"},"inLanguage":"en"})
         if path!="/":

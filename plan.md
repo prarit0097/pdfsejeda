@@ -213,7 +213,18 @@ Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 - [x] Original PDF guides, internal linking and launch/listing copy
 - [x] SEO regression tests and live verification
 - [x] Search notifications/public project links; record account-dependent registrations accurately
-- [ ] Owner-account Google/Bing verification (owner explicitly deferred setup on 2026-10-22; resume when requested) and approved external directory/editorial placements (login/email needed; not claimed completed)
+- [ ] Owner-account Google/Bing verification and eligible external placements (owner explicitly resumed setup in latest 2026-10-22 request; current evidence in marketing/SEO-STATUS.md)
+
+### Resumed SEO and promotion (2026-10-22)
+
+- [x] Five specialist workstreams; recheck current platform eligibility and prepare original useful articles
+- [x] Prepare three distinct guides and schema site-name alias; source inventory now 59 pages
+- [ ] Complete final tests and deploy only this app; crawl all 59 public pages
+- [ ] Verify Search Console and submit sitemap; inspect homepage/guide indexing
+- [ ] Set up Bing/import the verified property and submit sitemap
+- [ ] Publish eligible original owner article and record verifiable external links
+- [ ] Complete eligible directory submissions without duplicates or invented endorsements
+- [ ] Configure conditional usage checkpoint and 330-minute continuation through supported app scheduler
 
 ## 3l. Repository review follow-ups (2026-10-22)
 

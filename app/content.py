@@ -161,4 +161,125 @@ GUIDES = {
             },
         ],
     },
+    "fill-and-flatten-pdf-forms": {
+        "title": "How to fill a PDF form and save a finished copy",
+        "description": "Fill interactive PDF fields or add text to a flat form, then decide whether to keep the fields editable or flatten a finished copy.",
+        "published": "2026-10-22",
+        "updated": "2026-10-22",
+        "related_tools": [("pdf-editor", "PDF editor"), ("pdf-forms", "PDF forms"), ("flatten-pdf", "Flatten PDF")],
+        "sections": [
+            {
+                "heading": "First check what kind of form you have",
+                "paragraphs": [
+                    "Click inside a box where an answer belongs. An interactive PDF form lets you type into its existing fields or choose a checkbox or dropdown. A scanned or flat form may only show the printed outlines. It needs text placed over the page, or new form fields if someone else should fill it in later.",
+                    "These choices produce different results. A Text object adds an answer you can position on the page. A Text field creates a box that a PDF reader can fill later. Use Text for a one-off answer on a flat form; use the field tools when preparing a reusable form.",
+                ],
+            },
+            {
+                "heading": "Complete the answers before changing the format",
+                "paragraphs": ["Keep an untouched copy of the form. Then open the PDF editor and upload the version you want to complete. Final processing runs on the hosting server, so check the privacy information before uploading personal or confidential material."],
+                "steps": [
+                    "Fill the existing text fields, checkboxes and dropdowns directly on the page.",
+                    "If the form is flat, choose Text and place each answer in its printed space. Adjust size and position so it remains legible without covering the question.",
+                    "Review long answers, dates, names and every selected option. Check whether a field has hidden text that does not fit in its visible box.",
+                    "Choose whether to keep the form editable, then select Apply changes and download the result.",
+                ],
+            },
+            {
+                "heading": "Keep an editable copy when revisions are likely",
+                "paragraphs": [
+                    "Leave Flatten form fields when saving unchecked if the recipient needs to change field values. Open the downloaded file in the PDF reader they are likely to use and confirm that the fields and values work there. A browser preview alone is not a check of another reader's form behavior.",
+                    "For a completed copy whose answers should become ordinary page content, select Flatten form fields when saving. Keep the editable source separately. If you already downloaded the filled form, Flatten PDF also offers Only form fields; this differs from Everything, which turns full pages into images and can affect text selection and file size.",
+                ],
+            },
+            {
+                "heading": "Flattening is a format choice, not a security guarantee",
+                "paragraphs": [
+                    "Flattening removes the normal form-field interaction from that copy. It does not make the document tamper-proof or certify who completed it. A recipient with editing software can still alter page content.",
+                    "It also does not redact sensitive information. Whiteout and visual text replacement in this editor cover content without securely removing the original text. For information that must be removed before sharing, use a dedicated redaction process and verify the result. Review the downloaded PDF, rather than relying on how the editor looked before saving.",
+                ],
+            },
+        ],
+    },
+    "extract-pdf-pages-for-sharing": {
+        "title": "How to extract selected pages from a PDF",
+        "description": "Create a PDF containing just the pages you need, account for cover pages and printed numbering, and check the extracted copy before sharing.",
+        "published": "2026-10-22",
+        "updated": "2026-10-22",
+        "related_tools": [("extract-pdf-pages", "Extract pages"), ("organize-pdf", "Organize pages"), ("edit-pdf-metadata", "Edit PDF metadata")],
+        "sections": [
+            {
+                "heading": "Count PDF pages, not the numbers printed on them",
+                "paragraphs": [
+                    "A report may have a cover and a contents page before its printed page 1. In that file, the sheet labelled 1 is the third PDF page. Page selection uses the position in the uploaded PDF, starting at 1; it does not read the number printed in a header or footer.",
+                    "For example, suppose a 12-page file has two introductory pages and you need printed pages 3 through 5. Check the thumbnails: those may be PDF pages 5 through 7. Confirm the first and last sheet by their content before entering the range.",
+                ],
+            },
+            {
+                "heading": "Make a separate copy of the pages you need",
+                "paragraphs": ["Extract pages creates an output containing selected pages. This is useful when someone needs one section of a longer document. Keep the original until you have checked the new copy."],
+                "steps": [
+                    "Open Extract pages and upload the source PDF.",
+                    "Select the required thumbnails or enter a page selection such as 2-4,7 for PDF pages 2, 3, 4 and 7.",
+                    "Run the tool and download the extracted PDF.",
+                    "Open the download and check its page count, first and last page, orientation and any page with important small print.",
+                ],
+            },
+            {
+                "heading": "Choose extraction, splitting or reordering deliberately",
+                "paragraphs": [
+                    "Use extraction when you want selected pages together in a new document. Splitting is useful when you want several separate files, such as one file per section. Organize pages is the better choice when you need to rearrange the extracted sheets into a different reading sequence.",
+                    "Do not assume a selection typed in an unusual sequence will create that reading order. Use Organize pages to set the final sequence explicitly and check its downloaded output. Clear file names also help: include the section name or date rather than leaving several copies called document.pdf.",
+                ],
+            },
+            {
+                "heading": "Check context and sensitive details before sharing",
+                "paragraphs": [
+                    "A short extract can lose its meaning when the definitions, footnotes or continuation page are missing. Include enough context for the recipient to understand the section. Review bookmarks and links that may have referred to pages outside the selection, and test any form fields you expect the recipient to use.",
+                    "Extracting pages is not a document-sanitization or redaction process. Information in the retained pages, annotations or metadata may still be present. Review document properties with Edit PDF metadata when needed; removing metadata alone is not a complete privacy check. Uploads are sent to the server for processing, so read the privacy information before using sensitive source files.",
+                ],
+            },
+        ],
+    },
+    "convert-pdf-to-word-with-layout-checks": {
+        "title": "How to convert a PDF to Word and check the layout",
+        "description": "Turn PDF text into an editable Word document, recognize when a scan needs OCR, and review tables, reading order and page breaks after conversion.",
+        "published": "2026-10-22",
+        "updated": "2026-10-22",
+        "related_tools": [("pdf-to-word", "PDF to Word"), ("ocr-pdf", "OCR PDF"), ("extract-text-from-pdf", "PDF to text")],
+        "sections": [
+            {
+                "heading": "Check the source before converting it",
+                "paragraphs": [
+                    "If the original Word document is available, edit that version first. A PDF describes where content appears on a page; it may not retain the paragraph, table and section structure that made the original easy to edit. Conversion has to reconstruct that structure from the information left in the PDF.",
+                    "Try selecting and copying a short paragraph from the PDF. If it is only a page photograph, use OCR to create a searchable text layer before trying a text-based conversion. If copied words come out in the wrong order or with missing characters, expect to correct them after conversion too.",
+                ],
+            },
+            {
+                "heading": "Create the Word copy",
+                "paragraphs": ["Prarit Sidana PDF produces a DOCX document by reconstructing text, headings, tables and pictures. It is a starting point for editing; complex layouts and fonts can differ from the PDF. Processing happens on the server, so review the privacy information before uploading confidential work."],
+                "steps": [
+                    "Open PDF to Word and upload your PDF. Keep the original for comparison.",
+                    "Run the conversion and download the DOCX result.",
+                    "Open the DOCX in your word processor alongside the PDF.",
+                    "Check the document's wording and structure before spending time adjusting its appearance.",
+                ],
+            },
+            {
+                "heading": "Review the places where layout errors hide",
+                "paragraphs": [
+                    "Start with reading order: a two-column page can be difficult to reconstruct, and a caption may sit between unrelated paragraphs. Read across each column, then check headings, lists and repeated headers. Fix paragraph structure before using spaces or blank lines to force the page to look right.",
+                    "Compare tables cell by cell. Confirm that headings match their columns, wrapped rows have not split into separate records, and totals, decimal points and minus signs are correct. If the goal is to work with table data rather than prose, a spreadsheet conversion may be more suitable, but that output needs its own review.",
+                    "Check images and captions together, then look at page breaks, footnotes and small print. Font substitution can move a line onto the next page. After editing, review the exported PDF again if that is what you will ultimately send.",
+                ],
+            },
+            {
+                "heading": "Choose a simpler output when layout is unnecessary",
+                "paragraphs": [
+                    "If you only need the words for notes or a quotation, PDF to text can avoid the extra work of repairing a Word layout. Compare any quotation with the original, especially when OCR was involved. Names, dates and numbers deserve a separate check.",
+                    "Avoid treating conversion as proof that every element survived. Keep the source PDF and check the finished document at a normal reading size. A readable, correctly ordered copy is more useful than one that only resembles the source in a quick thumbnail preview.",
+                ],
+            },
+        ],
+    },
 }

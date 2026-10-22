@@ -10,6 +10,7 @@ sys.path.insert(0,str(ROOT))
 import httpx
 from playwright.sync_api import sync_playwright
 from qa.seo_html import Head
+from app.seo import public_paths
 
 
 def main():
@@ -19,7 +20,8 @@ def main():
         r=client.get(base+"/sitemap.xml");r.raise_for_status()
         root=ET.fromstring(r.content)
         urls=[n.text for n in root.findall("{*}url/{*}loc")]
-        assert len(urls)==56==len(set(urls))
+        assert len(urls)==len(public_paths())==len(set(urls))
+        assert [urlsplit(url).path for url in urls]==public_paths()
         titles=set();descriptions=set()
         for url in urls:
             path=urlsplit(url).path

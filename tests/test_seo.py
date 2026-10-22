@@ -10,7 +10,9 @@ import pytest
 
 from app.config import settings, _site_url
 from app.main import app
-from app.seo import public_paths
+from app.content import GUIDES
+from app.seo import INFO_TITLES, page_metadata, public_paths
+from app.tools.registry import all_tools
 from scripts.submit_indexnow import payload_from_sitemap
 
 client=TestClient(app)
@@ -47,7 +49,13 @@ def test_sitemap_matches_only_public_pages_and_unique_metadata():
     root=ET.fromstring(r.content)
     urls=[n.text for n in root.findall(NS+"url/"+NS+"loc")]
     assert urls==[settings.site_url+p for p in public_paths()]
-    assert len(urls)==56==len(set(urls))
+    assert len(urls)==1+len(all_tools())+len(INFO_TITLES)+len(GUIDES)==len(set(urls))
+    for item in root.findall(NS+"url"):
+        path=item.findtext(NS+"loc").removeprefix(settings.site_url)
+        if path.startswith("/guides/"):
+            assert item.findtext(NS+"lastmod")==GUIDES[path.removeprefix("/guides/")]["updated"]
+        else:
+            assert item.find(NS+"lastmod") is None
     heads=[Head(client.get(p).text) for p in public_paths()]
     assert len({h.title for h in heads})==len(heads)
     assert len({h.meta["description"] for h in heads})==len(heads)
@@ -95,7 +103,7 @@ def test_origin_normalization_and_social_image():
 
 def test_indexnow_uses_verified_origin_and_public_inventory():
     payload=payload_from_sitemap(client.get("/sitemap.xml").content,settings.site_url,"test-ownership-key")
-    assert len(payload["urlList"])==56
+    assert payload["urlList"]==[settings.site_url+p for p in public_paths()]
     assert payload["keyLocation"]==settings.site_url+"/indexnow-key.txt"
 
 
@@ -103,3 +111,13 @@ def test_indexnow_uses_verified_origin_and_public_inventory():
 def test_indexnow_rejects_nonpublic_urls(url):
     root=ET.Element("urlset",xmlns=NS[1:-1]);item=ET.SubElement(root,"url");ET.SubElement(item,"loc").text=url
     with pytest.raises(ValueError):payload_from_sitemap(ET.tostring(root),"https://pdf.praritsidana.com","test-ownership-key")
+
+
+@pytest.mark.parametrize("name,alternate",[("Prarit Sidana PDF","PS PDF"),("Custom PDF Tools",None)])
+def test_site_name_matches_visible_brand_without_leaking_default_to_custom_names(monkeypatch,name,alternate):
+    monkeypatch.setattr(settings,"app_name",name)
+    graph=page_metadata("/")["jsonld"]["@graph"]
+    website=next(node for node in graph if node["@type"]=="WebSite")
+    assert website["name"]==name
+    assert website.get("alternateName")==alternate
+    assert website["url"]==settings.site_url+"/"

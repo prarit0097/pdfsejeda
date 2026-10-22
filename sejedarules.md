@@ -4,6 +4,8 @@
 
 **Last documentation review:** 2026-10-22. Descriptions below refer to the checked-in implementation. Historical verification results are dated, not a promise that later code has been tested.
 
+**Active owner request (2026-10-22, resumed SEO):** the owner explicitly resumed Google/Bing webmaster setup and authorized relevant legitimate registrations and original articles using the existing Chrome Google account. This supersedes the earlier webmaster-setup deferral; app accounts/billing, cloud integrations and email signing remain deferred. Five agent workstreams cover technical SEO, original content, placement research, usage continuation and independent release validation. At 10% or less remaining in an applicable coding usage window, save a checkpoint here, stop work and schedule continuation no earlier than 330 minutes later. Use supported app usage/scheduling tools; do not scrape credentials or claim guaranteed wakeup while the PC/app is unavailable. See [continuation contract](marketing/USAGE-RESUME.md).
+
 | Project identity | Value |
 |---|---|
 | Product/display name | **Prarit Sidana PDF** by default; configurable through `APP_NAME` |
@@ -59,7 +61,7 @@
 | Hosting | Live at https://pdf.praritsidana.com/ in isolated `/opt/pdfnova`; application image revision `dee688f`. Healthy/no OOM at last deployment verification; 15 existing container identities and 19 existing host responses preserved. See [deployment record](deploy/hostinger/DEPLOYED.md). | Future runtime health needs a fresh check; historical verification is not continuous monitoring. |
 | Branding and public SEO | Domain-aligned name; unique metadata, canonical/social/schema tags, robots.txt, 56-URL sitemap, four published guides and internal links. Public 56-page crawl plus eight responsive checks passed. | No search ranking or Google recommendation position has been established. |
 | Search notification and promotion | IndexNow accepted one verified 56-URL batch with HTTP 202. Public GitHub README/About links, description and topics updated: one referring domain. Listing descriptions, announcements and an article draft are ready. See [SEO status](marketing/SEO-STATUS.md) and [launch kit](marketing/LAUNCH-KIT.md). | Notification acceptance is not indexing. External directory listings/articles are not submitted/published; drafts are not backlinks. |
-| Webmaster accounts: owner decision | Owner explicitly chose **"Account setup baad mein karunga"** on 2026-10-22. Google Search Console/Bing Webmaster setup is deliberately deferred; technical verification hooks and [setup instructions](marketing/SEARCH-SETUP.md) are ready. | Do not repeatedly request login/tokens or attempt registrations while this deferral stands. Resume when the owner asks to proceed or supplies real account-issued verification tokens. |
+| Webmaster accounts: owner decision | Earlier setup deferral was explicitly revoked by the latest 2026-10-22 owner request. Existing Google Chrome session is available; URL-prefix Search Console property created and real homepage verification setting configured privately on this app's server. | Verification/sitemap acceptance are still pending until recorded below; no indexing/ranking claim. Follow [current launch record](marketing/SEO-STATUS.md). |
 
 Completion records must contain useful outcomes rather than raw transcripts. Keep passwords, private environment values, user PDFs/signatures, recovery codes and token-bearing raw evidence out of this file and Git; link to sanitized evidence instead.
 
@@ -603,12 +605,21 @@ Google Search Console. Do not submit on every request or every test run.
 SEO checks: `tests/test_seo.py` and read-only `scripts/seo_regression.py [base_url]`.
 The staged pool includes a dedicated SEO stage. Launch copy, submission policies,
 owner login steps and actual publication status are recorded under `marketing/`.
-The owner confirmed webmaster setup is not yet done and explicitly deferred it
-("Account setup baad mein karunga", 2026-10-22). Do not keep asking for account
-setup or tokens until the owner resumes it. Account-owned registrations remain
-distinct from deployed technical SEO and published content.
+The owner initially deferred webmaster setup ("Account setup baad mein karunga",
+2026-10-22), then explicitly resumed it in the current request with an existing
+Chrome Google session. Account-owned registrations remain distinct from deployed
+technical SEO and published content. Current placement policies and publication
+states are in [placement research](marketing/PLACEMENTS-2026-10-22.md),
+[original articles](marketing/ARTICLES-2026-10-22.md) and [SEO status](marketing/SEO-STATUS.md).
+AlternativeTo currently excludes PDF-tool suites; DEV excludes this AI-assisted
+promotional use. Avoid ineligible registrations, fabricated endorsements and
+bulk low-value backlink creation. No top position or recommendation is promised.
 
 ## 8. Change log
+
+- 2026-10-22: Final independent source validation for resumed SEO/content: 671 Python cases passed, zero failures/skips, two existing warnings (61.09 seconds); `pip check` and `git diff --check` passed. This app alone was recreated to load the real private Google verification setting; content/schema source deployment remains pending. Blogger creation failed because its reCAPTCHA service could not connect; no blog/article/backlink created. See current continuation checkpoint and marketing records for remaining external actions.
+
+- 2026-10-22: Resumed owner-authorized webmaster setup and relevant promotion using Chrome; prepared three distinct guides (forms/flattening, selected-page extraction and PDF-to-Word review), giving seven source guides/59 public pages, plus truthful PS PDF WebSite alternateName and inventory-derived SEO tests. Placement and continuation reports linked above. Baseline live crawl passed 56 pages/eight responsive checks; targeted source SEO/page contracts passed 351 cases (one existing warning). Full-suite/release checks and deployment remain pending in this in-progress record. Google property challenge obtained and only this app's private verification environment configured; ownership not yet verified. SaaSHub form prepared but Continue explicitly accepts terms, so required action-time confirmation is pending. No external backlink/article publication claimed yet. Earlier webmaster deferral superseded; other product deferrals preserved.
 
 - 2026-10-22: Analyzed repository baseline `9e6b3d6` against this guide; recorded architecture, strengths, source-confirmed missing Flatten render bounds and operational follow-ups in [repository review](qa/REPOSITORY-REVIEW-2026-10-22.md). Corrected stale task-ID/OCR-engine descriptions in `plan.md` and added open follow-ups in §3l. Fresh validation: 663 Python tests passed, zero failures/skips, two deprecation warnings (64.15 seconds); `pip check` and `git diff --check` passed. Full staged/browser/mobile/live-server/hosted-CI checks not run; no application code changes, deployment, restart or search submissions. Historical deployed image remains `dee688f`, current health unverified. Existing owner deferrals preserved.
 
