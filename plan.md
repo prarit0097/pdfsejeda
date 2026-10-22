@@ -228,6 +228,12 @@ Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 
 ## 3l. Repository review follow-ups (2026-10-22)
 
+Ongoing owner-authorized marketing program (2026-10-23): after launch backlog,
+continue illustrated useful articles/stories, SEO and relevant legitimate
+placements with agent assistance. Same-chat automation updated; initial completion
+does not disable it. Preserve usage checkpoint/330-minute cooldown and real
+publication evidence. See marketing/SEO-PLAN.md and marketing/USAGE-RESUME.md.
+
 Review and evidence limits: [qa/REPOSITORY-REVIEW-2026-10-22.md](qa/REPOSITORY-REVIEW-2026-10-22.md).
 These are identified follow-ups, not completed implementation or new owner scope.
 

@@ -13,3 +13,14 @@ https://pdf.praritsidana.com. Repository/deployment identifiers stay unchanged.
 8. Record actual published/submitted URLs separately from drafts and account-blocked opportunities. Google Search Console/Bing ownership steps need authenticated account access or verification tokens; do not invent registrations or claim ranking/indexation from submission acceptance.
 
 Google positions and recommendation inclusion cannot be guaranteed. Publishing many low-value backlinks is not a success metric. Measure indexing, impressions, useful referrals and completed tool tasks after real measurement access is configured. No analytics cookie/integration is enabled silently.
+
+## Ongoing program authorized2026-10-23
+
+After launch backlog, continue useful SEO improvements, eligible relevant
+placements, original illustrated articles and visual stories with specialist
+agents. Use actual audience needs, inspect image/output quality, preserve image
+provenance/alt text, record verifiable public links and avoid duplicate submissions.
+Keep same-chat heartbeat active; <=10% usage remaining means save handover and
+stop for at least330 minutes, then require recovered usage before continuation.
+Current cooldown is unchanged; no publishing starts during it. Detailed operating
+contract: [USAGE-RESUME.md](USAGE-RESUME.md).

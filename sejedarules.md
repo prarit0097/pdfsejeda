@@ -4,6 +4,8 @@
 
 **Last documentation review:** 2026-10-22. Descriptions below refer to the checked-in implementation. Historical verification results are dated, not a promise that later code has been tested.
 
+**Ongoing promotion owner decision (2026-10-23 Asia/Calcutta):** after the existing cooldown and initial launch backlog, continue a recurring SEO/content/legitimate-placement program with the specialist agent team, useful original articles and visual stories with images. Keep the existing same-chat heartbeat active after initial task completion. This supersedes its earlier stop-after-launch instruction. Every cycle must add distinct reader value, respect platform rules, record real public evidence, image rights/provenance and alt text, and avoid duplicate/low-value submissions or invented endorsements/rankings. Read this guide first and the project Markdown before work. The <=10% remaining usage guard and checkpoint+330-minute cooldown remain unchanged; preserve the active deadline. The supported app scheduler is used instead of a Windows credential-scraping/background loop. PC/app/browser access must remain available; future execution and rankings are not guaranteed. See [continuation contract](marketing/USAGE-RESUME.md).
+
 **Active owner request (2026-10-22, resumed SEO):** the owner explicitly resumed Google/Bing webmaster setup and authorized relevant legitimate registrations and original articles using the existing Chrome Google account. This supersedes the earlier webmaster-setup deferral; app accounts/billing, cloud integrations and email signing remain deferred. Five agent workstreams cover technical SEO, original content, placement research, usage continuation and independent release validation. At 10% or less remaining in an applicable coding usage window, save a checkpoint here, stop work and schedule continuation no earlier than 330 minutes later. Use supported app usage/scheduling tools; do not scrape credentials or claim guaranteed wakeup while the PC/app is unavailable. See [continuation contract](marketing/USAGE-RESUME.md).
 
 | Project identity | Value |
@@ -616,6 +618,8 @@ promotional use. Avoid ineligible registrations, fabricated endorsements and
 bulk low-value backlink creation. No top position or recommendation is promised.
 
 ## 8. Change log
+
+- 2026-10-23 (Asia/Calcutta): Owner extended promotion into an ongoing post-launch loop for SEO, relevant backlinks and original illustrated articles/stories using the agent team. Updated existing active heartbeat `continue-pdf-seo-after-usage-cooldown` in place, retaining330-minute cadence/current chat and cooldown; no duplicate automation. Specific SaaSHub consent retained. Actual current usage94% used/6% remaining, weekly15% used; no promotion/browser/image creation resumed. Documentation/configuration only; diff check passed, app tests/deployment/publication not run. Earlier671-test result remains historical; delayed automation execution not yet verified. Existing resume minimum2026-10-22T23:53:45Z unchanged.
 
 - 2026-10-23 (Asia/Calcutta): Owner explicitly approved prepared SaaSHub terms acceptance: "Haan, SaaSHub terms accept karo". Specific consent received; do not repeat this question unless terms/destination/scope materially changes. Check at2026-10-22T19:17:15Z: primary92% used/8% remaining and existing cooldown unelapsed, so no browser/submission work resumed; existing resume deadline preserved. Documentation-only acknowledgment; diff check passed, no fresh app tests/deployment/publication; prior671-test result remains dated evidence.
 +

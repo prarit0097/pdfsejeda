@@ -6,6 +6,24 @@ the actual automation result in `sejedarules.md`.
 
 ## Owner instruction
 
+**2026-10-23 extension:** after the current cooldown and launch backlog, keep the
+same automation running for ongoing useful SEO, legitimate relevant placements,
+original illustrated articles and visual stories. Use the specialist agent team
+within available capacity. This replaces the old instruction below to disable
+after initial launch completion. Read sejedarules.md first and project Markdown
+before work. Do not repeat unchanged submissions or create filler to satisfy a
+posting cadence. If nothing useful is actionable, stay quiet until a later run.
+Keep a publication/placement/asset ledger with real URLs, canonical original,
+image rights/provenance and descriptive alt text. Use generated nonconfidential
+fixtures for screenshots and the imagegen skill for original bitmap illustrations;
+inspect visuals/rendered outputs. Respect platform AI/affiliation policies and
+required confirmations. No guaranteed ranking, paid placement or fake endorsement.
+
+Automation `continue-pdf-seo-after-usage-cooldown` updated in place, active,
+330-minute cadence, same chat. Owner's specific SaaSHub terms consent is saved.
+Existing cooldown and exact330-minute minimum remain; no Windows background
+script or auth scraping. Future execution remains untested/best effort.
+
 At 10% or less Codex usage remaining, save completed and incomplete work to
 `sejedarules.md`, stop promotion work, and attempt continuation after 5 hours
 30 minutes. Authorization is limited to the current PDF app branding, technical
@@ -75,9 +93,11 @@ Before ending any work turn, update sejedarules.md including a dated section 8
 entry and actual check results, with no repeated entries for unchanged cooldown
 checks. Stay quiet while the state is unchanged or non-actionable; notify the
 owner only on meaningful progress, completion, failure or required human action.
-Once all authorized actionable work is complete or only documented human-only
-dependencies remain, disable this scheduled continuation instead of repeating
-submissions or endlessly checking rankings.
+After initial launch work, continue the owner's ongoing program described above.
+When only human-dependent or unchanged items remain, stay quiet and select a
+different useful authorized opportunity on a later run. Do not repeat submissions
+or endlessly check rankings. Disable on owner cancellation or document persistent
+tool/platform impossibility before stopping the recurring program.
 
 ## Validation and limits
 
