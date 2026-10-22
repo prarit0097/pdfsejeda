@@ -1,0 +1,48 @@
+{% macro icon(name, cls="") -%}
+<svg class="icon {{ cls }}" aria-hidden="true"><use href="#i-{{ name }}"/></svg>
+{%- endmacro %}
+
+{% macro tool_ico(tool, cls="") -%}
+<span class="tool-ico {{ cls }}" style="--c: var(--cat-{{ tool.category }})">{{ icon(tool.icon) }}</span>
+{%- endmacro %}
+
+{% macro tool_card(tool) -%}
+<a class="tool-card" href="/{{ tool.slug }}" data-search="{{ (tool.title ~ ' ' ~ tool.tagline ~ ' ' ~ tool.keywords)|lower }}">
+  {{ tool_ico(tool) }}
+  <div><h3>{{ tool.title }}</h3><p>{{ tool.tagline }}</p></div>
+</a>
+{%- endmacro %}
+
+{% macro render_opt(o) -%}
+<div class="opt" data-opt="{{ o.name }}" {% if o.show_if %}data-show-if='{{ o.show_if|tojson }}'{% endif %}>
+  {% if o.kind == "checkbox" %}
+    <label class="check"><input type="checkbox" name="{{ o.name }}" value="true" {% if o.default in (True, "true") %}checked{% endif %}> <span>{{ o.label }}</span></label>
+  {% elif o.kind == "hidden" %}
+    <input type="hidden" name="{{ o.name }}" value="{{ o.default }}">
+  {% else %}
+    <span class="lbl">{{ o.label }}</span>
+    {% if o.kind == "radio" %}
+      <div class="choice-group" role="radiogroup">
+      {% for v, label in o.choices %}
+        <label class="choice"><input type="radio" name="{{ o.name }}" value="{{ v }}" {% if v|string == o.default|string %}checked{% endif %}>{{ label }}</label>
+      {% endfor %}
+      </div>
+    {% elif o.kind == "select" %}
+      <select class="input" name="{{ o.name }}">
+      {% for v, label in o.choices %}<option value="{{ v }}" {% if v|string == o.default|string %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+    {% elif o.kind == "textarea" %}
+      <textarea class="input" name="{{ o.name }}" placeholder="{{ o.placeholder }}">{{ o.default }}</textarea>
+    {% elif o.kind == "range" %}
+      <div class="inline-fields" style="align-items:center"><input type="range" name="{{ o.name }}" value="{{ o.default }}" min="{{ o.min if o.min is not none else 0 }}" max="{{ o.max if o.max is not none else 100 }}" step="{{ o.step or 1 }}" oninput="this.nextElementSibling.textContent=this.value"><output style="flex:0 0 48px">{{ o.default }}</output></div>
+    {% elif o.kind == "color" %}
+      <input class="input" type="color" name="{{ o.name }}" value="{{ o.default or '#000000' }}">
+    {% else %}
+      <input class="input" type="{{ 'number' if o.kind == 'number' else 'text' }}" name="{{ o.name }}" value="{{ o.default }}" placeholder="{{ o.placeholder }}"
+        {% if o.min is not none %}min="{{ o.min }}"{% endif %} {% if o.max is not none %}max="{{ o.max }}"{% endif %} {% if o.step %}step="{{ o.step }}"{% elif o.kind == 'number' %}step="any"{% endif %}
+        {% if o.kind == 'pages' %}data-pages-input autocomplete="off"{% endif %}>
+    {% endif %}
+  {% endif %}
+  {% if o.help %}<div class="help">{{ o.help }}</div>{% endif %}
+</div>
+{%- endmacro %}

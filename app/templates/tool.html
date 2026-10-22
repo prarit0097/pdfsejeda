@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon, tool_ico, tool_card, render_opt %}
+{% block title %}{{ tool.title }} — free online | {{ app_name }}{% endblock %}
+{% block description %}{{ tool.tagline }} Free online tool, no sign-up. Files are deleted after {{ ttl_hours|round|int }} hours.{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+{% endblock %}
+{% block main %}
+{% set basic = tool.options|rejectattr("advanced")|list %}
+{% set advanced = tool.options|selectattr("advanced")|list %}
+<section class="tool-hero wrap">
+  {{ tool_ico(tool) }}
+  <h1>{{ tool.title }}</h1>
+  <p>{{ tool.tagline }}</p>
+</section>
+
+<div class="wrap">
+  <div class="workspace" id="workspace">
+    {% if tool.requires %}
+    <div class="alert alert-info" id="requires-note" style="margin-bottom:14px">{{ icon("info") }}<span>This tool uses <b>{{ tool.requires }}</b> on the server. If it isn't installed there, you'll see a clear error instead of a result.</span></div>
+    {% endif %}
+
+    <!-- 1. upload -->
+    <section id="stage-upload" class="dropzone" {% if tool.type == "htmlToPdf" %}hidden{% endif %}>
+      <div class="upload-row">
+        <div class="split-btn" style="position:relative">
+          <button class="btn btn-primary btn-lg" type="button" data-action="pick">{{ icon("upload") }} Upload {{ "files" if tool.multiple else "a file" }}</button>
+          <button class="btn btn-primary btn-lg more" type="button" data-action="upload-menu" aria-label="More upload options">{{ icon("chevron") }}</button>
+          <div class="menu" id="upload-menu" hidden style="top:100%;right:0;margin-top:6px">
+            <button type="button" data-action="pick">{{ icon("upload") }} From this device</button>
+            <button type="button" data-action="url">{{ icon("link") }} From a web address (URL)</button>
+          </div>
+        </div>
+      </div>
+      <p class="drop-hint">or drop {{ accept_label(tool) }} files here · up to {{ max_file_mb }} MB each</p>
+      <input type="file" id="file-input" hidden {% if tool.multiple %}multiple{% endif %} accept="{{ accept_attr(tool) }}">
+    </section>
+
+    <!-- 2. work area -->
+    <form id="task-form" class="card" {% if tool.type != "htmlToPdf" %}hidden{% endif %} novalidate>
+      <input type="hidden" name="type" value="{{ tool.type }}">
+      {% if tool.type != "htmlToPdf" %}
+      <div class="panel-head">
+        <strong id="files-title">Files</strong>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm" type="button" data-action="pick">{{ icon("plus") }} Add files</button>
+          <button class="btn btn-sm btn-ghost" type="button" data-action="reset">Start over</button>
+        </div>
+      </div>
+      <ul class="file-list" id="file-list"></ul>
+      {% endif %}
+      {% if tool.page_ui and tool.page_ui != "files" %}
+      <div id="pages-ui" data-mode="{{ tool.page_ui }}" style="border-top:1px solid var(--line)"></div>
+      {% endif %}
+      {% if tool.options %}
+      <div class="panel-body" style="border-top:1px solid var(--line)">
+        <div class="opts">
+          {% for o in basic %}{{ render_opt(o) }}{% endfor %}
+          {% if advanced %}
+          <div>
+            <button class="more-toggle" type="button" aria-expanded="{{ 'true' if not basic else 'false' }}" data-action="more">More options {{ icon("chevron") }}</button>
+          </div>
+          <div class="opts" id="more-opts" {% if basic %}hidden{% endif %}>{% for o in advanced %}{{ render_opt(o) }}{% endfor %}</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="actions-bar">
+        <button class="btn btn-primary btn-lg" type="submit" id="submit-btn">{{ tool.submit_label or tool.title }} {{ icon("arrow-right") }}</button>
+      </div>
+    </form>
+
+    <!-- 3. result -->
+    <section id="stage-result" class="card" hidden aria-live="polite"></section>
+
+    <div class="card recent" id="recent" hidden>
+      <div class="panel-head"><strong>Recent results</strong><span class="muted small">kept on this device until the files expire</span></div>
+      <div id="recent-list"></div>
+    </div>
+  </div>
+
+  <section class="steps">
+    <div class="step"><div class="num">1</div><h3>Add your files</h3><p class="muted">Upload from your device, drop them on the page, or paste a link.</p></div>
+    <div class="step"><div class="num">2</div><h3>Choose options</h3><p class="muted">Defaults work for most files. Open “More options” for fine control.</p></div>
+    <div class="step"><div class="num">3</div><h3>Download</h3><p class="muted">Get the result, preview it, or send it straight into another tool.</p></div>
+  </section>
+
+  <section class="faq prose" style="margin-top:0">
+    <h2>Questions</h2>
+    <details><summary>Is it free?</summary><p>Yes. There is no sign-up and no watermark on your files.</p></details>
+    <details><summary>What happens to my files?</summary><p>They are stored only while they are processed and are deleted automatically after {{ ttl_hours|round|int }} hours. Download links are signed and work only for the task that created them.</p></details>
+    <details><summary>My PDF has a password.</summary><p>You'll be asked for it after uploading. It is used only to open the file for this task.</p></details>
+  </section>
+
+  {% if related %}
+  <section class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">{% for t in related %}{{ tool_card(t) }}{% endfor %}</div>
+  </section>
+  {% endif %}
+</div>
+<script id="tool-config" type="application/json">{{ {
+  "type": tool.type, "slug": tool.slug, "title": tool.title, "accept": tool.accept, "multiple": tool.multiple,
+  "minFiles": tool.min_files, "maxFiles": tool.max_files, "pageUi": tool.page_ui, "maxFileMb": max_file_mb
+}|tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/tool.js?v=1"></script>
+<script src="/static/js/pages-ui.js?v=1"></script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Privacy | {{ app_name }}{% endblock %}
+{% block main %}
+<div class="wrap prose">
+<h1>Privacy</h1>
+<p>We process your files only to perform the task you requested.</p>
+<ul>
+<li><b>Retention:</b> uploaded files and results are deleted automatically {{ ttl_hours|round|int }} hours after they were last used. You can delete a result immediately from the result screen.</li>
+<li><b>Access:</b> download links are signed per task. Anyone with the link can download the result until it expires, so share links with care.</li>
+<li><b>No account needed:</b> we don't ask for your name or e-mail to use the tools.</li>
+<li><b>Device storage:</b> your theme choice and a list of your recent results are kept in your browser's local storage, on your device only.</li>
+<li><b>Passwords:</b> if you unlock a protected PDF, the password is kept with the file only until it is deleted and is used only to open it.</li>
+</ul>
+</div>
+{% endblock %}

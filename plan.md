@@ -65,27 +65,27 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [x] Repo init, .gitignore, README, push
 
 ### Phase 1 — Platform core
-- [ ] `app/config.py` settings (env-driven: APP_NAME, limits, secrets, storage dir)
-- [ ] `app/storage.py` FileStore: ids `<uuid>-<16 chars>_1`, metadata, TTL sweeper, touch
-- [ ] `app/pages.py` page-selection parser (`"1-3,7"`, `odd`, `even`, `all`, `5-`, numbers)
-- [ ] `app/jobs.py` JobQueue + Task records, ids `<8 chars>-<yyyyMMddHHmm>`, statuses Queued/Processing/Completed/Failed, cancel
-- [ ] `app/security.py` HMAC download signature `web-…`, SSRF-safe URL import
-- [ ] `app/ratelimit.py` per-IP tasks-per-hour (402 like Sejda), configurable
-- [ ] API routes: upload, upload-chunked, import url, password, touch, view; tasks create/change/download/cancel/delete
-- [ ] Multi-output results zipped; `resultItems` list
-- [ ] Tool registry `app/tools/registry.py` with catalog metadata (slug, type, title, category, accepted files, options)
+- [x] `app/config.py` settings (env-driven: APP_NAME, limits, secrets, storage dir)
+- [x] `app/storage.py` FileStore: ids `<uuid>-<16 chars>_1`, metadata, TTL sweeper, touch
+- [x] `app/pages.py` page-selection parser (`"1-3,7"`, `odd`, `even`, `all`, `5-`, numbers)
+- [x] `app/jobs.py` JobQueue + Task records, ids `<8 chars>-<yyyyMMddHHmm>`, statuses Queued/Processing/Completed/Failed, cancel
+- [x] `app/security.py` HMAC download signature `web-…`, SSRF-safe URL import
+- [x] `app/ratelimit.py` per-IP tasks-per-hour (402 like Sejda), configurable
+- [x] API routes: upload, upload-chunked, import url, password, touch, view; tasks create/change/download/cancel/delete
+- [x] Multi-output results zipped; `resultItems` list
+- [x] Tool registry `app/tools/registry.py` with catalog metadata (slug, type, title, category, accepted files, options)
 
 ### Phase 2 — Front-end shell & design system
-- [ ] Design tokens, light/dark, responsive layout, original logo (SVG)
-- [ ] Home page: tool grid by category + search
-- [ ] Generic tool page: drop zone, file list, "More options", submit, result panel (poll, download, preview, start over, continue with another tool)
-- [ ] Upload client: progress, chunked for >5 MB, link import, per-file password prompt
-- [ ] Footer pages: about, privacy, terms, help
+- [x] Design tokens, light/dark, responsive layout, original logo (SVG)
+- [x] Home page: tool grid by category + search
+- [x] Generic tool page: drop zone, file list, "More options", submit, result panel (poll, download, preview, start over, continue with another tool)
+- [x] Upload client: progress, chunked for >5 MB, link import, per-file password prompt
+- [x] Footer pages: about, privacy, terms, help
 
 ### Phase 3 — Organize tools
-- [ ] merge, split (pages / every N), split by bookmarks, split by size, split by text, split down the middle
-- [ ] alternate mix, extract pages, delete pages, organize/combine-reorder, rotate pages
-- [ ] Thumbnail page picker (select, rotate, reorder, delete) for organize/rotate/delete/extract/split
+- [x] merge, split (pages / every N), split by bookmarks, split by size, split by text, split down the middle
+- [x] alternate mix, extract pages, delete pages, organize/combine-reorder, rotate pages
+- [x] Thumbnail page picker (select, rotate, reorder, delete) for organize/rotate/delete/extract/split
 
 ### Phase 4 — Modify tools
 - [ ] compress, crop (manual + auto), resize, n-up, flip, grayscale, deskew, flatten, repair

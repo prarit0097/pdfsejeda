@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}About | {{ app_name }}{% endblock %}
+{% block main %}
+<div class="wrap prose">
+<h1>About</h1>
+<p>{{ app_name }} is a collection of online PDF tools: merge, split, compress, convert, edit, sign and more. Each tool is a single page that does one job well.</p>
+<h2>How it works</h2>
+<p>You upload a file, pick options, and our servers process it. The result is ready to download within seconds for most documents. Files are deleted automatically {{ ttl_hours|round|int }} hours after processing.</p>
+<h2>Open technology</h2>
+<p>The service is built with Python and FastAPI on top of open-source PDF libraries such as qpdf (via pikepdf), PDFium, pdfplumber and ReportLab, plus PDF.js for previews in your browser.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon, tool_card %}
+{% block main %}
+<section class="hero wrap">
+  <h1>Every PDF tool, <span>one tab away</span></h1>
+  <p>Merge, split, compress, convert, edit and sign PDFs right in your browser. No sign-up, no watermarks, and your files are deleted automatically.</p>
+  <label class="search">
+    {{ icon("search") }}
+    <span class="sr-only">Search tools</span>
+    <input class="input" id="tool-search" type="search" placeholder="Search tools — try “compress” or “sign”" autocomplete="off">
+  </label>
+  <div class="cat-tabs" role="toolbar" aria-label="Filter by category">
+    <button class="chip" type="button" data-cat="all" aria-pressed="true">All</button>
+    {% for key, label in categories if key != "popular" %}<button class="chip" type="button" data-cat="{{ key }}" aria-pressed="false">{{ label }}</button>{% endfor %}
+  </div>
+</section>
+
+<div class="wrap" id="tool-sections">
+  {% for key, label in categories %}
+    {% set tools = groups.get(key, []) %}
+    {% if tools %}
+    <section class="tool-section" data-section="{{ key }}">
+      <h2>{{ label }}</h2>
+      <div class="tool-grid">{% for t in tools %}{{ tool_card(t) }}{% endfor %}</div>
+    </section>
+    {% endif %}
+  {% endfor %}
+  <p class="muted" id="no-results" hidden>No tool matches your search.</p>
+
+  <section class="features">
+    <div class="feature"><span class="tool-ico" style="--c:var(--cat-security)">{{ icon("shield") }}</span><h3>Private by design</h3><p class="muted">Uploads are processed and then deleted after {{ ttl_hours|round|int }} hours. Download links work only for you.</p></div>
+    <div class="feature"><span class="tool-ico" style="--c:var(--cat-from_pdf)">{{ icon("bolt") }}</span><h3>Fast</h3><p class="muted">Files are processed on the server, so even a slow laptop or phone handles large PDFs.</p></div>
+    <div class="feature"><span class="tool-ico" style="--c:var(--cat-pages)">{{ icon("workflow") }}</span><h3>Chain tools</h3><p class="muted">Send a result straight into another tool, or save a chain of steps as a reusable workflow.</p></div>
+    <div class="feature"><span class="tool-ico" style="--c:var(--cat-to_pdf)">{{ icon("cloud") }}</span><h3>Works anywhere</h3><p class="muted">Upload from your device or paste a link. Nothing to install.</p></div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(() => {
+  const q = document.getElementById("tool-search"), chips = document.querySelectorAll(".chip"), none = document.getElementById("no-results");
+  let cat = "all";
+  function apply() {
+    const term = q.value.trim().toLowerCase();
+    let any = false;
+    document.querySelectorAll(".tool-section").forEach(sec => {
+      const key = sec.dataset.section;
+      const sectionOn = term ? key !== "popular" : (cat === "all" || key === cat);
+      let visible = 0;
+      sec.querySelectorAll(".tool-card").forEach(card => {
+        const on = sectionOn && (!term || card.dataset.search.includes(term));
+        card.hidden = !on; if (on) visible++;
+      });
+      sec.hidden = visible === 0; if (visible) any = true;
+    });
+    none.hidden = any;
+  }
+  q.addEventListener("input", apply);
+  chips.forEach(c => c.addEventListener("click", () => {
+    chips.forEach(x => x.setAttribute("aria-pressed", x === c)); cat = c.dataset.cat; q.value = ""; apply();
+  }));
+})();
+</script>
+{% endblock %}

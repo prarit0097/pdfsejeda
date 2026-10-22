@@ -57,9 +57,36 @@ sejedarules.md       this file
 
 ## 6. Tools (task types)
 
-Filled in as tools are implemented. Format: `type` — page slug — options — implementation.
+Format: `type` — `/page-slug` — key options — how it works. Every tool lives in `app/tools/<group>.py` and registers itself with `register(Tool(...))`; the tool page renders its options form from that registration.
 
-_(none yet)_
+**Organize** (`app/tools/organize.py`)
+- `merge` — `/merge-pdf` — `outlinePolicy` (retain/discard/one_entry_each_doc/retain_as_one_entry), `tocPolicy` (none/file_names/doc_titles), `acroFormPolicy` (merge/merge_renaming/flatten/none), `blankPageIfOdd`, `normalizePageSizes`, `filenameFooter`, `outputFilename`, `rotations[]` per file. Images become A4 pages first. TOC pages get clickable links.
+- `splitByPages` — `/split-pdf` — `splitMode` every/after/even/odd, `step`, `pages` (split *after* these), `specificResultFilenames[]`, `outputFilenamePattern` tokens `[BASENAME] [CURRENTPAGE] [FILENUMBER] [TIMESTAMP]`, `discardOutline`.
+- `splitByBookmarks` — `/split-pdf-by-outline` — `bookmarksLevel` 1–3, `bookmarksExpression` (regex filter), `includePageAfter`. Files are named after the bookmark.
+- `splitBySize` — `/split-pdf-by-size` — `size` + `sizeUnit` MB/KB. Greedy: grows each chunk while the real saved size fits.
+- `splitByText` — `/split-pdf-by-text` — `area {x,y,width,height}` (PDF points, **top-left origin**, drawn on page 1 in the UI), `startsWith`. New file whenever the text in the area changes; files are named after the text.
+- `splitDownTheMiddle` — `/split-pdf-down-the-middle` — `mode` auto/vertical/horizontal, `ratio`, `excludedPages`, `autoDetectExcludedPages`, `rightToLeft`, `repagination` (booklet order). Works by duplicating each page and setting two CropBoxes.
+- `alternateMix` — `/alternate-mix-pdf` — `reverse` (second file reversed), `step`. ≥2 files.
+- `extractPages` — `/extract-pdf-pages` — `pages`, `discardOutline`.
+- `deletePages` — `/delete-pdf-pages` — `pages`, `discardOutline`. Refuses to delete every page.
+- `combineReorder` — `/organize-pdf` — `filePages ["fileIdx:page:rot"]` in final order, `"-1:-1:rot"` = blank page, `outputFilename`. Without `filePages`: all pages of all files.
+- `rotatePages` — `/rotate-pdf-pages` — `pageRotationsPerSource ["fileIdx:page:deg"]` (per page, wins) or `rotation` + `pages` (bulk). Rotation is added to the existing /Rotate.
+
+**Shared building blocks** (`app/tools/`)
+- `common.py` — open/save PDFs with passwords, page sizes, `output_name` (honours `outputFilenamePattern`).
+- `draw.py` — `stamp()` draws with reportlab in *displayed* coordinates (after /Rotate) and merges onto a page; `place_page()` draws one page scaled into a rectangle of another (n-up, resize, normalize). Font picking (`font_for`) falls back to a Unicode TTF for non-Latin text.
+- `outlines.py` — read/remap/write bookmarks across documents.
+- `imaging.py` — image → PDF pages (Pillow + reportlab).
+
+## 5a. Front end
+
+- `templates/base.html` — header (logo, "All tools" mega menu, theme toggle), footer, SVG icon sprite (`_icons.html`).
+- `templates/index.html` — hero, search, category chips, tool cards (filtering is client-side).
+- `templates/tool.html` — generic tool page: drop zone (device / URL), file list, page thumbnails (`#pages-ui`), options (basic + "More options"), submit, result panel, recent results, how-to, FAQ, related tools.
+- `static/js/site.js` — `window.UI`: theme, mega menu, toasts, modal dialogs, helpers.
+- `static/js/tool.js` — `window.Tool`: uploads (simple ≤5 MB, chunked >5 MB, 3 parallel chunks, link import, password prompt), file reorder/rotate (merge), `show_if` conditional options, form → JSON, submit, 402 countdown, polling every 3 s, result screen (download, preview, ZIP items, continue in another tool, delete now), recent results in localStorage, keep-alive `touch` every 10 min, files handed over via sessionStorage `continueFiles`.
+- `static/js/pages-ui.js` — PDF.js thumbnails; modes `select`, `rotate`, `organize`, `split`, `area`.
+- `static/css/app.css` — design tokens (light/dark), all components.
 
 ## 7. Configuration
 
@@ -77,4 +104,5 @@ _(none yet)_
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22 — Phase 1–3: platform core (config, FileStore, JobQueue, page parser, HMAC links, SSRF-safe URL import, per-IP quota), full `/api` (upload, chunked upload, URL import, password, touch, view, tasks, change, download, cancel, delete, continue, tools), UI (design system, home, generic tool page, thumbnails), 11 organize tools, 21 tests — `app/`, `tests/`
 - 2026-10-22 — Project started: plan.md and sejedarules.md written; Python/FastAPI stack chosen — `plan.md`, `sejedarules.md`

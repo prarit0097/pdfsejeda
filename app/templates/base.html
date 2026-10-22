@@ -1,0 +1,63 @@
+{% from "_macros.html" import icon, tool_ico %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }} — every PDF tool you need, online{% endblock %}</title>
+  <meta name="description" content="{% block description %}Merge, split, compress, convert, edit and sign PDF files online. Free, fast and private: files are deleted automatically after {{ ttl_hours|round|int }} hours.{% endblock %}">
+  <link rel="icon" href="/static/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/app.css?v=1">
+  <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+{% include "_icons.html" %}
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="/"><img class="logo-mark" src="/static/img/logo.svg" alt="">{{ app_name }}</a>
+    <nav class="nav">
+      <button type="button" id="all-tools-btn" aria-expanded="false" aria-controls="mega">{{ icon("grid") }}<span>All tools</span>{{ icon("chevron") }}</button>
+      <a class="hide-sm" href="/pdf-editor">{{ icon("edit") }}Edit</a>
+      <a class="hide-sm" href="/compress-pdf">{{ icon("compress") }}Compress</a>
+      <a class="hide-sm" href="/workflows">{{ icon("workflow") }}Workflows</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" type="button" id="theme-btn" title="Switch theme">{{ icon("moon") }}</button>
+    </div>
+  </div>
+  <div class="mega" id="mega" hidden>
+    <div class="wrap mega-grid">
+      {% for key, label in categories if key != "popular" %}
+      <div>
+        <h4>{{ label }}</h4>
+        {% for t in all_tools if t.category == key %}<a href="/{{ t.slug }}">{{ icon(t.icon) }}{{ t.title }}</a>{% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</header>
+
+<main>{% block main %}{% endblock %}</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="/"><img class="logo-mark" src="/static/img/logo.svg" alt="">{{ app_name }}</a>
+        <p class="muted small" style="margin-top:10px;max-width:320px">PDF tools that run on our servers, not your patience. Files are deleted automatically {{ ttl_hours|round|int }} hours after processing.</p>
+      </div>
+      <div><h4>Popular</h4><a href="/merge-pdf">Merge PDF</a><a href="/split-pdf">Split PDF</a><a href="/compress-pdf">Compress PDF</a><a href="/pdf-editor">Edit PDF</a></div>
+      <div><h4>Convert</h4><a href="/pdf-to-word">PDF to Word</a><a href="/pdf-to-jpg">PDF to JPG</a><a href="/jpg-to-pdf">JPG to PDF</a><a href="/pdf-to-excel">PDF to Excel</a></div>
+      <div><h4>{{ app_name }}</h4><a href="/about">About</a><a href="/help">Help &amp; FAQ</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+    </div>
+    <div class="foot-bottom"><span>© {{ app_name }}</span><span>Made with Python &amp; FastAPI</span></div>
+  </div>
+</footer>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script src="/static/js/site.js?v=1"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

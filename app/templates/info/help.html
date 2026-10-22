@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Help & FAQ | {{ app_name }}{% endblock %}
+{% block main %}
+<div class="wrap prose">
+<h1>Help & FAQ</h1>
+<div class="faq">
+<details open><summary>Which files can I upload?</summary><p>Most tools take PDFs. Some also take images (JPG, PNG, GIF, TIFF, BMP, WEBP) or Office files. The upload button shows the types each tool accepts. Files can be up to {{ max_file_mb }} MB.</p></details>
+<details><summary>How do I select pages?</summary><p>Click page thumbnails, or type a selection: <span class="kbd">1-3,7</span>, <span class="kbd">10-</span> (to the end), <span class="kbd">odd</span>, <span class="kbd">even</span>.</p></details>
+<details><summary>My file is password protected.</summary><p>After uploading you'll be asked for the password. To remove the password permanently, use Unlock PDF.</p></details>
+<details><summary>Can I use the result in another tool?</summary><p>Yes. On the result screen choose “Continue in another tool”. To repeat the same chain of tools, create a workflow.</p></details>
+<details><summary>How long are files kept?</summary><p>{{ ttl_hours|round|int }} hours, then they are deleted automatically.</p></details>
+<details><summary>The result looks wrong.</summary><p>Try the Repair tool first if the PDF is damaged. For scanned documents, run OCR before converting to Word or Excel.</p></details>
+</div>
+</div>
+{% endblock %}
