@@ -5,6 +5,7 @@ data-*/
 venv/
 .env
 .env.hostinger
+.deploy-baseline.json
 research
 tests
 __pycache__

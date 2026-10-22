@@ -3,8 +3,8 @@
 Status: **deployment in progress; public availability not yet verified**. The
 server inventory confirmed an existing Docker/Nginx setup and a free loopback port
 8086. The app uses a new `/opt/pdfnova` folder and separate Compose project. DNS
-points `pdf.praritsidana.com` at the server; the final hostname must be confirmed
-before adding its proxy virtual host and certificate. See the eventual deployment
+points the user-confirmed `pdf.praritsidana.com` at the server, and its TLS
+certificate has been issued. Linux image and processing verification are pending. See the eventual deployment
 record for the actual release and verification results.
 
 Use a new application folder, normally `/opt/pdfnova`, a separate Compose project
@@ -73,3 +73,9 @@ ownership and routing are working. Never replace another app's virtual host.
 
 The image bundles LibreOffice, Tesseract and Chromium. These were locally tested
 on Windows; a successful server image build and Linux output tests are still needed.
+
+The optional build setting `PDFNOVA_DEBIAN_MIRROR` selects a Debian mirror host
+(default `deb.debian.org`). During this deployment, the default CDN stalled;
+`mirror.sg.gs` successfully served the signed Debian and security indexes. APT
+retains signature checking and uses bounded download timeouts/retries. The proxy
+must also clear `CF-Connecting-IP` before enabling `TRUST_PROXY=1`.

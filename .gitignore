@@ -4,6 +4,7 @@ __pycache__/
 venv/
 .env
 .env.hostinger
+.deploy-baseline.json
 data/
 .pytest_cache/
 *.egg-info/

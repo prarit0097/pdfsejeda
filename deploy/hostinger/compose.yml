@@ -5,6 +5,8 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
+      args:
+        DEBIAN_MIRROR: ${PDFNOVA_DEBIAN_MIRROR:-deb.debian.org}
     env_file: ../../.env.hostinger
     environment:
       DATA_DIR: /data
@@ -13,6 +15,7 @@ services:
     volumes:
       - pdfnova-data:/data
     restart: unless-stopped
+    init: true
     cpus: "${PDFNOVA_CPUS:-1.5}"
     mem_limit: "${PDFNOVA_MEMORY_LIMIT:-2g}"
     pids_limit: 256
