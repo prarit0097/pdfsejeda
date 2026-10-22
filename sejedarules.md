@@ -540,6 +540,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22: Signature icon/colour correction `cbb33b6` deployed on public HTTPS. Updated desktop/mobile icon-bound/action checks passed (signature 4/4); cleanup/foreground-colour/saved-PDF checks passed (9/9). Container healthy, no OOM; 15 existing container identities and 19 host status/redirect responses unchanged. Original-photo blue foreground RGB verified locally; existing saved images must be regenerated to gain the colour correction.
+
 - 2026-10-22: Fixed overlapping rotate/duplicate/delete icons caused by broad object SVG CSS, and preserved original foreground RGB during signature photo cleanup. Extended browser checks to assert icon bounds and non-overlapping buttons, exercise mobile duplicate/delete, and compare cleaned ink RGB against the original (canvas rounding tolerance two levels). Local original-photo core RGB means now match; private photo remains local. Local pytest 170 passed, two warnings; signature 4/4 and cleanup 9/9 passed. Deployment verification follows separately.
 
 - 2026-10-22: Transparency correction `82a374e` deployed and verified on public HTTPS: cleanup 9/9, signature workflows 4/4, healthy container, no OOM; existing 15 container identities and 19 host status/redirect responses unchanged. Existing saved signature pixels are unchanged; re-upload the original photo to regenerate them. Deployment records updated.

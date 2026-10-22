@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `82a374e` |
+| Image build revision | `cbb33b6` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -153,6 +153,28 @@ status/redirect responses match baseline. Prior signature image rollback tag:
 `pdfnova-web:release-b01934b`. Host proxy and dependencies were unchanged.
 Previously saved signatures retain their existing pixels; re-upload the original
 photo and choose Transparent A to use the corrected cleanup.
+
+## Signature action icons and ink colour (cbb33b6)
+
+Fixed the broad object SVG rule that stretched all three signature action icons
+across their toolbar. Rotate, duplicate and delete now have separate fixed-size
+icons/buttons. Browser tests verify icon bounds, adjacent button separation,
+desktop clicks and mobile duplicate/delete taps.
+
+Cleanup preserves original foreground RGB rather than repainting it with the
+darkest ink sample; soft paper edges still use the estimated ink colour to avoid
+grey halos. Eight generated photos now check foreground RGB within two levels
+of canvas rounding. The matching original photo was reviewed locally: original
+and cleaned dark blue foreground mean RGB both [28.5, 26.6, 67.8], median channel
+difference zero. No private photo was committed or submitted in a server save.
+
+Local pytest: 170 passed, two warnings. Local and public HTTPS signature groups:
+4/4; cleanup checks: 9/9, including actual saved PDF. Image:
+`sha256:43a971bf6eb7c0b59e7a5d43b28663f872f5a0b740920a02d9b9b9e720e813af`.
+Healthy, no OOM; 15 existing container identities and 19 host status/redirect
+responses unchanged. Rollback image: `pdfnova-web:release-82a374e`.
+Existing saved signature images retain their old pixels; regenerate from the
+original photo to apply corrected colour handling.
 
 ## Operations
 
