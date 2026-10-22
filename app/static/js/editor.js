@@ -22,6 +22,32 @@
 
   let file = null, doc = null, pages = [], objects = [], formValues = {}, zoom = 1, tool = "select", selected = null;
   let history = [], pendingImage = null, idSeq = 1, renderToken = 0, fieldDefs = new Map(), pdfFieldNames = new Set();
+  // A viewport overlay previews a pending signature without adding a PDF object.
+  const signaturePreview = document.createElement("div");
+  signaturePreview.className = "signature-placement-preview";
+  signaturePreview.hidden = true; signaturePreview.setAttribute("aria-hidden", "true");
+  const previewImage = document.createElement("img"); previewImage.alt = ""; previewImage.draggable = false;
+  signaturePreview.append(previewImage); document.body.append(signaturePreview);
+  let signaturePointer = null;
+  function updateSignaturePreview() {
+    if (ed.hidden || tool !== "sign" || !pendingImage?.sig || !signaturePointer) { signaturePreview.hidden = true; return; }
+    const target = document.elementFromPoint(signaturePointer.x, signaturePointer.y);
+    const active = target?.closest("#ed-pages");
+    signaturePreview.hidden = !active;
+    if (!active) return;
+    if (previewImage.getAttribute("src") !== pendingImage.src) previewImage.src = pendingImage.src;
+    signaturePreview.style.width = `${160 * zoom}px`;
+    signaturePreview.style.height = `${160 * zoom / (pendingImage.ratio || 1)}px`;
+    signaturePreview.style.left = `${signaturePointer.x}px`; signaturePreview.style.top = `${signaturePointer.y}px`;
+  }
+  document.addEventListener("pointermove", e => {
+    signaturePointer = e.pointerType === "touch" ? null : { x: e.clientX, y: e.clientY };
+    updateSignaturePreview();
+  });
+  document.addEventListener("pointerout", e => { if (!e.relatedTarget) { signaturePointer = null; updateSignaturePreview(); } });
+  document.addEventListener("scroll", updateSignaturePreview, true);
+  window.addEventListener("resize", updateSignaturePreview);
+  window.addEventListener("blur", () => { signaturePointer = null; updateSignaturePreview(); });
   const style = { font: "Helvetica", size: 14, color: "#111111", bold: false, italic: false, stroke: "#d6336c", fill: "", width: 2, mark: "#ffd43b" };
 
   // ------------------------------------------------------------------ open / close
@@ -33,7 +59,7 @@
   }
   document.addEventListener("editor-open", tryOpen);
   document.addEventListener("files-changed", () => { if ($("#stage-result").hidden) tryOpen(); });
-  document.addEventListener("editor-close", () => { ed.hidden = true; document.body.classList.remove("editing"); });
+  document.addEventListener("editor-close", () => { pendingImage = null; updateSignaturePreview(); ed.hidden = true; document.body.classList.remove("editing"); });
 
   function show() { ed.hidden = false; document.body.classList.add("editing"); window.scrollTo(0, 0); }
 
@@ -45,6 +71,7 @@
     pruneDrafts();
     textCache.clear(); findMatches = []; findIndex = 0; findSequence++;
     $("#ed-find").hidden = true;
+    pendingImage = null; updateSignaturePreview();
     file = f; show();
     pagesEl.innerHTML = `<div class="spinner"></div>`;
     try {
@@ -476,7 +503,7 @@
       underline: "Drag under text to underline it.", link: "Drag over an area to make it a link.", "field-text": "Drag to add a fillable text box.",
       "field-check": "Click to add a checkbox.", "field-radio": "Click to add a radio button. Give buttons the same field name to group them.",
       "field-dropdown": "Drag to add a dropdown, then set its options.", "field-listbox": "Drag to add a list box, then set its options.",
-      sign: "Click on the page to place your signature.", image: "Click on the page to place the image." };
+      sign: "Move over the page to preview your signature. Click once to place; Esc cancels.", image: "Click on the page to place the image." };
     statusEl.textContent = hints[t] || "";
     pagesEl.style.cursor = t === "select" ? "default" : "crosshair";
     pagesEl.classList.toggle("drag-tool", !["select", "edittext", "text", "sign", "image", "field-check", "field-radio"].includes(t));
@@ -484,6 +511,7 @@
     pagesEl.querySelectorAll(".texts").forEach(l => l.innerHTML = "");
     if (t === "edittext") pagesEl.querySelectorAll(".ed-pagewrap").forEach(w => { if (w.querySelector("canvas").width) drawPage(w); });
     paintProps();
+    updateSignaturePreview();
   }
 
   ed.querySelector(".ed-bar").addEventListener("click", async e => {

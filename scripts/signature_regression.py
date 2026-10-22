@@ -62,8 +62,29 @@ def main():
             target.get_by_role("dialog", name="Create signature").wait_for()
 
         def place(target=page):
+            if target.viewport_size["width"] >= 600:
+                target.locator(".ed-page").first.scroll_into_view_if_needed()
+                box = target.locator(".ed-page").first.bounding_box()
+                px, py = box["x"] + 250, box["y"] + 350
+                target.mouse.move(px, py)
+                ghost = target.locator(".signature-placement-preview")
+                assert ghost.is_visible(), "Missing cursor signature preview"
+                bounds = ghost.bounding_box()
+                assert abs(bounds["x"] + bounds["width"]/2 - px) < 1
+                assert abs(bounds["y"] + bounds["height"]/2 - py) < 1
+                assert target.locator(".signature-object").count() == 0, "Hover placed a real signature"
+                assert ghost.evaluate("e => getComputedStyle(e).pointerEvents") == "none"
+                src = ghost.locator("img").get_attribute("src")
+                target.mouse.wheel(0, 80)
+                target.wait_for_timeout(150)
+                assert ghost.is_visible()
+                assert abs(ghost.bounding_box()["y"] + bounds["height"]/2 - py) < 1
+                target.screenshot(path=str(OUT / "pending-signature-cursor.png"))
             target.locator(".ed-page").first.click(position={"x": 250, "y": 350})
             target.locator(".signature-object").wait_for()
+            assert target.locator(".signature-placement-preview").is_hidden()
+            if target.viewport_size["width"] >= 600:
+                assert target.locator(".signature-object img").get_attribute("src") == src
             assert target.locator('[data-tool="select"]').get_attribute("aria-pressed") == "true"
             for point in ({"x": 40, "y": 70}, {"x": 90, "y": 140}):
                 target.locator(".ed-page").first.click(position=point)
@@ -94,6 +115,13 @@ def main():
         page.locator("[data-ok]").click()
         page.get_by_role("dialog").wait_for(state="hidden")
         assert page.evaluate("JSON.parse(localStorage.signatures).length") == 1
+        page.locator(".ed-page").first.hover(position={"x": 250, "y": 350})
+        assert page.locator(".signature-placement-preview").is_visible()
+        page.keyboard.press("Escape")
+        assert page.locator(".signature-placement-preview").is_hidden()
+        assert page.locator(".signature-object").count() == 0
+        page.locator('[data-tool="sign"]').click()
+        page.get_by_role("button", name="Use saved signature 1", exact=True).click()
         place()
         # SVG icons must fit distinct buttons rather than inherit full-object SVG positioning.
         def check_actions(target):

@@ -186,6 +186,13 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Check mixed blue tones, repeat-click suppression, explicit reselection and exact preview/placement/PDF RGBA
 - [x] Deploy and verify one-time placement and colour checks on public HTTPS
 
+## 3i. Signature cursor preview
+
+- [x] Show pending signature centred on mouse/pen at actual placement size
+- [x] Keep preview aligned during scrolling; hide after drop, Escape, leaving page area or editor close
+- [x] Verify hover adds no objects, preview passes clicks through and placed PNG is unchanged
+- [ ] Deploy and verify cursor preview on public HTTPS
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).
