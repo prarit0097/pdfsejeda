@@ -64,6 +64,11 @@ def main():
         def place(target=page):
             target.locator(".ed-page").first.click(position={"x": 250, "y": 350})
             target.locator(".signature-object").wait_for()
+            assert target.locator('[data-tool="select"]').get_attribute("aria-pressed") == "true"
+            for point in ({"x": 40, "y": 70}, {"x": 90, "y": 140}):
+                target.locator(".ed-page").first.click(position=point)
+            assert target.locator(".signature-object").count() == 1, "Placement stayed armed"
+            target.locator(".signature-object").click()
 
         def save_pdf(target=page, session=context):
             target.locator('[data-action="save"]').click()
@@ -138,6 +143,13 @@ def main():
         page.locator('[data-tool="sign"]').click()
         page.get_by_role("button", name="Use saved signature 1", exact=True).click()
         place()
+        page.locator('[data-tool="sign"]').click()
+        page.get_by_role("button", name="Use saved signature 1", exact=True).click()
+        page.locator(".ed-page").click(position={"x": 450, "y": 500})
+        assert page.locator(".signature-object").count() == 2
+        assert page.locator('[data-tool="select"]').get_attribute("aria-pressed") == "true"
+        page.get_by_role("button", name="Delete signature", exact=True).click()
+        assert page.locator(".signature-object").count() == 1
         page.locator('[data-tool="sign"]').click()
         page.get_by_role("button", name="Remove saved signature 1", exact=True).click()
         assert page.locator(".signature-object").count() == 1

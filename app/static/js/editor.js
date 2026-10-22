@@ -769,7 +769,7 @@
     const h = w / (pendingImage.ratio || 1);
     const o = add({ type: "image", page: key, x: pt.x - w / 2, y: pt.y - h / 2, w, h, src: pendingImage.src, signature: !!pendingImage.sig, opacity: 1 });
     select(o);
-    if (!pendingImage.sig) { pendingImage = null; setTool("select"); }
+    pendingImage = null; setTool("select");
   }
 
   document.addEventListener("keydown", e => {

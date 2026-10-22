@@ -110,8 +110,7 @@
       }
       // Remove paper through alpha only. Retain each original ink pixel colour;
       // painting everything with the darkest core turns navy/blue pens black.
-      const paperEdge = photographedPaper && y > (lowMean + highMean) / 2;
-      out[i] = paperEdge ? ink[0] : source[i]; out[i + 1] = paperEdge ? ink[1] : source[i + 1]; out[i + 2] = paperEdge ? ink[2] : source[i + 2]; out[i + 3] = source[i + 3] * alpha;
+      out[i] = source[i]; out[i + 1] = source[i + 1]; out[i + 2] = source[i + 2]; out[i + 3] = source[i + 3] * alpha;
     }
     return out;
   }

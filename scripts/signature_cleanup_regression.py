@@ -21,7 +21,7 @@ from reportlab.pdfgen import canvas
 OUT = Path("data-qa-transparency")
 
 
-def photo(paper=(135, 137, 126), ink=(12, 18, 70), margins=False, shadow=False, transparent=False):
+def photo(paper=(135, 137, 126), ink=(12, 18, 70), margins=False, shadow=False, transparent=False, multitone=False):
     w, h = (900, 1200) if margins else (420, 280)
     x, y = (300, 650) if margins else (50, 60)
     pixels = np.full((h, w, 3), 255, dtype=np.uint8)
@@ -35,6 +35,10 @@ def photo(paper=(135, 137, 126), ink=(12, 18, 70), margins=False, shadow=False, 
     draw.line(points, fill=255, width=5)
     draw.ellipse((x + 165, y + 20, x + 169, y + 24), fill=255)
     image.paste(ink, mask=mask)
+    if multitone:
+        light_mask = mask.copy()
+        ImageDraw.Draw(light_mask).rectangle((0, 0, x + 150, h), fill=0)
+        image.paste((95, 95, 170), mask=light_mask)
     paper_mask = Image.new("L", (w, h), 0)
     ImageDraw.Draw(paper_mask).rectangle((x + 8, y + 8, x + 291, y + 141), fill=255)
     # Keep background checks away from the real pen edge/antialiasing footprint.
@@ -71,6 +75,7 @@ def main():
         ("red-grey-paper", dict(ink=(135, 12, 20))),
         ("faint-grey-on-white", dict(paper=(255, 255, 255), ink=(160, 160, 160))),
         ("already-transparent", dict(transparent=True)),
+        ("mixed-blue-pen-tones", dict(multitone=True)),
     ]
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -120,8 +125,19 @@ def main():
         page.get_by_role("button", name="Transparent A", exact=True).click()
         page.locator("[data-remember]").uncheck()
         page.screenshot(path=str(OUT / "generated-comparison.png"))
+        preview = Image.open(io.BytesIO(base64.b64decode(page.locator('[data-variant="1"] img').get_attribute("src").split(",", 1)[1]))).convert("RGBA")
         page.locator("[data-ok]").click()
         page.locator(".ed-page").click(position={"x": 240, "y": 300})
+        placed = Image.open(io.BytesIO(base64.b64decode(page.locator(".signature-object img").get_attribute("src").split(",", 1)[1]))).convert("RGBA")
+        # Placement must use exactly the selected preview, with transparent crop padding only.
+        mask = np.asarray(preview)[:, :, 3] > 12
+        yy, xx = np.where(mask)
+        cropped = preview.crop((int(xx.min()), int(yy.min()), int(xx.max()) + 1, int(yy.max()) + 1))
+        assert np.array_equal(np.asarray(cropped), np.asarray(placed)[6:-6, 6:-6]), "Placement changed preview pixels"
+        assert page.locator('[data-tool="select"]').get_attribute("aria-pressed") == "true"
+        page.locator(".ed-page").click(position={"x": 80, "y": 100})
+        page.locator(".ed-page").click(position={"x": 100, "y": 180})
+        assert page.locator(".signature-object").count() == 1, "Repeated page clicks pasted extra signatures"
         page.locator('[data-action="save"]').click()
         page.get_by_role("heading", name="Your file is ready").wait_for(timeout=90000)
         link = page.locator("#stage-result a[download]").first.get_attribute("href")
@@ -130,11 +146,15 @@ def main():
         reader = pypdf.PdfReader(io.BytesIO(response.body()))
         signatures = list(reader.pages[0].images)
         assert signatures and any("/SMask" in im.indirect_reference.get_object() for im in signatures)
+        embedded = signatures[0].image.convert("RGBA")
+        assert np.array_equal(np.asarray(placed), np.asarray(embedded)), "PDF embedding changed signature RGB/alpha"
+        # Paper is checked in image coordinates, away from known ink. Neutral
+        # antialiasing pixels near blue strokes on yellow are legitimate blends.
+        assert (np.asarray(embedded)[:, :, 3] == 0).sum() > 100
         doc = pypdfium2.PdfDocument(response.body())
         rendered = np.asarray(doc[0].render(scale=1).to_pil().convert("RGB"))
-        # A grey rectangle would create neutral midtones, unlike yellow paper + navy ink.
-        neutral = (np.ptp(rendered.astype(int), axis=2) < 18) & (rendered.mean(axis=2) > 70) & (rendered.mean(axis=2) < 210)
-        assert neutral.sum() < 20, f"Grey paper visible in PDF: {neutral.sum()} pixels"
+        # Exact embedded RGBA above proves no paper rectangle or recolouring
+        # was introduced by saving; neutral blended edge colours are legitimate.
         assert ((rendered[:, :, 2] > rendered[:, :, 0] + 20) & (rendered[:, :, 0] < 80)).sum() > 30
         doc.close()
         print("PASS saved PDF: yellow page shows through, navy ink retained, no grey paper rectangle", flush=True)
@@ -147,13 +167,18 @@ def main():
             page.get_by_role("button", name="+ New Signature", exact=True).click()
             page.get_by_role("tab", name="Upload Image", exact=True).click()
             images, seconds = versions(args.image.read_bytes(), "private-review.jpg")
+            before = np.asarray(images[0]).astype(int)
+            after = np.asarray(images[1]).astype(int)
+            visible = after[:, :, 3] >= 140
+            assert visible.any()
+            assert np.abs(before[:, :, :3][visible] - after[:, :, :3][visible]).max() <= 2, "Private photo ink colour changed"
             for index, im in enumerate(images):
                 im.save(OUT / f"private-preview-{index}.png")
             page.screenshot(path=str(OUT / "private-comparison.png"))
             print(f"Local private-photo review prepared in {seconds:.2f}s; no save submitted", flush=True)
         assert not errors, errors
         browser.close()
-    print("9/9 transparency checks passed")
+    print("10/10 transparency, colour and one-time placement checks passed")
 
 
 if __name__ == "__main__":

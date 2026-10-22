@@ -179,6 +179,13 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Verify distinct desktop/mobile controls, actions, colour and real PDF output
 - [x] Deploy and verify these corrections on public HTTPS
 
+## 3h. One-time signature placement and complete colour preservation
+
+- [x] Clear pending signature and return to Select after one placement
+- [x] Remove remaining faint-edge RGB replacement
+- [x] Check mixed blue tones, repeat-click suppression, explicit reselection and exact preview/placement/PDF RGBA
+- [ ] Deploy and verify one-time placement and colour checks on public HTTPS
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).
