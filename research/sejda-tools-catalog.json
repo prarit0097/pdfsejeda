@@ -1,0 +1,3609 @@
+[
+  {
+    "page": "alternate-mix-pdf",
+    "title": "Alternate &amp; Mix Odd and Even PDF Pages",
+    "description": "Alternate & Mix Odd and Even PDF Pages. Mixes pages from 2 or more documents, alternating between them. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "alternateMix",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "alternateMix"
+    ],
+    "acceptedFileTypes": [
+      "pdf",
+      "pdf,png,gif,jpg,jpeg,tif,tiff,bmp,webp"
+    ],
+    "fields": {
+      "key": {
+        "kind": "hidden",
+        "values": []
+      },
+      "AWSAccessKeyId": {
+        "kind": "hidden",
+        "values": []
+      },
+      "acl": {
+        "kind": "hidden",
+        "values": []
+      },
+      "success_action_redirect": {
+        "kind": "hidden",
+        "values": []
+      },
+      "policy": {
+        "kind": "hidden",
+        "values": []
+      },
+      "signature": {
+        "kind": "hidden",
+        "values": []
+      },
+      "Content-type": {
+        "kind": "hidden",
+        "values": []
+      },
+      "x-amz-storage-class": {
+        "kind": "hidden",
+        "values": []
+      },
+      "reverse": {
+        "kind": "radio",
+        "values": [
+          "false",
+          "true"
+        ]
+      },
+      "step[]": {
+        "kind": "text",
+        "values": [
+          "1"
+        ]
+      },
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      }
+    }
+  },
+  {
+    "page": "bates-numbering-pdf",
+    "title": "Bates numbering of PDF files",
+    "description": "Bates numbering of PDF files. Bates stamp multiple files at once. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "batesNumbering",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "batesNumbering"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "pattern": {
+        "kind": "hidden",
+        "values": [
+          "Exhibit [FILE_NUMBER] - Case XYZ - [BATES_NUMBER]"
+        ]
+      },
+      "batesDigits": {
+        "kind": "hidden",
+        "values": [
+          "6"
+        ]
+      },
+      "bates-with-exhibit-and-page_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-and-page_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-and-page_page": {
+        "kind": "text",
+        "values": [
+          "Page"
+        ]
+      },
+      "bates-with-exhibit-5-digits-and-page_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-5-digits-and-page_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-5-digits-and-page_page": {
+        "kind": "text",
+        "values": [
+          "Page"
+        ]
+      },
+      "bates-with-exhibit-4-digits-and-page_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-4-digits-and-page_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-4-digits-and-page_page": {
+        "kind": "text",
+        "values": [
+          "Page"
+        ]
+      },
+      "bates-with-exhibit-3-digits-and-page_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-3-digits-and-page_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-3-digits-and-page_page": {
+        "kind": "text",
+        "values": [
+          "Page"
+        ]
+      },
+      "bates-with-exhibit-1-digits-and-page_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-1-digits-and-page_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-1-digits-and-page_page": {
+        "kind": "text",
+        "values": [
+          "Page"
+        ]
+      },
+      "bates-with-exhibit_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "full-bates_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-5-digits_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-5-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-4-digits_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-4-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-3-digits_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-3-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-with-exhibit-1-digits_exhibit": {
+        "kind": "text",
+        "values": [
+          "Exhibit"
+        ]
+      },
+      "bates-with-exhibit-1-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "full-bates-5-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "full-bates-4-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "full-bates-3-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "full-bates-1-digits_case": {
+        "kind": "text",
+        "values": [
+          "Case XYZ"
+        ]
+      },
+      "bates-custom_text": {
+        "kind": "text",
+        "values": [
+          "Exhibit [FILE_NUMBER] Case XYZ [BATES_NUMBER]"
+        ]
+      },
+      "batesStartFrom": {
+        "kind": "text",
+        "values": [
+          "1"
+        ]
+      },
+      "batesIncrement": {
+        "kind": "hidden",
+        "values": [
+          "1"
+        ]
+      },
+      "fileCountStartFrom": {
+        "kind": "text",
+        "values": [
+          "1"
+        ]
+      },
+      "addMargins": {
+        "kind": "radio",
+        "values": [
+          "false",
+          "true"
+        ]
+      },
+      "font": {
+        "kind": "radio",
+        "values": [
+          "times_roman",
+          "helvetica",
+          "courier"
+        ]
+      },
+      "color": {
+        "kind": "hidden",
+        "values": [
+          "#000000"
+        ]
+      },
+      "style": {
+        "kind": "select",
+        "values": [
+          "bates-with-exhibit-and-page",
+          "bates-with-exhibit",
+          "full-bates",
+          "bates-with-exhibit-5-digits-and-page",
+          "bates-with-exhibit-5-digits",
+          "full-bates-5-digits",
+          "bates-with-exhibit-4-digits-and-page",
+          "bates-with-exhibit-4-digits",
+          "full-bates-4-digits",
+          "bates-with-exhibit-3-digits-and-page",
+          "bates-with-exhibit-3-digits",
+          "full-bates-3-digits",
+          "bates-with-exhibit-1-digits-and-page",
+          "bates-with-exhibit-1-digits",
+          "full-bates-1-digits",
+          "just-number",
+          "just-number-5-digits",
+          "just-number-4-digits",
+          "just-number-3-digits",
+          "just-number-1-digits",
+          "bates-custom"
+        ]
+      },
+      "pageLocation": {
+        "kind": "select",
+        "values": [
+          "top-left",
+          "top-center",
+          "top-right",
+          "bottom-left",
+          "bottom-center",
+          "bottom-right"
+        ]
+      },
+      "fontSize": {
+        "kind": "select",
+        "values": [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "18",
+          "20",
+          "22",
+          "24",
+          "26",
+          "28",
+          "30",
+          "45",
+          "60"
+        ]
+      }
+    }
+  },
+  {
+    "page": "compress-pdf",
+    "title": "Compress PDF online",
+    "description": "Compress PDF. Reduce the size of your PDF. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "compress",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": "100",
+    "submitTypes": [
+      "compress"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "imageQuality": {
+        "kind": "radio",
+        "values": [
+          "0.65",
+          "0.8",
+          "1"
+        ]
+      },
+      "imageDpi": {
+        "kind": "radio",
+        "values": [
+          "72",
+          "100",
+          "144",
+          "200",
+          "300",
+          "720"
+        ]
+      },
+      "imageConversion": {
+        "kind": "radio",
+        "values": [
+          "none",
+          "grayscale"
+        ]
+      },
+      "discardMultimedia": {
+        "kind": "radio",
+        "values": [
+          "all",
+          "none"
+        ]
+      },
+      "subsetFonts": {
+        "kind": "radio",
+        "values": [
+          "false",
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "crop-pdf",
+    "title": "Crop PDF Online. Automatically trim white margins in one click.",
+    "description": "Automatically crop white margins or preview PDF pages and select crop areas. No registration or watermarks.",
+    "task": "crop",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "crop"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "all",
+          "individual",
+          "odd-even"
+        ]
+      },
+      "marginTop": {
+        "kind": "text",
+        "values": [
+          "0.0"
+        ]
+      },
+      "areaWidth": {
+        "kind": "text",
+        "values": [
+          "0.0"
+        ]
+      },
+      "areaHeight": {
+        "kind": "text",
+        "values": [
+          "0.0"
+        ]
+      },
+      "unit": {
+        "kind": "radio",
+        "values": [
+          "inch",
+          "cm"
+        ]
+      },
+      "marginBottom": {
+        "kind": "text",
+        "values": [
+          "0.0"
+        ]
+      },
+      "marginLeft": {
+        "kind": "text",
+        "values": [
+          "0.0"
+        ]
+      },
+      "marginRight": {
+        "kind": "text",
+        "values": [
+          "0.0"
+        ]
+      },
+      "autoCropMode": {
+        "kind": "hidden",
+        "values": [
+          "none"
+        ]
+      }
+    }
+  },
+  {
+    "page": "delete-pdf-annotations",
+    "title": "Delete PDF annotations Online",
+    "description": "Delete PDF annotations. Batch remove highlights, strikeouts or any other annotations from a PDF document. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "deleteAnnotations",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "deleteAnnotations"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "annotationTypes[]": {
+        "kind": "checkbox",
+        "values": [
+          "all",
+          "highlight",
+          "strikeout",
+          "underline",
+          "ink",
+          "polygon",
+          "square",
+          "circle",
+          "line",
+          "polyline",
+          "link",
+          "text",
+          "freetext",
+          "popup"
+        ]
+      },
+      "pages": {
+        "kind": "text",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "delete-pdf-pages",
+    "title": "Delete pages from your PDF online",
+    "description": "Easily remove pages from a PDF. No registration or watermarks. Zoom pages. Specify an interval when deleting many pages. Batch process multiple files at once.",
+    "task": "deletePages",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "deletePages"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "pages": {
+        "kind": "text",
+        "values": []
+      },
+      "discardOutline": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "deskew-pdf",
+    "title": "Deskew PDF Online",
+    "description": "Automatically straighten and de-skew any scanned PDF. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "deskew",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": "100",
+    "submitTypes": [
+      "deskew"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "angles": {
+        "kind": "hidden",
+        "values": []
+      },
+      "mode": {
+        "kind": "hidden",
+        "values": [
+          "automatic"
+        ]
+      },
+      "pages": {
+        "kind": "text",
+        "values": []
+      },
+      "onlyStronglySkewed": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "desktop",
+    "title": "Sejda PDF Desktop - Official Website",
+    "description": "",
+    "task": null,
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [],
+    "acceptedFileTypes": [],
+    "fields": {
+      "csrf": {
+        "kind": "hidden",
+        "values": [
+          "C0ETYJLTUX0GBYUBYKYP"
+        ]
+      },
+      "password": {
+        "kind": "password",
+        "values": []
+      },
+      "emailVerificationCode": {
+        "kind": "text",
+        "values": []
+      },
+      "agreeTerms": {
+        "kind": "checkbox",
+        "values": [
+          "yes"
+        ]
+      },
+      "seats": {
+        "kind": "hidden",
+        "values": [
+          "1"
+        ]
+      },
+      "discount": {
+        "kind": "hidden",
+        "values": [
+          "0"
+        ]
+      },
+      "stripePublicKey": {
+        "kind": "hidden",
+        "values": []
+      },
+      "paypalEnv": {
+        "kind": "hidden",
+        "values": []
+      },
+      "firstName": {
+        "kind": "text",
+        "values": []
+      },
+      "lastName": {
+        "kind": "text",
+        "values": []
+      },
+      "companyName": {
+        "kind": "text",
+        "values": []
+      },
+      "vatNumber": {
+        "kind": "text",
+        "values": []
+      },
+      "billingAddressCountry": {
+        "kind": "select",
+        "values": [
+          "FR",
+          "CA",
+          "BR",
+          "IN",
+          "ES",
+          "US",
+          "GB",
+          "AF",
+          "AX",
+          "AL",
+          "DZ",
+          "AS",
+          "AD",
+          "AO",
+          "AI",
+          "AQ",
+          "AG",
+          "AR",
+          "AM",
+          "AW",
+          "AU",
+          "AT",
+          "AZ",
+          "BS",
+          "BH",
+          "BD",
+          "BB",
+          "BY",
+          "BE",
+          "BZ",
+          "BJ",
+          "BM",
+          "BT",
+          "BO",
+          "BQ",
+          "BA",
+          "BW",
+          "BV",
+          "IO",
+          "VG",
+          "BN",
+          "BG",
+          "BF",
+          "BI",
+          "KH",
+          "CM",
+          "IC",
+          "CV",
+          "KY",
+          "CF",
+          "TD",
+          "CL",
+          "CN",
+          "CX",
+          "CC",
+          "CO",
+          "KM",
+          "CD",
+          "CG",
+          "CK",
+          "CR",
+          "HR",
+          "CU",
+          "CW",
+          "CY",
+          "CZ",
+          "DK",
+          "DJ",
+          "DM",
+          "DO",
+          "EC",
+          "EG",
+          "SV",
+          "GQ",
+          "ER",
+          "EE",
+          "ET",
+          "FK",
+          "FO",
+          "FJ",
+          "FI",
+          "GF",
+          "PF",
+          "TF",
+          "GA",
+          "GM",
+          "GE",
+          "DE",
+          "GH",
+          "GI",
+          "GR",
+          "GL",
+          "GD",
+          "GP",
+          "GU",
+          "GT",
+          "GG",
+          "GN",
+          "GW",
+          "GY",
+          "HT",
+          "HM",
+          "HN",
+          "HK",
+          "HU",
+          "IS",
+          "ID",
+          "IR",
+          "IQ",
+          "IE",
+          "IM",
+          "IL",
+          "IT",
+          "CI",
+          "JM",
+          "JP",
+          "JE",
+          "JO",
+          "KZ",
+          "KE",
+          "KI",
+          "KP",
+          "KR",
+          "XK",
+          "KW",
+          "KG",
+          "LA",
+          "LV",
+          "LB",
+          "LS",
+          "LR",
+          "LY",
+          "LI",
+          "LT",
+          "LU",
+          "MO",
+          "MK",
+          "MG",
+          "MW",
+          "MY",
+          "MV",
+          "ML",
+          "MT",
+          "MH",
+          "MQ",
+          "MR",
+          "MU",
+          "YT",
+          "MX",
+          "FM",
+          "MD",
+          "MC",
+          "MN",
+          "ME",
+          "MS",
+          "MA",
+          "MZ",
+          "MM",
+          "NA",
+          "NR",
+          "NP",
+          "NL",
+          "NC",
+          "NZ",
+          "NI",
+          "NE",
+          "NG",
+          "NU",
+          "NF",
+          "MP",
+          "NO",
+          "OM",
+          "PK",
+          "PW",
+          "PS",
+          "PA",
+          "PG",
+          "PY",
+          "PE",
+          "PH",
+          "PN",
+          "PL",
+          "PT",
+          "PR",
+          "QA",
+          "RE",
+          "RO",
+          "RU",
+          "RW",
+          "BL",
+          "SH",
+          "KN",
+          "LC",
+          "MF",
+          "PM",
+          "VC",
+          "WS",
+          "SM",
+          "ST",
+          "SA",
+          "SN",
+          "RS",
+          "SC",
+          "SL",
+          "SG",
+          "SX",
+          "SK",
+          "SI",
+          "SB",
+          "SO",
+          "ZA",
+          "GS",
+          "SS",
+          "LK",
+          "SD",
+          "SR",
+          "SJ",
+          "SZ",
+          "SE",
+          "CH",
+          "SY",
+          "TW",
+          "TJ",
+          "TZ",
+          "TH",
+          "TL",
+          "TG",
+          "TK",
+          "TO",
+          "TT",
+          "TN",
+          "TR",
+          "TM",
+          "TC",
+          "TV",
+          "UG",
+          "UA",
+          "AE",
+          "UM",
+          "VI",
+          "UY",
+          "UZ",
+          "VU",
+          "VA",
+          "VE",
+          "VN",
+          "WF",
+          "EH",
+          "YE",
+          "ZM",
+          "ZW"
+        ]
+      }
+    }
+  },
+  {
+    "page": "developers",
+    "title": "Developers - API Docs",
+    "description": "Developer documentation for our HTML to PDF API, web integrations such as 'Save as PDF' links and deep links to open your files with SEJDA.COM tools.",
+    "task": null,
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [],
+    "acceptedFileTypes": [],
+    "fields": {
+      "fileLocation": {
+        "kind": "radio",
+        "values": [
+          "website",
+          "gdrive",
+          "dropbox",
+          "computer",
+          "other"
+        ]
+      },
+      "selectedTool": {
+        "kind": "radio",
+        "values": [
+          "sign-pdf",
+          "pdf-editor"
+        ]
+      },
+      "returnEmail": {
+        "kind": "email",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "edit-pdf-metadata",
+    "title": "Edit PDF metadata online",
+    "description": "Easily change PDF metadata such as Author, Title, Subject, Keywords and other fields. Free, no registration or watermarks.",
+    "task": "editMetadata",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "editMetadata"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "removeAllMetadata": {
+        "kind": "hidden",
+        "values": [
+          "false"
+        ]
+      },
+      "metadata.Title": {
+        "kind": "text",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "encrypt-pdf",
+    "title": "Password Protect PDF - Safely Encrypt your PDF Online",
+    "description": "No registration or watermarks. Simple and secure way to password protect your PDFs with strong AES 256 bits encryption.",
+    "task": "encrypt",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "encrypt"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "userPassword": {
+        "kind": "text",
+        "values": []
+      },
+      "ownerPassword": {
+        "kind": "text",
+        "values": []
+      },
+      "encryptionAlgorithm": {
+        "kind": "radio",
+        "values": [
+          "rc4_128",
+          "aes_128",
+          "aes_256"
+        ]
+      },
+      "permissions[]": {
+        "kind": "checkbox",
+        "values": [
+          "modify",
+          "copy",
+          "degradedprinting",
+          "print",
+          "fill",
+          "modifyannotations",
+          "assemble"
+        ]
+      }
+    }
+  },
+  {
+    "page": "extract-images-from-pdf",
+    "title": "Extract images from PDF",
+    "description": "Extract images from PDF. Save each image from the PDF as a separate file. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "extractImages",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "extractImages"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {}
+  },
+  {
+    "page": "extract-pdf-pages",
+    "title": "Extract pages from PDF online",
+    "description": "Extract PDF Pages. Get a new document containing only the desired pages. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "extractPages",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "extractPages"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "pages": {
+        "kind": "radio",
+        "values": [
+          "odd",
+          "even",
+          "none"
+        ]
+      },
+      "discardOutline": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "extract-text-from-pdf",
+    "title": "PDF to Text",
+    "description": "Extract text from PDF. Copies all text from the PDF document and extracts it to a separate text file. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "extractText",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "extractText"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {}
+  },
+  {
+    "page": "flatten-pdf",
+    "title": "Flatten PDF Online",
+    "description": "Print & scan in one step. Converts PDF pages to images so text can&#x2019;t be copied or modified directly. Makes fillable PDFs read-only. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "flatten",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "flatten"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "flattenMode": {
+        "kind": "radio",
+        "values": [
+          "all",
+          "onlyforms"
+        ]
+      },
+      "resolution": {
+        "kind": "radio",
+        "values": [
+          "75",
+          "100",
+          "150",
+          "220"
+        ]
+      }
+    }
+  },
+  {
+    "page": "flip-pdf",
+    "title": "Flip PDF Online - Mirror Pages Horizontally or Vertically",
+    "description": "Flip a PDF online for free. Mirror pages horizontally or vertically. Iron-on transfers, fix reversed scans, backwards PDF text, PDF content upside down or reversed. No install, no signup. It's free, quick and easy to use.",
+    "task": "flip",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "flip"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "flipMode": {
+        "kind": "radio",
+        "values": [
+          "horizontal",
+          "vertical"
+        ]
+      }
+    }
+  },
+  {
+    "page": "grayscale-pdf",
+    "title": "Convert PDF to Grayscale online",
+    "description": "Convert PDF to Grayscale. Make a PDF text and images grayscale. Black and white printing. Export PDF for offset printing. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "grayscale",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "grayscale"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "textConversion": {
+        "kind": "radio",
+        "values": [
+          "grayscale",
+          "black"
+        ]
+      },
+      "imageConversion": {
+        "kind": "radio",
+        "values": [
+          "grayscale",
+          "none"
+        ]
+      },
+      "compressImages": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "header-footer-pdf",
+    "title": "Add Header and Footer to PDF files online",
+    "description": "Add PDF Header & Footer. Apply page numbers or text labels to PDF files. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "headerFooter",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "headerFooter"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "pattern": {
+        "kind": "hidden",
+        "values": []
+      },
+      "hf-format-customize[]": {
+        "kind": "text",
+        "values": [
+          "Page",
+          "[PAGE_ARABIC]",
+          "[PAGE_ROMAN]",
+          "of",
+          "[TOTAL_PAGES_ARABIC]",
+          "[BASE_NAME]",
+          "Draft version"
+        ]
+      },
+      "font": {
+        "kind": "radio",
+        "values": [
+          "times_roman",
+          "helvetica",
+          "courier"
+        ]
+      },
+      "color": {
+        "kind": "hidden",
+        "values": [
+          "#000000"
+        ]
+      },
+      "addMargins": {
+        "kind": "radio",
+        "values": [
+          "false",
+          "true"
+        ]
+      },
+      "pages": {
+        "kind": "text",
+        "values": []
+      },
+      "pageCountStartFrom": {
+        "kind": "text",
+        "values": []
+      },
+      "pageLocation": {
+        "kind": "select",
+        "values": [
+          "top-left",
+          "top-center",
+          "top-right",
+          "bottom-left",
+          "bottom-center",
+          "bottom-right"
+        ]
+      },
+      "fontSize": {
+        "kind": "select",
+        "values": [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "18",
+          "20",
+          "22",
+          "24",
+          "26",
+          "28"
+        ]
+      }
+    }
+  },
+  {
+    "page": "help",
+    "title": "Help",
+    "description": "",
+    "task": null,
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [],
+    "acceptedFileTypes": [],
+    "fields": {}
+  },
+  {
+    "page": "html-pdf-api",
+    "title": "HTML to PDF API",
+    "description": "",
+    "task": null,
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [],
+    "acceptedFileTypes": [],
+    "fields": {
+      "csrf": {
+        "kind": "hidden",
+        "values": [
+          "2132ADYCDSENLZ5BY1TL",
+          "K5H2A0XHIT12LR21RLCR"
+        ]
+      },
+      "password": {
+        "kind": "password",
+        "values": []
+      },
+      "emailVerificationCode": {
+        "kind": "text",
+        "values": []
+      },
+      "agreeTerms": {
+        "kind": "checkbox",
+        "values": [
+          "yes"
+        ]
+      },
+      "seats": {
+        "kind": "hidden",
+        "values": [
+          "1"
+        ]
+      },
+      "discount": {
+        "kind": "hidden",
+        "values": [
+          "0"
+        ]
+      },
+      "stripePublicKey": {
+        "kind": "hidden",
+        "values": []
+      },
+      "paypalEnv": {
+        "kind": "hidden",
+        "values": []
+      },
+      "firstName": {
+        "kind": "text",
+        "values": []
+      },
+      "lastName": {
+        "kind": "text",
+        "values": []
+      },
+      "companyName": {
+        "kind": "text",
+        "values": []
+      },
+      "vatNumber": {
+        "kind": "text",
+        "values": []
+      },
+      "billingAddressCountry": {
+        "kind": "select",
+        "values": [
+          "FR",
+          "CA",
+          "BR",
+          "IN",
+          "ES",
+          "US",
+          "GB",
+          "AF",
+          "AX",
+          "AL",
+          "DZ",
+          "AS",
+          "AD",
+          "AO",
+          "AI",
+          "AQ",
+          "AG",
+          "AR",
+          "AM",
+          "AW",
+          "AU",
+          "AT",
+          "AZ",
+          "BS",
+          "BH",
+          "BD",
+          "BB",
+          "BY",
+          "BE",
+          "BZ",
+          "BJ",
+          "BM",
+          "BT",
+          "BO",
+          "BQ",
+          "BA",
+          "BW",
+          "BV",
+          "IO",
+          "VG",
+          "BN",
+          "BG",
+          "BF",
+          "BI",
+          "KH",
+          "CM",
+          "IC",
+          "CV",
+          "KY",
+          "CF",
+          "TD",
+          "CL",
+          "CN",
+          "CX",
+          "CC",
+          "CO",
+          "KM",
+          "CD",
+          "CG",
+          "CK",
+          "CR",
+          "HR",
+          "CU",
+          "CW",
+          "CY",
+          "CZ",
+          "DK",
+          "DJ",
+          "DM",
+          "DO",
+          "EC",
+          "EG",
+          "SV",
+          "GQ",
+          "ER",
+          "EE",
+          "ET",
+          "FK",
+          "FO",
+          "FJ",
+          "FI",
+          "GF",
+          "PF",
+          "TF",
+          "GA",
+          "GM",
+          "GE",
+          "DE",
+          "GH",
+          "GI",
+          "GR",
+          "GL",
+          "GD",
+          "GP",
+          "GU",
+          "GT",
+          "GG",
+          "GN",
+          "GW",
+          "GY",
+          "HT",
+          "HM",
+          "HN",
+          "HK",
+          "HU",
+          "IS",
+          "ID",
+          "IR",
+          "IQ",
+          "IE",
+          "IM",
+          "IL",
+          "IT",
+          "CI",
+          "JM",
+          "JP",
+          "JE",
+          "JO",
+          "KZ",
+          "KE",
+          "KI",
+          "KP",
+          "KR",
+          "XK",
+          "KW",
+          "KG",
+          "LA",
+          "LV",
+          "LB",
+          "LS",
+          "LR",
+          "LY",
+          "LI",
+          "LT",
+          "LU",
+          "MO",
+          "MK",
+          "MG",
+          "MW",
+          "MY",
+          "MV",
+          "ML",
+          "MT",
+          "MH",
+          "MQ",
+          "MR",
+          "MU",
+          "YT",
+          "MX",
+          "FM",
+          "MD",
+          "MC",
+          "MN",
+          "ME",
+          "MS",
+          "MA",
+          "MZ",
+          "MM",
+          "NA",
+          "NR",
+          "NP",
+          "NL",
+          "NC",
+          "NZ",
+          "NI",
+          "NE",
+          "NG",
+          "NU",
+          "NF",
+          "MP",
+          "NO",
+          "OM",
+          "PK",
+          "PW",
+          "PS",
+          "PA",
+          "PG",
+          "PY",
+          "PE",
+          "PH",
+          "PN",
+          "PL",
+          "PT",
+          "PR",
+          "QA",
+          "RE",
+          "RO",
+          "RU",
+          "RW",
+          "BL",
+          "SH",
+          "KN",
+          "LC",
+          "MF",
+          "PM",
+          "VC",
+          "WS",
+          "SM",
+          "ST",
+          "SA",
+          "SN",
+          "RS",
+          "SC",
+          "SL",
+          "SG",
+          "SX",
+          "SK",
+          "SI",
+          "SB",
+          "SO",
+          "ZA",
+          "GS",
+          "SS",
+          "LK",
+          "SD",
+          "SR",
+          "SJ",
+          "SZ",
+          "SE",
+          "CH",
+          "SY",
+          "TW",
+          "TJ",
+          "TZ",
+          "TH",
+          "TL",
+          "TG",
+          "TK",
+          "TO",
+          "TT",
+          "TN",
+          "TR",
+          "TM",
+          "TC",
+          "TV",
+          "UG",
+          "UA",
+          "AE",
+          "UM",
+          "VI",
+          "UY",
+          "UZ",
+          "VU",
+          "VA",
+          "VE",
+          "VN",
+          "WF",
+          "EH",
+          "YE",
+          "ZM",
+          "ZW"
+        ]
+      }
+    }
+  },
+  {
+    "page": "html-to-pdf",
+    "title": "Convert HTML to PDF Online",
+    "description": "HTML to PDF. Convert HTML pages to a PDF document. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "htmlToPdf",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": "30",
+    "submitTypes": [
+      "htmlToPdf"
+    ],
+    "acceptedFileTypes": [
+      "html"
+    ],
+    "fields": {
+      "save-link": {
+        "kind": "hidden",
+        "values": [
+          "false"
+        ]
+      },
+      "partialContentAllowed": {
+        "kind": "hidden",
+        "values": [
+          "true"
+        ]
+      },
+      "blockAds": {
+        "kind": "hidden",
+        "values": [
+          "true"
+        ]
+      },
+      "timezone": {
+        "kind": "hidden",
+        "values": []
+      },
+      "fromBookmarklet": {
+        "kind": "hidden",
+        "values": [
+          "false"
+        ]
+      },
+      "viewportWidth": {
+        "kind": "number",
+        "values": []
+      },
+      "pageMargin": {
+        "kind": "number",
+        "values": [
+          "0"
+        ]
+      },
+      "hideNotices": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "usePrintMedia": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "includeHeaderFooterDetails": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "pageSize": {
+        "kind": "select",
+        "values": [
+          "A4",
+          "A3",
+          "A2",
+          "Letter",
+          "Legal"
+        ]
+      },
+      "pageOrientation": {
+        "kind": "select",
+        "values": [
+          "auto",
+          "portrait",
+          "landscape"
+        ]
+      },
+      "pageMarginUnits": {
+        "kind": "select",
+        "values": [
+          "px",
+          "in",
+          "cm",
+          "mm"
+        ]
+      },
+      "delay": {
+        "kind": "select",
+        "values": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      "browserLocation": {
+        "kind": "select",
+        "values": [
+          "us",
+          "eu"
+        ]
+      },
+      "lang": {
+        "kind": "select",
+        "values": [
+          "ar",
+          "am",
+          "bg",
+          "bn",
+          "ca",
+          "cs",
+          "da",
+          "de",
+          "el",
+          "en",
+          "en_AU",
+          "en_GB",
+          "en_US",
+          "es",
+          "es_419",
+          "et",
+          "fa",
+          "fi",
+          "fil",
+          "fr",
+          "gu",
+          "he",
+          "hi",
+          "hr",
+          "hu",
+          "id",
+          "it",
+          "ja",
+          "kn",
+          "ko",
+          "lt",
+          "lv",
+          "ml",
+          "mr",
+          "ms",
+          "nl",
+          "no",
+          "pl",
+          "pt_BR",
+          "pt_PT",
+          "ro",
+          "ru",
+          "sk",
+          "sl",
+          "sr",
+          "sv",
+          "sw",
+          "ta",
+          "te",
+          "th",
+          "tr",
+          "uk",
+          "vi",
+          "zh_CN",
+          "zh_TW"
+        ]
+      },
+      "urls": {
+        "kind": "textarea",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "jpg-to-pdf",
+    "title": "JPG to PDF Online",
+    "description": "JPG to PDF. Convert Images to PDF. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "jpgToPdf",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "jpgToPdf"
+    ],
+    "acceptedFileTypes": [
+      "png,gif,jpg,jpeg,tif,tiff,bmp,webp",
+      "pdf"
+    ],
+    "fields": {
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "mergeOutputs": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "pageSizeWidth": {
+        "kind": "number",
+        "values": [
+          "0.000"
+        ]
+      },
+      "pageSizeHeight": {
+        "kind": "number",
+        "values": [
+          "0.000"
+        ]
+      },
+      "pageSize": {
+        "kind": "select",
+        "values": [
+          "auto",
+          "custom",
+          "A5",
+          "A4",
+          "A3",
+          "A2",
+          "A1",
+          "letter",
+          "legal",
+          "legder",
+          "tabloid",
+          "executive"
+        ]
+      },
+      "pageOrientation": {
+        "kind": "select",
+        "values": [
+          "auto",
+          "portrait",
+          "landscape"
+        ]
+      },
+      "pageMargin": {
+        "kind": "select",
+        "values": [
+          "0"
+        ]
+      }
+    }
+  },
+  {
+    "page": "merge-pdf",
+    "title": "Merge PDF Files Online",
+    "description": "Merge PDF Files Online. Combine multiple PDFs and images into one. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "merge",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "merge"
+    ],
+    "acceptedFileTypes": [
+      "pdf,png,gif,jpg,jpeg,tif,tiff,bmp,webp",
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "outputFilename": {
+        "kind": "hidden",
+        "values": []
+      },
+      "blankPageIfOdd": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "normalizePageSizes": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "firstInputCoverTitle": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "filenameFooter": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "outlinePolicy": {
+        "kind": "radio",
+        "values": [
+          "retain",
+          "discard",
+          "one_entry_each_doc",
+          "retain_as_one_entry"
+        ]
+      },
+      "tocPolicy": {
+        "kind": "radio",
+        "values": [
+          "none",
+          "file_names",
+          "doc_titles"
+        ]
+      },
+      "acroFormPolicy": {
+        "kind": "radio",
+        "values": [
+          "none",
+          "merge",
+          "merge_renaming",
+          "flatten"
+        ]
+      }
+    }
+  },
+  {
+    "page": "n-up-pdf",
+    "title": "N-up &amp; PDF Imposition",
+    "description": "Print multiple pages per sheet per paper. A5 plan as 4-up on A3 or A4 2-up on A3. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "nup",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "nup"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "n": {
+        "kind": "radio",
+        "values": [
+          "2",
+          "4",
+          "8",
+          "16",
+          "32"
+        ]
+      },
+      "pageOrdering": {
+        "kind": "radio",
+        "values": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      "preservePageSize": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "rightToLeft": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "ocr-pdf",
+    "title": "OCR Recognize Text in PDF Online",
+    "description": "Convert PDF scans to searchable text and PDFs. Extract text from scans. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "ocr",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "ocr"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "outputFormats[]": {
+        "kind": "checkbox",
+        "values": [
+          "pdf",
+          "txt"
+        ]
+      },
+      "lang": {
+        "kind": "select",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "organize-pdf",
+    "title": "Organize PDF Pages Online",
+    "description": "Organize PDF Pages. Arrange and reorder PDF pages. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "combineReorder",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "combineReorder"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "outputFilename": {
+        "kind": "hidden",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "page-numbers-pdf",
+    "title": "Add PDF Page Numbers",
+    "description": "Apply page numbers to PDF pages. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "headerFooter",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "headerFooter"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "pattern": {
+        "kind": "hidden",
+        "values": []
+      },
+      "hf-format-customize[]": {
+        "kind": "text",
+        "values": [
+          "Page",
+          "[PAGE_ARABIC]",
+          "[PAGE_ROMAN]",
+          "of",
+          "[TOTAL_PAGES_ARABIC]",
+          "[BASE_NAME]",
+          "Draft version"
+        ]
+      },
+      "font": {
+        "kind": "radio",
+        "values": [
+          "times_roman",
+          "helvetica",
+          "courier"
+        ]
+      },
+      "color": {
+        "kind": "hidden",
+        "values": [
+          "#000000"
+        ]
+      },
+      "addMargins": {
+        "kind": "radio",
+        "values": [
+          "false",
+          "true"
+        ]
+      },
+      "pages": {
+        "kind": "text",
+        "values": []
+      },
+      "pageCountStartFrom": {
+        "kind": "text",
+        "values": []
+      },
+      "pageLocation": {
+        "kind": "select",
+        "values": [
+          "top-left",
+          "top-center",
+          "top-right",
+          "bottom-left",
+          "bottom-center",
+          "bottom-right"
+        ]
+      },
+      "fontSize": {
+        "kind": "select",
+        "values": [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "18",
+          "20",
+          "22",
+          "24",
+          "26",
+          "28"
+        ]
+      }
+    }
+  },
+  {
+    "page": "pdf-bookmarks",
+    "title": "Create PDF Bookmarks",
+    "description": "Create PDF Bookmarks. Add, modify and remove bookmarks from PDF document outline. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "editBookmarks",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "editBookmarks"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "jsonData": {
+        "kind": "hidden",
+        "values": []
+      },
+      "current_page_input": {
+        "kind": "text",
+        "values": [
+          "1"
+        ]
+      },
+      "search_input": {
+        "kind": "text",
+        "values": []
+      },
+      "bookmarkTitle": {
+        "kind": "text",
+        "values": []
+      },
+      "bookmarkPage": {
+        "kind": "text",
+        "values": []
+      },
+      "bookmarkParent": {
+        "kind": "select",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "pdf-editor",
+    "title": "Easy to use Online PDF editor",
+    "description": "Free, no watermarks or registration. Edit PDF files for free. Fill & sign PDFs. Change existing text and links. Find & replace text. Whiteout. Add text, images, links and annotations.",
+    "task": "edit",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "edit"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "fontSize2": {
+        "kind": "number",
+        "values": [
+          "10"
+        ]
+      },
+      "kind": {
+        "kind": "radio",
+        "values": [
+          "uri",
+          "mailto",
+          "tel",
+          "page"
+        ]
+      },
+      "targetURL": {
+        "kind": "text",
+        "values": []
+      },
+      "targetEmailAddress": {
+        "kind": "text",
+        "values": []
+      },
+      "targetTel": {
+        "kind": "text",
+        "values": []
+      },
+      "targetPage": {
+        "kind": "text",
+        "values": []
+      },
+      "fieldName": {
+        "kind": "text",
+        "values": []
+      },
+      "fieldValue": {
+        "kind": "text",
+        "values": []
+      },
+      "fieldMultiselect": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "fieldComb": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "fieldCombOfCharsLength": {
+        "kind": "text",
+        "values": [
+          "8"
+        ]
+      },
+      "fieldHasMaxLength": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "fieldCharsMaxLength": {
+        "kind": "text",
+        "values": [
+          "20"
+        ]
+      },
+      "fieldRequired": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "noautocomplete": {
+        "kind": "text",
+        "values": [
+          "Default value2"
+        ]
+      },
+      "imageRepeatOnAllPagesCheck": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "elapsedTime": {
+        "kind": "hidden",
+        "values": []
+      },
+      "recovered": {
+        "kind": "hidden",
+        "values": [
+          "false"
+        ]
+      },
+      "fontOption": {
+        "kind": "radio",
+        "values": []
+      },
+      "findText": {
+        "kind": "text",
+        "values": []
+      },
+      "replaceText": {
+        "kind": "text",
+        "values": []
+      },
+      "replaceMatchCase": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "replaceMatchLinks": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "hexcolor": {
+        "kind": "text",
+        "values": [
+          "#FF0000"
+        ]
+      },
+      "color": {
+        "kind": "text",
+        "values": [
+          "#FF0000"
+        ]
+      },
+      "saveSignature": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "stampDateStyle": {
+        "kind": "select",
+        "values": [
+          "none",
+          "date",
+          "date-time",
+          "date-dm",
+          "date-time-dm"
+        ]
+      },
+      "fieldOptions": {
+        "kind": "textarea",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "pdf-forms",
+    "title": "Create Fillable PDF Online",
+    "description": "Make PDF Fillable. Online, free, no watermarks or registration. Add interactive form fields to existing PDF.",
+    "task": "edit",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "edit"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "fontSize2": {
+        "kind": "number",
+        "values": [
+          "10"
+        ]
+      },
+      "fieldName": {
+        "kind": "text",
+        "values": []
+      },
+      "fieldValue": {
+        "kind": "text",
+        "values": []
+      },
+      "fieldMultiselect": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "fieldComb": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "fieldCombOfCharsLength": {
+        "kind": "text",
+        "values": [
+          "8"
+        ]
+      },
+      "fieldHasMaxLength": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "fieldCharsMaxLength": {
+        "kind": "text",
+        "values": [
+          "20"
+        ]
+      },
+      "fieldRequired": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "noautocomplete": {
+        "kind": "text",
+        "values": [
+          "Default value2"
+        ]
+      },
+      "elapsedTime": {
+        "kind": "hidden",
+        "values": []
+      },
+      "recovered": {
+        "kind": "hidden",
+        "values": [
+          "false"
+        ]
+      },
+      "fontOption": {
+        "kind": "radio",
+        "values": []
+      },
+      "findText": {
+        "kind": "text",
+        "values": []
+      },
+      "replaceText": {
+        "kind": "text",
+        "values": []
+      },
+      "replaceMatchCase": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "replaceMatchLinks": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "hexcolor": {
+        "kind": "text",
+        "values": [
+          "#FF0000"
+        ]
+      },
+      "color": {
+        "kind": "text",
+        "values": [
+          "#FF0000"
+        ]
+      },
+      "saveSignature": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "stampDateStyle": {
+        "kind": "select",
+        "values": [
+          "none",
+          "date",
+          "date-time",
+          "date-dm",
+          "date-time-dm"
+        ]
+      },
+      "fieldOptions": {
+        "kind": "textarea",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "pdf-to-excel",
+    "title": "PDF to Excel or CSV",
+    "description": "PDF to Excel or CSV. Convert PDF to Excel or CSV online for free. Extract table data from PDF. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "pdfToExcelNext",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "pdfToExcelNext"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "exportFormat": {
+        "kind": "hidden",
+        "values": [
+          "excel"
+        ]
+      },
+      "singleSheet": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "pdf-to-jpg",
+    "title": "Convert PDF to Images Online. PDF to JPG. PDF to PNG. PDF to TIFF",
+    "description": "Free, no watermarks or registration. Batch convert multiple files. Easy way to convert PDF doc to images.",
+    "task": "pdfToImage",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "pdfToImage"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "pages": {
+        "kind": "hidden",
+        "values": []
+      },
+      "allPages": {
+        "kind": "hidden",
+        "values": []
+      },
+      "resolution": {
+        "kind": "radio",
+        "values": [
+          "75",
+          "150",
+          "220"
+        ]
+      },
+      "imageFormat": {
+        "kind": "radio",
+        "values": [
+          "jpg",
+          "png",
+          "tiff"
+        ]
+      },
+      "tiffSingleFileWithAllPages": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "imageColorType": {
+        "kind": "radio",
+        "values": [
+          "rgb",
+          "grayscale",
+          "black_white"
+        ]
+      }
+    }
+  },
+  {
+    "page": "pdf-to-ppt",
+    "title": "Convert PDF to PowerPoint online",
+    "description": "High fidelity. Free online conversion from PPT to PDF",
+    "task": "pdfToPpt",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "pdfToPpt"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {}
+  },
+  {
+    "page": "pdf-to-word",
+    "title": "Convert PDF to Word DOC online",
+    "description": "Free conversion from PDF to DOC online.",
+    "task": "pdfToDoc",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "pdfToOfficeWord"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {}
+  },
+  {
+    "page": "rename-pdf",
+    "title": "Rename PDF By Text Content",
+    "description": "Rename PDF By Text Content. Change document filename based on text from the PDF pages. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "renameByText",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "renameByText"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "areas": {
+        "kind": "hidden",
+        "values": [
+          "[]"
+        ]
+      },
+      "renamePattern": {
+        "kind": "text",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "repair-pdf",
+    "title": "Repair PDF Online",
+    "description": "Repair PDF. Recover data from a corrupted or damaged PDF document. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "repair",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "repair"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {}
+  },
+  {
+    "page": "resize-pdf",
+    "title": "Resize PDF Online",
+    "description": "Add page margins and padding, Change PDF page size. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "resizePages",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "resizePages"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "pages": {
+        "kind": "hidden",
+        "values": []
+      },
+      "pageSize": {
+        "kind": "hidden",
+        "values": [
+          "custom",
+          "a1",
+          "a2",
+          "a3",
+          "a4",
+          "a5",
+          "a6",
+          "letter",
+          "legal",
+          "ledger",
+          "tabloid",
+          "executive"
+        ]
+      },
+      "marginTop": {
+        "kind": "number",
+        "values": [
+          "0.0"
+        ]
+      },
+      "marginLeft": {
+        "kind": "number",
+        "values": [
+          "0.0"
+        ]
+      },
+      "marginRight": {
+        "kind": "number",
+        "values": [
+          "0.0"
+        ]
+      },
+      "unit": {
+        "kind": "radio",
+        "values": [
+          "inch",
+          "cm"
+        ]
+      },
+      "marginBottom": {
+        "kind": "number",
+        "values": [
+          "0.0"
+        ]
+      },
+      "pageSizeWidth": {
+        "kind": "number",
+        "values": [
+          "0.000"
+        ]
+      },
+      "pageSizeHeight": {
+        "kind": "number",
+        "values": [
+          "0.000"
+        ]
+      }
+    }
+  },
+  {
+    "page": "rotate-pdf-pages",
+    "title": "Rotate PDF - Rotate Pages, Online, for Free",
+    "description": "Rotate and save PDF pages permanently. Online, free.",
+    "task": "rotatePages",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "rotatePages"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      }
+    }
+  },
+  {
+    "page": "sign-pdf",
+    "title": "Easy Fill &amp; Sign PDF Online",
+    "description": "Free, no watermarks or registration. Fill & Sign PDF files for free. Fill out PDF forms. Add signature to PDF.",
+    "task": "fillSign",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "fillSign"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "fontSize2": {
+        "kind": "number",
+        "values": [
+          "10"
+        ]
+      },
+      "imageRepeatOnAllPagesCheck": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "elapsedTime": {
+        "kind": "hidden",
+        "values": []
+      },
+      "recovered": {
+        "kind": "hidden",
+        "values": [
+          "false"
+        ]
+      },
+      "emailTo": {
+        "kind": "email",
+        "values": []
+      },
+      "emailFrom": {
+        "kind": "email",
+        "values": []
+      },
+      "emailRequester": {
+        "kind": "email",
+        "values": []
+      },
+      "fontOption": {
+        "kind": "radio",
+        "values": []
+      },
+      "findText": {
+        "kind": "text",
+        "values": []
+      },
+      "replaceText": {
+        "kind": "text",
+        "values": []
+      },
+      "replaceMatchCase": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "replaceMatchLinks": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "hexcolor": {
+        "kind": "text",
+        "values": [
+          "#FF0000"
+        ]
+      },
+      "color": {
+        "kind": "text",
+        "values": [
+          "#FF0000"
+        ]
+      },
+      "saveSignature": {
+        "kind": "checkbox",
+        "values": []
+      },
+      "stampDateStyle": {
+        "kind": "select",
+        "values": [
+          "none",
+          "date",
+          "date-time",
+          "date-dm",
+          "date-time-dm"
+        ]
+      }
+    }
+  },
+  {
+    "page": "split-pdf-by-outline",
+    "title": "Split PDF By Table Of Contents",
+    "description": "Split PDF by bookmarks. Extract chapters to separate documents based on the bookmarks in the table of contents. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "splitByBookmarks",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "splitByBookmarks"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "bookmarksLevel": {
+        "kind": "radio",
+        "values": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "bookmarksExpression": {
+        "kind": "text",
+        "values": []
+      },
+      "includePageAfter": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "split-pdf-by-size",
+    "title": "Split PDF by file size",
+    "description": "Split PDF by file size. Get multiple smaller documents with specific file sizes. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "splitBySize",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "splitBySize"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "size": {
+        "kind": "text",
+        "values": [
+          "1.5"
+        ]
+      },
+      "sizeUnit": {
+        "kind": "radio",
+        "values": [
+          "MB",
+          "KB"
+        ]
+      }
+    }
+  },
+  {
+    "page": "split-pdf-by-text",
+    "title": "Split PDF By Text Content",
+    "description": "Split PDF By Text Content. Extract separate documents when specific text changes from page to page. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "splitByText",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "splitByText"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "area[x]": {
+        "kind": "hidden",
+        "values": []
+      },
+      "area[y]": {
+        "kind": "hidden",
+        "values": []
+      },
+      "area[width]": {
+        "kind": "hidden",
+        "values": []
+      },
+      "area[height]": {
+        "kind": "hidden",
+        "values": []
+      },
+      "startsWith": {
+        "kind": "text",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "split-pdf-down-the-middle",
+    "title": "Split PDF Down the Middle A3 to A4 Online",
+    "description": "Split PDF pages down the middle. Split two page layout scans, A3 to double A4 or A4 to double A5. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "splitDownTheMiddle",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "splitDownTheMiddle"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "ratio": {
+        "kind": "hidden",
+        "values": [
+          "1"
+        ]
+      },
+      "mode": {
+        "kind": "hidden",
+        "values": [
+          "auto"
+        ]
+      },
+      "autoDetectExcludedPages": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "excludedPages": {
+        "kind": "text",
+        "values": []
+      },
+      "repagination": {
+        "kind": "checkbox",
+        "values": [
+          "last-first"
+        ]
+      },
+      "rightToLeft": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  },
+  {
+    "page": "split-pdf",
+    "title": "Split PDF Online. Free and easy to use",
+    "description": "Split PDF by pages. Split specific page ranges or extract every page into a separate document. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "splitByPages",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "splitByPages"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "mode": {
+        "kind": "radio",
+        "values": [
+          "page",
+          "file"
+        ]
+      },
+      "thumbsSize": {
+        "kind": "range",
+        "values": [
+          "150"
+        ]
+      },
+      "step": {
+        "kind": "text",
+        "values": [
+          "1"
+        ]
+      },
+      "pages": {
+        "kind": "text",
+        "values": []
+      },
+      "discardOutline": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      },
+      "filename": {
+        "kind": "text",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "unlock-pdf",
+    "title": "Unlock PDF Online",
+    "description": "Unlock PDF Online. Remove restrictions and password from PDF files. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "decrypt",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "decrypt"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {}
+  },
+  {
+    "page": "upgrade",
+    "title": "Pricing &amp; Upgrade - Sejda",
+    "description": "Select a plan that's right for you",
+    "task": null,
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [],
+    "acceptedFileTypes": [],
+    "fields": {
+      "csrf": {
+        "kind": "hidden",
+        "values": [
+          "WUMGABT0PG5KSMEUYBMK"
+        ]
+      },
+      "password": {
+        "kind": "password",
+        "values": []
+      },
+      "emailVerificationCode": {
+        "kind": "text",
+        "values": []
+      },
+      "agreeTerms": {
+        "kind": "checkbox",
+        "values": [
+          "yes"
+        ]
+      },
+      "seats": {
+        "kind": "hidden",
+        "values": [
+          "1"
+        ]
+      },
+      "discount": {
+        "kind": "hidden",
+        "values": [
+          "0"
+        ]
+      },
+      "stripePublicKey": {
+        "kind": "hidden",
+        "values": []
+      },
+      "paypalEnv": {
+        "kind": "hidden",
+        "values": []
+      },
+      "firstName": {
+        "kind": "text",
+        "values": []
+      },
+      "lastName": {
+        "kind": "text",
+        "values": []
+      },
+      "companyName": {
+        "kind": "text",
+        "values": []
+      },
+      "vatNumber": {
+        "kind": "text",
+        "values": []
+      },
+      "billingAddressCountry": {
+        "kind": "select",
+        "values": [
+          "FR",
+          "CA",
+          "BR",
+          "IN",
+          "ES",
+          "US",
+          "GB",
+          "AF",
+          "AX",
+          "AL",
+          "DZ",
+          "AS",
+          "AD",
+          "AO",
+          "AI",
+          "AQ",
+          "AG",
+          "AR",
+          "AM",
+          "AW",
+          "AU",
+          "AT",
+          "AZ",
+          "BS",
+          "BH",
+          "BD",
+          "BB",
+          "BY",
+          "BE",
+          "BZ",
+          "BJ",
+          "BM",
+          "BT",
+          "BO",
+          "BQ",
+          "BA",
+          "BW",
+          "BV",
+          "IO",
+          "VG",
+          "BN",
+          "BG",
+          "BF",
+          "BI",
+          "KH",
+          "CM",
+          "IC",
+          "CV",
+          "KY",
+          "CF",
+          "TD",
+          "CL",
+          "CN",
+          "CX",
+          "CC",
+          "CO",
+          "KM",
+          "CD",
+          "CG",
+          "CK",
+          "CR",
+          "HR",
+          "CU",
+          "CW",
+          "CY",
+          "CZ",
+          "DK",
+          "DJ",
+          "DM",
+          "DO",
+          "EC",
+          "EG",
+          "SV",
+          "GQ",
+          "ER",
+          "EE",
+          "ET",
+          "FK",
+          "FO",
+          "FJ",
+          "FI",
+          "GF",
+          "PF",
+          "TF",
+          "GA",
+          "GM",
+          "GE",
+          "DE",
+          "GH",
+          "GI",
+          "GR",
+          "GL",
+          "GD",
+          "GP",
+          "GU",
+          "GT",
+          "GG",
+          "GN",
+          "GW",
+          "GY",
+          "HT",
+          "HM",
+          "HN",
+          "HK",
+          "HU",
+          "IS",
+          "ID",
+          "IR",
+          "IQ",
+          "IE",
+          "IM",
+          "IL",
+          "IT",
+          "CI",
+          "JM",
+          "JP",
+          "JE",
+          "JO",
+          "KZ",
+          "KE",
+          "KI",
+          "KP",
+          "KR",
+          "XK",
+          "KW",
+          "KG",
+          "LA",
+          "LV",
+          "LB",
+          "LS",
+          "LR",
+          "LY",
+          "LI",
+          "LT",
+          "LU",
+          "MO",
+          "MK",
+          "MG",
+          "MW",
+          "MY",
+          "MV",
+          "ML",
+          "MT",
+          "MH",
+          "MQ",
+          "MR",
+          "MU",
+          "YT",
+          "MX",
+          "FM",
+          "MD",
+          "MC",
+          "MN",
+          "ME",
+          "MS",
+          "MA",
+          "MZ",
+          "MM",
+          "NA",
+          "NR",
+          "NP",
+          "NL",
+          "NC",
+          "NZ",
+          "NI",
+          "NE",
+          "NG",
+          "NU",
+          "NF",
+          "MP",
+          "NO",
+          "OM",
+          "PK",
+          "PW",
+          "PS",
+          "PA",
+          "PG",
+          "PY",
+          "PE",
+          "PH",
+          "PN",
+          "PL",
+          "PT",
+          "PR",
+          "QA",
+          "RE",
+          "RO",
+          "RU",
+          "RW",
+          "BL",
+          "SH",
+          "KN",
+          "LC",
+          "MF",
+          "PM",
+          "VC",
+          "WS",
+          "SM",
+          "ST",
+          "SA",
+          "SN",
+          "RS",
+          "SC",
+          "SL",
+          "SG",
+          "SX",
+          "SK",
+          "SI",
+          "SB",
+          "SO",
+          "ZA",
+          "GS",
+          "SS",
+          "LK",
+          "SD",
+          "SR",
+          "SJ",
+          "SZ",
+          "SE",
+          "CH",
+          "SY",
+          "TW",
+          "TJ",
+          "TZ",
+          "TH",
+          "TL",
+          "TG",
+          "TK",
+          "TO",
+          "TT",
+          "TN",
+          "TR",
+          "TM",
+          "TC",
+          "TV",
+          "UG",
+          "UA",
+          "AE",
+          "UM",
+          "VI",
+          "UY",
+          "UZ",
+          "VU",
+          "VA",
+          "VE",
+          "VN",
+          "WF",
+          "EH",
+          "YE",
+          "ZM",
+          "ZW"
+        ]
+      }
+    }
+  },
+  {
+    "page": "watermark-pdf",
+    "title": "Watermark PDF Online",
+    "description": "Add image or text watermark to PDF documents. Online, no installation or registration required. It's free, quick and easy to use.",
+    "task": "watermark",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "watermark"
+    ],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "key": {
+        "kind": "hidden",
+        "values": []
+      },
+      "AWSAccessKeyId": {
+        "kind": "hidden",
+        "values": []
+      },
+      "acl": {
+        "kind": "hidden",
+        "values": []
+      },
+      "success_action_redirect": {
+        "kind": "hidden",
+        "values": []
+      },
+      "policy": {
+        "kind": "hidden",
+        "values": []
+      },
+      "signature": {
+        "kind": "hidden",
+        "values": []
+      },
+      "Content-type": {
+        "kind": "hidden",
+        "values": []
+      },
+      "x-amz-storage-class": {
+        "kind": "hidden",
+        "values": []
+      },
+      "pageLocation": {
+        "kind": "radio",
+        "values": [
+          "centered",
+          "custom"
+        ]
+      },
+      "fontSize": {
+        "kind": "text",
+        "values": []
+      },
+      "color": {
+        "kind": "text",
+        "values": [
+          "#000000"
+        ]
+      },
+      "imageWidth": {
+        "kind": "text",
+        "values": []
+      },
+      "imageHeight": {
+        "kind": "text",
+        "values": []
+      },
+      "previewPageNumber": {
+        "kind": "text",
+        "values": [
+          "1"
+        ]
+      },
+      "jsonData": {
+        "kind": "hidden",
+        "values": []
+      },
+      "pages": {
+        "kind": "hidden",
+        "values": []
+      },
+      "opacity": {
+        "kind": "range",
+        "values": [
+          "100"
+        ]
+      },
+      "watermarkText": {
+        "kind": "textarea",
+        "values": []
+      }
+    }
+  },
+  {
+    "page": "word-to-pdf",
+    "title": "Convert Word DOC to PDF online",
+    "description": "High quality free conversion from Word to PDF online",
+    "task": "docToPdf",
+    "workflow": null,
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [
+      "docToPdf"
+    ],
+    "acceptedFileTypes": [
+      "docx,doc"
+    ],
+    "fields": {}
+  },
+  {
+    "page": "workflows",
+    "title": "Workflows with PDF documents",
+    "description": "Execute series of tasks on PDF documents. Configure task chains to process PDFs. Free, no watermarks or registration. Batch convert multiple files.",
+    "task": null,
+    "workflow": "true",
+    "maxFileSizeMb": null,
+    "freeLimitFileSizeMb": null,
+    "submitTypes": [],
+    "acceptedFileTypes": [
+      "pdf"
+    ],
+    "fields": {
+      "workflowId": {
+        "kind": "hidden",
+        "values": []
+      },
+      "automaticStart": {
+        "kind": "checkbox",
+        "values": [
+          "true"
+        ]
+      }
+    }
+  }
+]
