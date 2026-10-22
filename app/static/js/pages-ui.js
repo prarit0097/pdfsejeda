@@ -11,22 +11,27 @@
   const { icon, compressRanges, esc } = window.UI;
   const Tool = window.Tool, mode = root.dataset.mode;
   const docs = new Map();          // fileId -> Promise<PDFDocumentProxy>
+  let cropAreas = {}, cropPage = 1, cropFileId = null;
   let items = [];                  // organize/rotate: {key, fileIdx, page, rot, deleted, blank}
   let selected = new Set();        // select mode: page numbers
   let cuts = new Set();            // split mode: split after page n
   let area = null;                 // area mode
+  let lastClicked = null;          // select mode: anchor for shift-click ranges
   let thumbW = 130;
 
   function lib() {
     const l = window.pdfjsLib;
-    if (l && !l.GlobalWorkerOptions.workerSrc) l.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    if (l && !l.GlobalWorkerOptions.workerSrc) l.GlobalWorkerOptions.workerSrc = "/static/vendor/pdfjs/pdf.worker.min.mjs";
     return l;
   }
 
   function loadDoc(file) {
     if (!docs.has(file.id)) {
       docs.set(file.id, new Promise((resolve, reject) => {
-        const go = () => lib() ? lib().getDocument({ url: `/api/files/${file.id}/view`, password: file.password || undefined }).promise.then(resolve, reject) : setTimeout(go, 100);
+        const go = () => lib() ? lib().getDocument({ url: `/api/files/${file.id}/view`, password: file.password || undefined,
+          isEvalSupported: false, cMapUrl: "/static/vendor/pdfjs/cmaps/", cMapPacked: true,
+          standardFontDataUrl: "/static/vendor/pdfjs/standard_fonts/", wasmUrl: "/static/vendor/pdfjs/wasm/"
+        }).promise.then(resolve, reject) : setTimeout(go, 100);
         go();
       }));
     }
@@ -40,6 +45,13 @@
   async function drawThumb(el) {
     const file = Tool.readyFiles()[+el.dataset.file];
     if (!file || el.dataset.blank) return;
+    if (isImage(file)) {  // images (merge/organize) are one page each; show the picture itself
+      const c = el.querySelector("canvas"), img = new Image();
+      img.alt = ""; img.src = `/api/files/${file.id}/view`; img.className = "thumb-img";
+      img.style.cssText = `max-width:100%;max-height:100%;transform:${c.style.transform}`;
+      c.replaceWith(img);
+      return;
+    }
     try {
       const doc = await loadDoc(file);
       const page = await doc.getPage(+el.dataset.page);
@@ -52,7 +64,11 @@
     } catch (e) { /* password or damaged file: leave the grey sheet */ }
   }
 
-  function pdfFiles() { return Tool.readyFiles().filter(f => f.pages && /\.pdf$/i.test(f.name) || f.pages); }
+  // Thumbnails index files by their position in Tool.readyFiles(), which is also the order of
+  // `files[]` in the task body, so fileIdx in filePages / pageRotationsPerSource matches the server.
+  function isImage(f) { return !f.pages && !/\.pdf$/i.test(f.name); }
+  function pageCount(f) { return f.pages || (isImage(f) ? 1 : 0); }
+  function pdfFiles() { return Tool.readyFiles().filter(f => f.pages); }
 
   function toolbar(html) {
     return `<div class="thumbs-toolbar">${html}<span style="flex:1"></span>
@@ -74,18 +90,19 @@
   // ---------------- build per mode ----------------
   function build() {
     const files = pdfFiles();
-    if (!files.length) { root.innerHTML = ""; return; }
+    if (!files.length && !(mode === "organize" && Tool.readyFiles().some(isImage))) { root.innerHTML = ""; return; }
     if (mode === "metadata") return prefillMetadata(files[0]);
     if (mode === "bookmarks") return prefillBookmarks(files[0]);
     if (mode === "crop") {
       const want = document.querySelector('input[name="cropMode"]:checked')?.value === "area";
       if (!want) { root.innerHTML = ""; area = null; return; }
-      if (!root.querySelector(".area-wrap")) buildArea(files[0], "Draw the area to keep. It is applied to every page.");
+      if (cropFileId !== files[0].id) { cropAreas = {}; cropPage = 1; area = null; cropFileId = files[0].id; root.innerHTML = ""; }
+      if (!root.querySelector(".area-wrap")) buildArea(files[0], "Draw the area to keep. Unmarked individual pages keep their original size.");
       return;
     }
     if (mode === "area") return buildArea(files[0]);
     if (mode === "select" || mode === "split") return buildSingle(files);
-    if (mode === "rotate" || mode === "organize") return buildMulti(files);
+    if (mode === "rotate" || mode === "organize") return buildMulti(Tool.readyFiles());
   }
 
   function buildSingle(files) {
@@ -93,7 +110,8 @@
     const note = files.length > 1 ? `<span class="muted small">Showing the first file; the selection applies to every file.</span>` : "";
     if (mode === "select") {
       const tb = `<button class="btn btn-sm" type="button" data-sel="all">All</button><button class="btn btn-sm" type="button" data-sel="none">None</button>
-        <button class="btn btn-sm" type="button" data-sel="odd">Odd</button><button class="btn btn-sm" type="button" data-sel="even">Even</button>${note}`;
+        <button class="btn btn-sm" type="button" data-sel="odd">Odd</button><button class="btn btn-sm" type="button" data-sel="even">Even</button>
+        <button class="btn btn-sm" type="button" data-sel="invert">Invert</button><span class="muted small">Shift-click selects a range.</span>${note}`;
       mount(toolbar(tb) + `<div class="thumbs">${range(f.pages).map(p => thumbHtml({ fileIdx: 0, page: p, label: `Page ${p}`, cls: selected.has(p) ? "selected" : "" })).join("")}</div>`);
     } else {
       const tb = `<span class="muted small">Click between pages to cut after them.</span><button class="btn btn-sm" type="button" data-cuts="all">Cut after every page</button><button class="btn btn-sm" type="button" data-cuts="none">Clear cuts</button>${note}`;
@@ -108,7 +126,7 @@
     items.forEach(it => { if (!it.blank) it.fileIdx = ids.indexOf(it.fileId); });
     files.forEach((f, idx) => {
       if (items.some(it => it.fileId === f.id)) return;
-      range(f.pages).forEach(p => items.push({ key: `${f.id}:${p}:${Math.random()}`, fileId: f.id, fileIdx: idx, page: p, rot: 0 }));
+      range(pageCount(f)).forEach(p => items.push({ key: `${f.id}:${p}:${Math.random()}`, fileId: f.id, fileIdx: idx, page: p, rot: 0 }));
     });
   }
 
@@ -143,14 +161,28 @@
     const j = await r.json(), ta = document.querySelector('[name="bookmarks"]');
     if (ta) { ta.value = j.text; ta.rows = Math.min(24, Math.max(6, j.text.split("\n").length + 2)); ta.placeholder = `Chapter 1 | 1\n  Section 1.1 | 2\nChapter 2 | ${Math.min(5, j.pages)}`; }
   }
-  document.addEventListener("change", e => { if (mode === "crop" && e.target.name === "cropMode") build(); });
+  document.addEventListener("change", e => {
+    if (mode !== "crop") return;
+    if (e.target.name === "cropScope") { cropPage = 1; root.innerHTML = ""; build(); }
+    if (e.target.name === "cropMode") build();
+    if (e.target.matches("[data-area-page]")) { cropPage = +e.target.value; buildArea(pdfFiles()[0]); }
+  });
 
   function buildArea(f, hint = "Draw a box around the text that identifies each document (page 1 shown).") {
-    root.innerHTML = `<div class="thumbs-toolbar"><span class="muted small">${esc(hint)}</span><span style="flex:1"></span><button class="btn btn-sm btn-ghost" type="button" data-area-clear>Clear</button></div>
+    const scope = document.querySelector('input[name="cropScope"]:checked')?.value || "all";
+    const key = scope === "individual" ? String(cropPage) : scope === "odd-even" ? (cropPage % 2 ? "odd" : "even") : "all";
+    const crop = mode === "crop";
+    if (crop) area = cropAreas[key] || null;
+    const choices = crop && scope !== "all" ? (scope === "individual" ? range(f.pages) : range(Math.min(2, f.pages))) : [];
+    const picker = choices.length ? `<label>Crop <select class="input" data-area-page aria-label="Page to crop">${choices.map(p => `<option value="${p}" ${p === cropPage ? "selected" : ""}>${scope === "odd-even" ? (p === 1 ? "Odd pages" : "Even pages") : `Page ${p}`}${cropAreas[scope === "individual" ? p : p === 1 ? "odd" : "even"] ? " ✓" : ""}</option>`).join("")}</select></label>` : "";
+    if (crop) hint = scope === "all" ? "Draw one area for all pages." : "Draw an area for each page or group you want to crop. Other pages are kept.";
+    root.innerHTML = `<div class="thumbs-toolbar"><span class="muted small">${esc(hint)}</span><span style="flex:1"></span>${picker}<button class="btn btn-sm btn-ghost" type="button" data-area-clear>Clear</button></div>
       <div style="padding:18px;text-align:center;background:var(--bg-sunken)"><div class="area-wrap"><canvas></canvas><div class="area-box" hidden></div></div></div>`;
     const wrap = root.querySelector(".area-wrap"), canvas = wrap.querySelector("canvas"), box = wrap.querySelector(".area-box");
     let pageSize = null;
-    loadDoc(f).then(doc => doc.getPage(1)).then(page => {
+    const pageNumber = crop ? cropPage : 1;
+    loadDoc(f).then(doc => doc.getPage(pageNumber)).then(page => {
+      if (!wrap.isConnected) return;
       const vp1 = page.getViewport({ scale: 1 });
       pageSize = { w: vp1.width, h: vp1.height };
       const cssW = Math.min(root.clientWidth - 40, 760), scale = cssW / vp1.width * (window.devicePixelRatio || 1);
@@ -165,10 +197,11 @@
       if (!start || !pageSize) return;
       const p = pt(e), k = pageSize.w / p.r.width;
       area = { x: Math.min(start.x, p.x) * k, y: Math.min(start.y, p.y) * k, width: Math.abs(p.x - start.x) * k, height: Math.abs(p.y - start.y) * k };
+      if (crop) cropAreas[key] = area;
       paintArea();
     });
-    wrap.addEventListener("pointerup", () => { start = null; if (area && (area.width < 3 || area.height < 3)) { area = null; paintArea(); } });
-    root.querySelector("[data-area-clear]").onclick = () => { area = null; paintArea(); };
+    wrap.addEventListener("pointerup", () => { start = null; if (area && (area.width < 3 || area.height < 3)) { area = null; if (crop) delete cropAreas[key]; paintArea(); } });
+    root.querySelector("[data-area-clear]").onclick = () => { area = null; if (crop) delete cropAreas[key]; paintArea(); };
     function paintArea() {
       if (!area || !pageSize) { box.hidden = true; return; }
       const k = canvas.getBoundingClientRect().width / pageSize.w;
@@ -189,11 +222,21 @@
       const sel = t.closest("[data-sel]");
       if (sel) {
         const n = files[0].pages, v = sel.dataset.sel;
-        selected = new Set(v === "all" ? range(n) : v === "none" ? [] : range(n).filter(p => (p % 2 === 1) === (v === "odd")));
+        selected = new Set(v === "all" ? range(n) : v === "none" ? [] : v === "invert" ? range(n).filter(p => !selected.has(p))
+          : range(n).filter(p => (p % 2 === 1) === (v === "odd")));
+        lastClicked = null;
         return refreshSelect();
       }
       const th = t.closest(".thumb");
-      if (th) { const p = +th.dataset.page; selected.has(p) ? selected.delete(p) : selected.add(p); return refreshSelect(); }
+      if (th) {
+        const p = +th.dataset.page;
+        if (e.shiftKey && lastClicked) {  // range from the last clicked page, taking that page's state
+          const on = selected.has(lastClicked);
+          for (let q = Math.min(p, lastClicked); q <= Math.max(p, lastClicked); q++) on ? selected.add(q) : selected.delete(q);
+        } else selected.has(p) ? selected.delete(p) : selected.add(p);
+        lastClicked = p;
+        return refreshSelect();
+      }
     }
     if (mode === "split") {
       const c = t.closest("[data-cuts]");
@@ -231,7 +274,9 @@
   root.addEventListener("drop", e => {
     if (!dragKey) return; e.preventDefault();
     const over = e.target.closest(".thumb");
+    if (over && over.dataset.key === dragKey) { dragKey = null; return build(); }  // dropped on itself: no move
     const from = items.findIndex(x => x.key === dragKey);
+    if (from < 0) { dragKey = null; return; }
     const [moved] = items.splice(from, 1);
     const to = over ? items.findIndex(x => x.key === over.dataset.key) : items.length;
     items.splice(to < 0 ? items.length : to, 0, moved);
@@ -246,8 +291,13 @@
     if (pagesInput) pagesInput.value = compressRanges([...selected]);
   }
   pagesInput?.addEventListener("input", () => {
-    if (mode !== "select") return;
     const n = pdfFiles()[0]?.pages || 0;
+    if (mode === "split") {  // typed "3,7" -> cut marks after pages 3 and 7
+      cuts = new Set(parseRanges(pagesInput.value, n).filter(p => p < n));
+      root.querySelectorAll("[data-cut]").forEach(m => m.classList.toggle("on", cuts.has(+m.dataset.cut)));
+      return;
+    }
+    if (mode !== "select") return;
     selected = new Set(parseRanges(pagesInput.value, n));
     root.querySelectorAll(".thumb").forEach(th => th.classList.toggle("selected", selected.has(+th.dataset.page)));
   });
@@ -267,13 +317,21 @@
     if (mode === "organize" && items.length) {
       return { filePages: items.filter(it => !it.deleted).map(it => it.blank ? `-1:-1:${it.rot}` : `${it.fileIdx}:${it.page}:${it.rot}`) };
     }
-    if (mode === "area" || mode === "crop") return area ? { area: roundObj(area) } : {};
+    if (mode === "crop") {
+      const scope = document.querySelector('input[name="cropScope"]:checked')?.value || "all";
+      return scope === "all" ? (cropAreas.all ? { area: roundObj(cropAreas.all) } : {}) : { cropAreas: Object.fromEntries(Object.entries(cropAreas).filter(([k]) => k !== "all").map(([k,v]) => [k, roundObj(v)])) };
+    }
+    if (mode === "area") return area ? { area: roundObj(area) } : {};
     return {};
   };
   Tool.validators.push(() => {
     if (mode === "organize" && items.length && !items.some(it => !it.deleted)) return "Keep at least one page";
     if (mode === "select" && pagesInput && !pagesInput.value.trim()) return "Select at least one page";
-    if (mode === "crop" && document.querySelector('input[name="cropMode"]:checked')?.value === "area" && !area) return "Draw the area to keep on the page";
+    if (mode === "crop" && document.querySelector('input[name="cropMode"]:checked')?.value === "area") {
+      const scope = document.querySelector('input[name="cropScope"]:checked')?.value || "all";
+      const found = scope === "all" ? !!cropAreas.all : Object.keys(cropAreas).some(k => scope === "individual" ? /^\d+$/.test(k) : ["odd", "even"].includes(k));
+      if (!found) return "Draw the area to keep on the page";
+    }
     return "";
   });
 

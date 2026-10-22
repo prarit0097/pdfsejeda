@@ -8,7 +8,8 @@
 <details><summary>How do I select pages?</summary><p>Click page thumbnails, or type a selection: <span class="kbd">1-3,7</span>, <span class="kbd">10-</span> (to the end), <span class="kbd">odd</span>, <span class="kbd">even</span>.</p></details>
 <details><summary>My file is password protected.</summary><p>After uploading you'll be asked for the password. To remove the password permanently, use Unlock PDF.</p></details>
 <details><summary>Can I use the result in another tool?</summary><p>Yes. On the result screen choose “Continue in another tool”. To repeat the same chain of tools, create a workflow.</p></details>
-<details><summary>How long are files kept?</summary><p>{{ ttl_hours|round|int }} hours, then they are deleted automatically.</p></details>
+<details><summary>How long are files kept?</summary><p>Results expire {{ ttl_hours }} hours after processing. Uploads expire {{ ttl_hours }} hours after their last keep-alive, so an open tool page can extend their lifetime. See the <a href="/privacy">privacy details</a>.</p></details>
+<details><summary>Does whiteout permanently remove text?</summary><p>No. Whiteout, existing-text editing and find/replace add visual overlays. The original text can remain extractable. Use a dedicated redaction tool when information must be permanently removed.</p></details>
 <details><summary>The result looks wrong.</summary><p>Try the Repair tool first if the PDF is damaged. For scanned documents, run OCR before converting to Word or Excel.</p></details>
 </div>
 </div>

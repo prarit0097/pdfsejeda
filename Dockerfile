@@ -1,7 +1,7 @@
 # PDFNova — one image with every optional engine (LibreOffice, Tesseract, Chromium).
 FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DATA_DIR=/data
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DATA_DIR=/data PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libreoffice-writer-nogui \
         tesseract-ocr tesseract-ocr-eng tesseract-ocr-hin tesseract-ocr-spa tesseract-ocr-fra tesseract-ocr-deu \
@@ -9,9 +9,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt playwright \
-    && playwright install --with-deps chromium
+COPY requirements.txt requirements-lock.txt ./
+RUN pip install --no-cache-dir -r requirements-lock.txt \
+    && playwright install --with-deps chromium \
+    && chmod -R a+rX /ms-playwright
 
 COPY app ./app
 RUN useradd --create-home pdfnova && mkdir -p /data && chown pdfnova /data

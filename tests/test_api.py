@@ -91,3 +91,88 @@ def test_errors_and_quota():
 def test_url_import_blocks_private_hosts():
     r = client.post("/api/files", json={"url": "http://127.0.0.1/secret.pdf"})
     assert r.status_code == 400 and "private" in r.text.lower()
+
+
+def test_bad_json_and_body_size_limits(monkeypatch):
+    for body in ("[]", "null", "{broken"):
+        assert client.post("/api/files", content=body, headers={"Content-Type": "application/json"}).status_code == 400
+    monkeypatch.setattr(settings, "max_request_mb", 0)
+    assert client.post("/api/tasks", content=b"{}", headers={"Content-Length": "2"}).status_code == 413
+    def streamed():
+        yield b"{"
+        yield b"}"
+    assert client.post("/api/tasks", content=streamed()).status_code == 413
+
+
+def test_oversize_upload_removes_incomplete_file(monkeypatch):
+    from app.storage import files
+    before = set(files.root.iterdir())
+    monkeypatch.setattr(settings, "max_file_mb", 0)
+    response = client.post("/api/files/upload", files={"file": ("large.pdf", b"test", "application/pdf")})
+    assert response.status_code == 413
+    assert set(files.root.iterdir()) == before
+
+
+def test_chunk_retries_and_holes_do_not_finalize_early():
+    import uuid
+    data = make_pdf(1)
+    total = len(data)
+    headers = {"X-Upload-Id": uuid.uuid4().hex, "X-File-Name": "retry.pdf"}
+    def send(start, end, payload=None, advertised_total=None):
+        return client.post("/api/files/upload-chunked", files={"file": ("retry.pdf", data[start:end + 1] if payload is None else payload)},
+                           headers={**headers, "Content-Range": f"bytes {start}-{end}/{advertised_total or total}"})
+    assert send(0, 99).json()["received"] == 100
+    assert send(0, 99).json()["received"] == 100
+    assert send(50, 149).json()["received"] == 150
+    assert send(200, total - 1).json()["status"] == "partial"
+    assert send(150, 199, advertised_total=total + 1).status_code == 400
+    assert send(150, 199, payload=b"short").status_code == 400
+    finished = send(150, 199)
+    assert finished.status_code == 200 and finished.json()["pages"] == 1
+    assert client.get(f"/api/files/{finished.json()['id']}/view").content == data
+    traversal = client.post("/api/files/upload-chunked", files={"file": ("retry.pdf", b"a")},
+                            headers={"X-Upload-Id": "../escape", "Content-Range": "bytes 0-0/2"})
+    assert traversal.status_code == 400
+
+
+def test_queue_busy_has_retry_and_refunds_quota(monkeypatch):
+    from app.api import queue
+    from app.jobs import QueueFull
+    from app.ratelimit import quota
+    info = _upload()
+    monkeypatch.setattr(settings, "tasks_per_hour", 1)
+    quota._hits.clear()
+    def busy(*args, **kwargs):
+        raise QueueFull("Server busy")
+    monkeypatch.setattr(queue, "submit", busy)
+    for _ in range(2):
+        response = client.post("/api/tasks", json={"type": "extractPages", "files": [info["id"]]})
+        assert response.status_code == 429
+        assert response.headers["retry-after"] == "5"
+    assert not quota._hits.get("testclient")
+
+
+def test_continue_rolls_back_copies_when_result_expired():
+    from app.jobs import Task, new_task_id, queue
+    from app.storage import files
+    task = Task(new_task_id(), "splitByPages", {}, [], status="Completed", finished=time.time(),
+                result_filename="all.zip", result_items=["first.pdf", "missing.pdf"])
+    task.out_dir.mkdir()
+    (task.out_dir / "first.pdf").write_bytes(make_pdf(1))
+    queue._tasks[task.id] = task
+    before = set(files.root.iterdir())
+    try:
+        assert client.post(f"/api/tasks/{task.id}/continue").status_code == 404
+        assert set(files.root.iterdir()) == before
+    finally:
+        queue.delete(task.id)
+
+
+def test_active_uploads_are_forced_to_download():
+    result = client.post("/api/files/upload", files={"file": ("preview.html", b"<script>alert(1)</script>", "text/html")})
+    assert result.status_code == 200
+    preview = client.get(f"/api/files/{result.json()['id']}/view")
+    assert preview.status_code == 200
+    assert preview.headers["content-type"] == "application/octet-stream"
+    assert preview.headers["content-disposition"].startswith("attachment")
+    assert preview.headers["x-content-type-options"] == "nosniff"

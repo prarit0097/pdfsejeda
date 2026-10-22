@@ -22,23 +22,23 @@
   {% else %}
     <span class="lbl">{{ o.label }}</span>
     {% if o.kind == "radio" %}
-      <div class="choice-group" role="radiogroup">
+      <div class="choice-group" role="radiogroup" aria-label="{{ o.label }}">
       {% for v, label in o.choices %}
         <label class="choice"><input type="radio" name="{{ o.name }}" value="{{ v }}" {% if v|string == o.default|string %}checked{% endif %}>{{ label }}</label>
       {% endfor %}
       </div>
     {% elif o.kind == "select" %}
-      <select class="input" name="{{ o.name }}">
+      <select class="input" name="{{ o.name }}" aria-label="{{ o.label }}">
       {% for v, label in o.choices %}<option value="{{ v }}" {% if v|string == o.default|string %}selected{% endif %}>{{ label }}</option>{% endfor %}
       </select>
     {% elif o.kind == "textarea" %}
-      <textarea class="input" name="{{ o.name }}" placeholder="{{ o.placeholder }}">{{ o.default }}</textarea>
+      <textarea class="input" name="{{ o.name }}" aria-label="{{ o.label }}" placeholder="{{ o.placeholder }}">{{ o.default }}</textarea>
     {% elif o.kind == "range" %}
-      <div class="inline-fields" style="align-items:center"><input type="range" name="{{ o.name }}" value="{{ o.default }}" min="{{ o.min if o.min is not none else 0 }}" max="{{ o.max if o.max is not none else 100 }}" step="{{ o.step or 1 }}" oninput="this.nextElementSibling.textContent=this.value"><output style="flex:0 0 48px">{{ o.default }}</output></div>
+      <div class="inline-fields" style="align-items:center"><input type="range" name="{{ o.name }}" value="{{ o.default }}" min="{{ o.min if o.min is not none else 0 }}" max="{{ o.max if o.max is not none else 100 }}" step="{{ o.step or 1 }}" data-range-output aria-label="{{ o.label }}"><output style="flex:0 0 48px">{{ o.default }}</output></div>
     {% elif o.kind == "color" %}
-      <input class="input" type="color" name="{{ o.name }}" value="{{ o.default or '#000000' }}">
+      <input class="input" type="color" name="{{ o.name }}" aria-label="{{ o.label }}" value="{{ o.default or '#000000' }}">
     {% else %}
-      <input class="input" type="{{ 'number' if o.kind == 'number' else 'text' }}" name="{{ o.name }}" value="{{ o.default }}" placeholder="{{ o.placeholder }}"
+      <input class="input" type="{{ 'number' if o.kind == 'number' else 'text' }}" name="{{ o.name }}" aria-label="{{ o.label }}" value="{{ o.default }}" placeholder="{{ o.placeholder }}"
         {% if o.min is not none %}min="{{ o.min }}"{% endif %} {% if o.max is not none %}max="{{ o.max }}"{% endif %} {% if o.step %}step="{{ o.step }}"{% elif o.kind == 'number' %}step="any"{% endif %}
         {% if o.kind == 'pages' %}data-pages-input autocomplete="off"{% endif %}>
     {% endif %}

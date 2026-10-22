@@ -36,8 +36,11 @@ class Settings:
     max_file_mb: int = _int("MAX_FILE_MB", 200)
     tasks_per_hour: int = _int("TASKS_PER_HOUR", 0)
     workers: int = _int("WORKERS", 4)
+    max_queued_tasks: int = _int("MAX_QUEUED_TASKS", 32)
     secret_key: str = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
     chunk_size_mb: int = 5
+    task_timeout_seconds: int = _int("TASK_TIMEOUT_SECONDS", 900)  # cooperative processing/queue timeout; blocked threads retain their worker
+    max_request_mb: int = _int("MAX_REQUEST_MB", 64)  # JSON/other request bodies (uploads use MAX_FILE_MB)
     allow_private_urls: bool = os.environ.get("ALLOW_PRIVATE_URLS") == "1"
     trust_proxy: bool = os.environ.get("TRUST_PROXY") == "1"  # read client IP from X-Forwarded-For / CF headers
     uploads_dir: Path = field(init=False)
@@ -52,6 +55,11 @@ class Settings:
     @property
     def max_file_bytes(self) -> int:
         return self.max_file_mb * 1024 * 1024
+
+    @property
+    def max_chunk_bytes(self) -> int:
+        """Largest accepted chunk of a chunked upload (the browser sends chunk_size_mb)."""
+        return 2 * self.chunk_size_mb * 1024 * 1024
 
 
 settings = Settings()

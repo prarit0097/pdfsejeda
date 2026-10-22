@@ -10,8 +10,10 @@ from pikepdf import Name, PdfImage
 
 from ..jobs import TaskError
 from .common import PAGE_SIZES_PT, UNIT_PT, open_pdf, output_name, page_box, pages_or_error, pdfium_doc, rotation, save_pdf
-from .draw import _fmt, invert, mul, new_blank_page, place_page, user_to_visible, visible_size
+from .draw import (_fmt, fit_page_content, invert, mul, new_blank_page, place_page, transform_annotations,
+                   user_to_visible, visible_size)
 from .organize import set_visible_crop
+from .outlines import read_outline, remap, write_outline
 from .registry import Opt, Tool, register
 
 
@@ -132,6 +134,10 @@ def compress(ctx):
         pdf.save(out, compress_streams=True, recompress_flate=True,
                  object_stream_mode=pikepdf.ObjectStreamMode.generate)
         after = out.stat().st_size
+        pdf.close()
+        if after >= before and fail_if_bigger:
+            out.unlink(missing_ok=True)
+            raise TaskError(f"Could not reduce the size of '{inp.name}'; it is already optimized.")
         if after >= before and not fail_if_bigger:
             out.write_bytes(inp.path.read_bytes())
             after = before
@@ -194,9 +200,19 @@ def _content_bbox(doc, index: int, threshold: int = 245):
 
 def crop(ctx):
     mode = ctx.param("cropMode", "auto")
+    if mode not in ("auto", "margins", "area"):
+        raise TaskError("Choose a supported crop mode")
     unit = UNIT_PT.get(ctx.param("unit", "cm"), UNIT_PT["cm"])
     m = {k: _num(ctx.param(k), 0) * unit for k in ("marginTop", "marginBottom", "marginLeft", "marginRight")}
     area = ctx.params.get("area") if isinstance(ctx.params.get("area"), dict) else None
+    scope = ctx.param("cropScope", "all")
+    if scope not in ("all", "individual", "odd-even"):
+        raise TaskError("Choose how the crop applies to pages")
+    areas = ctx.params.get("cropAreas") or {}
+    if not isinstance(areas, dict):
+        raise TaskError("Invalid page crop areas")
+    if mode == "area" and not area and not areas:
+        raise TaskError("Draw an area to keep")
     same = ctx.flag("sameForAllPages", True)
     for inp in ctx.inputs:
         pdf = open_pdf(inp)
@@ -221,10 +237,20 @@ def crop(ctx):
                 if not b:
                     continue
                 vx0, vy0, vx1, vy1 = b
-            elif mode == "area" and area:
-                ax, ay = _num(area.get("x")), _num(area.get("y"))
-                vx0, vx1 = ax, ax + _num(area.get("width"))
-                vy1, vy0 = h - ay, h - ay - _num(area.get("height"))
+            elif mode == "area":
+                page_area = area if scope == "all" else areas.get(str(i + 1) if scope == "individual" else ("odd" if i % 2 == 0 else "even"))
+                if page_area is None:  # individually unmarked pages keep their original size
+                    continue
+                if not isinstance(page_area, dict):
+                    raise TaskError("Invalid page crop area")
+                try:
+                    ax, ay, aw, ah = (float(page_area[k]) for k in ("x", "y", "width", "height"))
+                except (KeyError, TypeError, ValueError):
+                    raise TaskError("Invalid page crop area") from None
+                if not all(math.isfinite(v) for v in (ax, ay, aw, ah)) or aw <= 0 or ah <= 0:
+                    raise TaskError("The crop area must have a positive width and height")
+                vx0, vx1 = ax, ax + aw
+                vy1, vy0 = h - ay, h - ay - ah
             else:
                 vx0, vy0, vx1, vy1 = m["marginLeft"], m["marginBottom"], w - m["marginRight"], h - m["marginTop"]
             vx0, vy0, vx1, vy1 = max(0, vx0), max(0, vy0), min(w, vx1), min(h, vy1)
@@ -232,6 +258,9 @@ def crop(ctx):
                 raise TaskError("The crop leaves nothing of the page. Use smaller margins.")
             set_visible_crop(page, vx0, vy0, vx1, vy1)
             page.obj.MediaBox = page.obj.CropBox
+            for key in ("/TrimBox", "/BleedBox", "/ArtBox"):  # must lie inside the new MediaBox
+                if key in page.obj:
+                    del page.obj[key]
         save_pdf(pdf, ctx.output(output_name(ctx, inp)))
     ctx.remark("Pages cropped")
 
@@ -242,6 +271,7 @@ register(Tool(
     handler=crop, page_ui="crop", keywords="trim margins cut whitespace",
     options=[
         Opt("cropMode", "How to crop", "radio", [("auto", "Trim white margins"), ("margins", "Set margins"), ("area", "Draw an area")], "auto"),
+        Opt("cropScope", "Apply drawn areas to", "radio", [("all", "All pages"), ("individual", "Individual pages"), ("odd-even", "Odd and even pages separately")], "all", show_if={"cropMode": "area"}),
         Opt("sameForAllPages", "Use the same crop for every page", "checkbox", default=True, show_if={"cropMode": "auto"}),
         Opt("unit", "Unit", "radio", [("cm", "cm"), ("inch", "inch"), ("mm", "mm")], "cm", show_if={"cropMode": "margins"}),
         Opt("marginTop", "Top", "number", default=1, min=0, step=0.1, show_if={"cropMode": "margins"}),
@@ -262,16 +292,13 @@ def resize(ctx):
     unit = UNIT_PT.get(ctx.param("unit", "cm"), UNIT_PT["cm"])
     m = {k: _num(ctx.param(k), 0) * unit for k in ("marginTop", "marginBottom", "marginLeft", "marginRight")}
     for inp in ctx.inputs:
-        src = open_pdf(inp)
-        sel = set(pages_or_error(ctx.param("pages"), len(src.pages)))
-        dst = pikepdf.new()
-        for i, page in enumerate(src.pages):
+        pdf = open_pdf(inp)
+        sel = set(pages_or_error(ctx.param("pages"), len(pdf.pages)))
+        for i, page in enumerate(pdf.pages):
             ctx.check_cancelled()
-            dst.pages.append(page)
             if i + 1 not in sel:
                 continue
-            sp = dst.pages[-1]
-            w, h = visible_size(sp)
+            w, h = visible_size(page)
             if size == "original":
                 tw, th = w + m["marginLeft"] + m["marginRight"], h + m["marginTop"] + m["marginBottom"]
             elif size == "custom":
@@ -282,13 +309,11 @@ def resize(ctx):
                 tw, th = PAGE_SIZES_PT.get(size, PAGE_SIZES_PT["a4"])
                 if (w > h) != (tw > th):
                     tw, th = th, tw
-            new = new_blank_page(dst, tw, th, index=len(dst.pages) - 1)
             rect = (m["marginLeft"], m["marginBottom"], tw - m["marginLeft"] - m["marginRight"], th - m["marginTop"] - m["marginBottom"])
             if rect[2] <= 10 or rect[3] <= 10:
                 raise TaskError("The margins are larger than the page")
-            place_page(dst, new, dst.pages[-1], rect)
-            del dst.pages[-1]
-        save_pdf(dst, ctx.output(output_name(ctx, inp)))
+            fit_page_content(pdf, page, rect, new_size=(tw, th))  # in place: bookmarks, links, forms survive
+        save_pdf(pdf, ctx.output(output_name(ctx, inp)))
     ctx.remark("Pages resized")
 
 
@@ -353,6 +378,12 @@ def nup(ctx):
                 place_page(dst, sheet, dst.pages[start + k], (c * cw, sh - (r + 1) * ch, cw, ch))
         for _ in range(count):
             del dst.pages[0]
+        try:  # bookmarks now point at the sheet that holds their page
+            outline = read_outline(src)
+            if outline:
+                write_outline(dst, remap(outline, {i: i // n for i in range(count)}))
+        except Exception:
+            pass
         save_pdf(dst, ctx.output(output_name(ctx, inp)))
     ctx.remark(f"Placed {n} pages on each sheet")
 
@@ -388,6 +419,7 @@ def flip(ctx):
             m = mul(mul(u2v, vis), invert(u2v))  # flip in displayed space, expressed in user space
             page.contents_add(pikepdf.Stream(pdf, f"q {_fmt(m)} cm\n".encode()), prepend=True)
             page.contents_add(pikepdf.Stream(pdf, b"\nQ\n"))
+            transform_annotations(page, m)  # links and comments follow the mirrored content
         save_pdf(pdf, ctx.output(output_name(ctx, inp)))
     ctx.remark("Pages mirrored")
 

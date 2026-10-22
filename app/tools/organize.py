@@ -3,6 +3,8 @@ extract, delete, organize (combineReorder), rotate."""
 from __future__ import annotations
 
 import io
+import math
+from contextlib import ExitStack
 import re
 import time
 
@@ -11,7 +13,7 @@ from pikepdf import Name
 
 from ..jobs import TaskError
 from .common import (PAGE_SIZES_PT, open_pdf, output_name, page_box, pages_or_error, rotation, save_pdf)
-from .draw import font_for, invert, new_blank_page, place_page, stamp, user_to_visible, visible_size
+from .draw import draw_text, invert, new_blank_page, place_page, stamp, user_to_visible, visible_size
 from .imaging import is_image, image_to_pdf
 from .outlines import Bookmark, drop_outline, flatten, read_outline, remap, write_outline
 from .registry import IMAGES, PDF, Opt, Tool, register
@@ -94,14 +96,15 @@ def merge(ctx):
     dst = pikepdf.new()
     bookmarks: list[Bookmark] = []
     starts: list[tuple[str, int, int]] = []  # (label, first page, page count)
-    field_names: set[str] = set()
+    by_name: dict[str, pikepdf.Object] = {}
     fields: list = []
+    form_res: dict = {}  # /DR and /DA collected from the inputs' AcroForms
     for n, inp in enumerate(ctx.inputs):
         ctx.check_cancelled()
         src = _open_any(inp)
         start = len(dst.pages)
         idx = copy_pages(dst, src, list(range(len(src.pages))))
-        rot = _int(rotations[n] if n < len(rotations) else 0)
+        rot = _quarter(rotations[n] if n < len(rotations) else 0)
         if rot:
             for i in idx:
                 dst.pages[i].obj.Rotate = (rotation(dst.pages[i]) + rot) % 360
@@ -121,11 +124,18 @@ def merge(ctx):
         elif outline_policy == "retain_as_one_entry":
             bookmarks.append(Bookmark(inp.stem, start, mapped))
         if "/AcroForm" in src.Root and "/Fields" in src.Root.AcroForm:
+            _merge_form_resources(dst, src, form_res)
             for f in _collect_copied_fields(dst, idx):
                 name = str(f.get("/T", ""))
-                if form_policy == "merge_renaming" and name in field_names:
-                    f.T = pikepdf.String(f"{name}_{n + 1}")
-                field_names.add(str(f.get("/T", "")))
+                if name and name in by_name:
+                    if form_policy == "merge" and _join_fields(dst, by_name, fields, name, f):
+                        continue  # same name: one field with several widgets (they share the value)
+                    k = n + 1
+                    while f"{name}_{k}" in by_name:
+                        k += 1
+                    name = f"{name}_{k}"
+                    f.T = pikepdf.String(name)
+                by_name[name] = f
                 fields.append(f)
         if blank_if_odd and len(idx) % 2 == 1 and n < len(ctx.inputs) - 1:
             w, h = visible_size(dst.pages[-1])
@@ -137,15 +147,22 @@ def merge(ctx):
             for i in range(first, first + count):
                 _footer_text(dst, dst.pages[i], label)
     if fields and form_policy != "none":
-        dst.Root.AcroForm = pikepdf.Dictionary(Fields=pikepdf.Array(fields), NeedAppearances=True)
+        af = pikepdf.Dictionary(Fields=pikepdf.Array(fields), NeedAppearances=True)
+        if "DR" in form_res:
+            af.DR = form_res["DR"]
+        if "DA" in form_res:
+            af.DA = form_res["DA"]
+        dst.Root.AcroForm = af
         if form_policy == "flatten":
-            dst.flatten_annotations("all")
-            del dst.Root["/AcroForm"]
+            _flatten_widgets(dst)
     elif form_policy == "none":
         _strip_widgets(dst)
     if toc_policy in ("file_names", "doc_titles"):
-        toc_pages = _insert_toc(dst, starts)
-        bookmarks = remap(bookmarks, {i: i + toc_pages for i in range(len(dst.pages))})
+        # first file as cover: the contents go after it and don't list it
+        cover = ctx.flag("firstInputCoverTitle") and len(starts) > 1
+        at = starts[1][1] if cover else 0
+        toc_pages = _insert_toc(dst, starts[1:] if cover else starts, at)
+        bookmarks = remap(bookmarks, {i: (i + toc_pages if i >= at else i) for i in range(len(dst.pages))})
     if bookmarks:
         write_outline(dst, bookmarks)
     name = (ctx.param("outputFilename") or "").strip()
@@ -154,7 +171,7 @@ def merge(ctx):
     else:
         name = f"{ctx.inputs[0].stem}-merged.pdf" if len(ctx.inputs) > 1 else output_name(ctx, ctx.inputs[0])
     save_pdf(dst, ctx.output(name))
-    ctx.remark(f"Merged {len(ctx.inputs)} files into {len(dst.pages)} pages")
+    ctx.remark(f"Merged {len(ctx.inputs)} file{'s' if len(ctx.inputs) != 1 else ''} into {len(dst.pages)} pages")
 
 
 def _int(v, default=0):
@@ -162,6 +179,14 @@ def _int(v, default=0):
         return int(float(v))
     except (TypeError, ValueError):
         return default
+
+
+def _quarter(deg, what: str = "Rotation") -> int:
+    """A rotation in degrees, normalised to 0/90/180/270. /Rotate must be a multiple of 90."""
+    d = _int(deg, 0)
+    if d % 90:
+        raise TaskError(f"{what} must be a multiple of 90 degrees (got {deg})")
+    return d % 360
 
 
 def _collect_copied_fields(pdf, page_indices):
@@ -180,6 +205,90 @@ def _collect_copied_fields(pdf, page_indices):
                 seen.add(node.objgen)
                 roots.append(node)
     return roots
+
+
+_FIELD_KEYS = ("/FT", "/Ff", "/V", "/DV", "/T", "/TU", "/TM", "/Opt", "/MaxLen", "/Q", "/TI", "/I")
+
+
+def _merge_form_resources(dst, src, res: dict) -> None:
+    """Carry the default resources (/DR fonts) and default appearance (/DA) over to the merged form,
+    otherwise widgets whose /DA names a font from /DR have no font to regenerate appearances with."""
+    src_acroform = src.Root.AcroForm
+    if "/DA" in src_acroform and "DA" not in res:
+        res["DA"] = pikepdf.String(bytes(src_acroform.DA))
+    dr = src_acroform.get("/DR")
+    if not isinstance(dr, pikepdf.Dictionary):
+        return
+    dr = dst.copy_foreign(dr if dr.is_indirect else src.make_indirect(dr))
+    if "DR" not in res:
+        res["DR"] = dr
+        return
+    into = res["DR"]
+    for cat, sub in dr.items():  # /Font, /XObject, ...: add missing names
+        if cat not in into:
+            into[cat] = sub
+        elif isinstance(sub, pikepdf.Dictionary) and isinstance(into[cat], pikepdf.Dictionary):
+            for k, v in sub.items():
+                if k not in into[cat]:
+                    into[cat][k] = v
+
+
+def _is_terminal(field) -> bool:
+    kids = field.get("/Kids")
+    return kids is None or all("/T" not in k for k in kids)
+
+
+def _join_fields(dst, by_name: dict, fields: list, name: str, new) -> bool:
+    """Make `new` (a root field with the same name as an earlier one) extra widgets of that field.
+    Returns False when they can't be joined (different types, or hierarchical fields)."""
+    old = by_name[name]
+    if old.get("/FT") != new.get("/FT") or not _is_terminal(old) or not _is_terminal(new):
+        return False
+    if "/Kids" not in old:  # a combined field+widget dictionary: split off a parent field
+        parent = dst.make_indirect(pikepdf.Dictionary({k: old[k] for k in _FIELD_KEYS if k in old}))
+        if "/DA" in old:
+            parent.DA = old.DA
+        for k in _FIELD_KEYS:
+            if k in old:
+                del old[k]
+        old.Parent = parent
+        parent.Kids = pikepdf.Array([old])
+        at = next(i for i, f in enumerate(fields) if f.objgen == old.objgen)
+        fields[at] = parent
+        by_name[name] = old = parent
+    if "/Kids" in new:
+        widgets = list(new.Kids)
+    else:  # field+widget in one dictionary: keep only the widget part
+        for k in _FIELD_KEYS:
+            if k in new:
+                del new[k]
+        widgets = [new]
+    for w in widgets:
+        w.Parent = old
+        old.Kids.append(w)
+    return True
+
+
+def _flatten_widgets(pdf) -> None:
+    """Burn form fields into the page content; other annotations (links, comments) stay."""
+    try:
+        pdf.generate_appearance_streams()  # qpdf refuses to flatten while NeedAppearances is set
+    except Exception:
+        pass
+    stash = {}
+    for i, page in enumerate(pdf.pages):
+        annots = page.obj.get("/Annots")
+        if isinstance(annots, pikepdf.Array):
+            stash[i] = [a for a in annots if a.get("/Subtype") != Name.Widget]
+            page.obj.Annots = pikepdf.Array([a for a in annots if a.get("/Subtype") == Name.Widget])
+    pdf.flatten_annotations("all")
+    for i, keep in stash.items():
+        if keep:
+            pdf.pages[i].obj.Annots = pikepdf.Array(keep)
+        elif "/Annots" in pdf.pages[i].obj:
+            del pdf.pages[i].obj["/Annots"]
+    if "/AcroForm" in pdf.Root:
+        del pdf.Root["/AcroForm"]
 
 
 def _strip_widgets(pdf):
@@ -205,15 +314,15 @@ def _normalize_widths(pdf):
 
 def _footer_text(pdf, page, text):
     def draw(c, w, h):
-        c.setFont(font_for("helvetica", text), 8)
         c.setFillColorRGB(0.35, 0.35, 0.35)
-        c.drawCentredString(w / 2, 12, text)
+        draw_text(c, w / 2, 12, text, "helvetica", 8, align="center")
 
     stamp(pdf, page, draw)
 
 
-def _insert_toc(pdf, starts) -> int:
-    """Insert table-of-contents page(s) at the front with clickable entries. Returns how many were added."""
+def _insert_toc(pdf, starts, at: int = 0) -> int:
+    """Insert table-of-contents page(s) before page index `at` with clickable entries.
+    `starts` are (label, first page, count) in the document before insertion. Returns pages added."""
     from reportlab.pdfgen import canvas as rl_canvas
 
     w, h = PAGE_SIZES_PT["a4"]
@@ -222,28 +331,29 @@ def _insert_toc(pdf, starts) -> int:
     buf = io.BytesIO()
     c = rl_canvas.Canvas(buf, pagesize=(w, h))
     rects = []
+    shift = lambda i: i + n_pages if i >= at else i  # noqa: E731  page index after insertion
     for p in range(n_pages):
         c.setFont("Helvetica-Bold", 18)
         c.drawString(56, h - 72, "Contents")
-        c.setFont("Helvetica", 11)
         y = h - 110
         for label, first, _ in starts[p * per_page:(p + 1) * per_page]:
-            label_safe = label if all(ord(ch) < 256 for ch in label) else label.encode("latin-1", "replace").decode("latin-1")
-            c.drawString(56, y, label_safe[:80])
-            c.drawRightString(w - 56, y, str(first + 1 + n_pages))
+            label = label if len(label) <= 80 else label[:79] + "…"
+            draw_text(c, 56, y, label, "helvetica", 11)
+            c.setFont("Helvetica", 11)
+            c.drawRightString(w - 56, y, str(shift(first) + 1))
             rects.append((p, (56, y - 3, w - 56, y + 11), first))
             y -= 18
         c.showPage()
     c.save()
     with pikepdf.open(io.BytesIO(buf.getvalue())) as toc:
         for i, page in enumerate(toc.pages):
-            pdf.pages.insert(i, page)
+            pdf.pages.insert(at + i, page)
     for p, (x0, y0, x1, y1), first in rects:
-        target = pdf.pages[first + n_pages].obj
+        target = pdf.pages[shift(first)].obj
         annot = pdf.make_indirect(pikepdf.Dictionary(
             Type=Name.Annot, Subtype=Name.Link, Rect=[x0, y0, x1, y1], Border=[0, 0, 0],
             Dest=pikepdf.Array([target, Name.Fit])))
-        page = pdf.pages[p].obj
+        page = pdf.pages[at + p].obj
         if "/Annots" not in page:
             page.Annots = pikepdf.Array()
         page.Annots.append(annot)
@@ -262,6 +372,8 @@ register(Tool(
             "retain", advanced=True),
         Opt("tocPolicy", "Table of contents", "radio", [("none", "None"), ("file_names", "From file names"),
             ("doc_titles", "From document titles")], "none", advanced=True),
+        Opt("firstInputCoverTitle", "The first file is a cover: put the table of contents after it", "checkbox",
+            advanced=True, show_if={"tocPolicy": ["file_names", "doc_titles"]}),
         Opt("acroFormPolicy", "Form fields", "radio", [("merge", "Merge"), ("merge_renaming", "Merge, rename duplicates"),
             ("flatten", "Flatten"), ("none", "Discard")], "merge", advanced=True),
         Opt("blankPageIfOdd", "Add a blank page after files with an odd page count (for double-sided printing)", "checkbox", advanced=True),
@@ -297,7 +409,7 @@ def split_by_pages(ctx):
         elif spec not in (None, "") and not step:
             cuts = [p for p in pages_or_error(spec, total) if p < total]
         else:
-            step = step or 1
+            step = max(step, 1)
             cuts = list(range(step, total, step))
         bounds = [0] + cuts + [total]
         outline = read_outline(src) if keep_outline else []
@@ -399,11 +511,32 @@ def split_by_size(ctx):
         total, start, n = len(src.pages), 0, 0
         while start < total:
             ctx.check_cancelled()
-            end = start + 1
-            while end < total and _pdf_size(src, list(range(start, end + 1))) <= limit:
-                end += 1
+
+            def fits(end):  # pages start..end-1 saved together stay under the limit
+                ctx.check_cancelled()
+                return _pdf_size(src, list(range(start, end))) <= limit
+
+            # Galloping search for the largest end that fits: O(log n) trial saves per chunk
+            # instead of one per page (a 300-page file used to need ~300 full saves).
+            lo, step = start + 1, 1  # lo = largest end known to fit (1 page is always taken)
+            hi = None                # smallest end known not to fit
+            while lo < total:
+                probe = min(lo + step, total)
+                if fits(probe):
+                    lo, step = probe, step * 2
+                else:
+                    hi = probe
+                    break
+            if hi is not None:
+                while hi - lo > 1:
+                    mid = (lo + hi) // 2
+                    if fits(mid):
+                        lo = mid
+                    else:
+                        hi = mid
+            end = lo
             n += 1
-            if end - start == 1 and _pdf_size(src, [start]) > limit:
+            if end - start == 1 and not fits(end):
                 ctx.warn(f"Page {start + 1} of '{inp.name}' alone is larger than the size limit")
             _save_chunk(ctx, src, list(range(start, end)), _naming(ctx, inp, n, start + 1), False, None)
             start = end
@@ -425,38 +558,81 @@ register(Tool(
 # split by text
 
 
-def _area_text(plumb_page, area) -> str:
-    if not area:  # no area: use the first line of the page
-        lines = (plumb_page.extract_text() or "").strip().splitlines()
-        return lines[0].strip() if lines else ""
-    x, y, w, h = (float(area.get(k, 0)) for k in ("x", "y", "width", "height"))
-    pw, ph = float(plumb_page.width), float(plumb_page.height)
-    box = (max(0, x), max(0, y), min(pw, x + w), min(ph, y + h))
-    if box[2] <= box[0] or box[3] <= box[1]:
-        return ""
-    return " ".join((plumb_page.within_bbox(box).extract_text() or "").split())
+def parse_area(raw) -> dict | None:
+    """`area` as sent by the page ({x,y,width,height}, strings or numbers). None when missing/empty/invalid."""
+    if isinstance(raw, str):
+        try:
+            import json
+
+            raw = json.loads(raw)
+        except ValueError:
+            return None
+    if isinstance(raw, list) and raw:  # Sejda's rename tool sends `areas: [ {...} ]`
+        raw = raw[0]
+    if not isinstance(raw, dict):
+        return None
+    try:
+        a = {k: float(raw.get(k) or 0) for k in ("x", "y", "width", "height")}
+    except (TypeError, ValueError):
+        return None
+    return a if a["width"] > 0 and a["height"] > 0 else None
+
+
+def area_text(pdfium_page, page: pikepdf.Page, area: dict | None) -> str:
+    """Text inside `area` (PDF points, top-left origin, in the page as displayed: after /Rotate,
+    relative to the CropBox — exactly what PDF.js shows in the browser). Without an area: the
+    first non-empty line of the page."""
+    tp = pdfium_page.get_textpage()
+    try:
+        if not area:
+            for line in (tp.get_text_range() or "").splitlines():
+                if line.strip():
+                    return " ".join(line.split())
+            return ""
+        w, h = visible_size(page)
+        x0, x1 = max(0.0, area["x"]), min(w, area["x"] + area["width"])
+        top, bottom = max(0.0, area["y"]), min(h, area["y"] + area["height"])
+        if x1 <= x0 or bottom <= top:
+            return ""
+        m = invert(user_to_visible(page))  # displayed (bottom-left origin) -> user space
+        pts = [(x0, h - top), (x1, h - bottom)]
+        xs = [m[0] * x + m[2] * y + m[4] for x, y in pts]
+        ys = [m[1] * x + m[3] * y + m[5] for x, y in pts]
+        text = tp.get_text_bounded(left=min(xs), bottom=min(ys), right=max(xs), top=max(ys)) or ""
+        return " ".join(text.replace("\x00", "").split())
+    finally:
+        tp.close()
+
+
+def iter_area_texts(inp, area: dict | None, pages=None, cancel=None):
+    """Yield (0-based page index, text in area) for the pages of a PDF input."""
+    from .common import pdfium_doc
+
+    src = open_pdf(inp)
+    with pdfium_doc(inp) as doc:
+        for i in (pages if pages is not None else range(len(doc))):
+            if cancel:
+                cancel()
+            pg = doc[i]
+            try:
+                yield i, area_text(pg, src.pages[i], area)
+            finally:
+                pg.close()
 
 
 def split_by_text(ctx):
-    import pdfplumber
-
-    area = ctx.params.get("area") or None
-    if isinstance(area, dict) and not any(str(v).strip() for v in area.values()):
-        area = None
+    area = parse_area(ctx.params.get("area"))
     starts_with = (ctx.param("startsWith") or "").strip()
     for inp in ctx.inputs:
         src = open_pdf(inp)
         groups: list[tuple[int, str]] = []
-        with pdfplumber.open(str(inp.path), password=inp.password or "") as doc:
-            prev = None
-            for i, page in enumerate(doc.pages):
-                ctx.check_cancelled()
-                text = _area_text(page, area)
-                if starts_with and not text.startswith(starts_with):
-                    text = ""
-                if text and text != prev:
-                    groups.append((i, text))
-                    prev = text
+        prev = None
+        for i, text in iter_area_texts(inp, area, cancel=ctx.check_cancelled):
+            if starts_with and not text.lower().startswith(starts_with.lower()):
+                text = ""
+            if text and text != prev:
+                groups.append((i, text))
+                prev = text
         if not groups:
             raise TaskError(f"No text found in the selected area of '{inp.name}'")
         if groups[0][0] > 0:
@@ -568,27 +744,67 @@ register(Tool(
 
 
 def alternate_mix(ctx):
-    if len(ctx.inputs) < 2:
+    count = len(ctx.inputs)
+    if count < 2:
         raise TaskError("Please add at least 2 files to mix")
-    docs = [_open_any(i) for i in ctx.inputs]
-    steps = ctx.params.get("step") or []
-    steps = steps if isinstance(steps, list) else [steps]
-    rev = ctx.params.get("reverse")
-    revs = rev if isinstance(rev, list) else [False] + [rev] * (len(docs) - 1)
-    queues = []
-    for n, d in enumerate(docs):
-        idx = list(range(len(d.pages)))
-        if n < len(revs) and str(revs[n]).lower() in ("true", "1"):
-            idx.reverse()
-        queues.append(idx)
-    dst = pikepdf.new()
-    while any(queues):
-        for n, d in enumerate(docs):
-            step = max(_int(steps[n] if n < len(steps) else 1, 1), 1)
-            take, queues[n] = queues[n][:step], queues[n][step:]
-            copy_pages(dst, d, take)
-    save_pdf(dst, ctx.output(f"{ctx.inputs[0].stem}-mixed.pdf"))
-    ctx.remark(f"Mixed {len(docs)} files into {len(dst.pages)} pages")
+    # Accept the researched Sejda array names and the existing JSON contract.
+    raw_steps = ctx.params.get("step", ctx.params.get("step[]"))
+    if raw_steps is None or raw_steps == "":
+        raw_steps = []
+    steps = raw_steps if isinstance(raw_steps, list) else [raw_steps] * count
+    if len(steps) > count:
+        raise TaskError("Provide one mixing step per input file")
+    parsed_steps = []
+    for n in range(count):
+        raw = steps[n] if n < len(steps) else 1
+        try:
+            number = float(raw)
+            if isinstance(raw, bool) or not math.isfinite(number) or number < 1 or not number.is_integer():
+                raise ValueError()
+            parsed_steps.append(int(number))
+        except (TypeError, ValueError, OverflowError):
+            raise TaskError(f"Pages per turn for file {n + 1} must be a positive integer") from None
+    raw_reverse = ctx.params.get("reverse", ctx.params.get("reverse[]"))
+    # Preserve the legacy scalar checkbox: first file forward, subsequent files reversed.
+    reversals = raw_reverse if isinstance(raw_reverse, list) else [False] + [raw_reverse] * (count - 1)
+    if len(reversals) > count:
+        raise TaskError("Provide one reverse setting per input file")
+    reversed_sources = [str(reversals[n]).strip().lower() in ("true", "1", "yes", "on")
+                        if n < len(reversals) else False for n in range(count)]
+    rotations = ctx.params.get("rotations", ctx.params.get("rotations[]")) or []
+    if not isinstance(rotations, list) or len(rotations) > count:
+        raise TaskError("Provide one rotation per input file")
+    parsed_rotations = []
+    for n in range(count):
+        raw = rotations[n] if n < len(rotations) else 0
+        try:
+            number = float(raw)
+            if not math.isfinite(number) or number % 90:
+                raise ValueError()
+            parsed_rotations.append(int(number) % 360)
+        except (TypeError, ValueError, OverflowError):
+            raise TaskError(f"Rotation for file {n + 1} must be a multiple of 90 degrees") from None
+    with ExitStack() as stack:
+        docs = [stack.enter_context(_open_any(inp)) for inp in ctx.inputs]
+        for n, doc in enumerate(docs):
+            if parsed_rotations[n]:
+                for page in doc.pages:
+                    page.obj.Rotate = (rotation(page) + parsed_rotations[n]) % 360
+        order = [list(range(len(doc.pages) - 1, -1, -1)) if reversed_sources[n] else list(range(len(doc.pages)))
+                 for n, doc in enumerate(docs)]
+        positions = [0] * count
+        dst = stack.enter_context(pikepdf.new())
+        while any(positions[n] < len(order[n]) for n in range(count)):
+            for n, doc in enumerate(docs):
+                ctx.check_cancelled()
+                start = positions[n]
+                end = min(start + parsed_steps[n], len(order[n]))
+                copy_pages(dst, doc, order[n][start:end])
+                positions[n] = end
+        if not len(dst.pages):
+            raise TaskError("The selected files contain no pages to mix")
+        save_pdf(dst, ctx.output(f"{ctx.inputs[0].stem}-mixed.pdf"))
+        ctx.remark(f"Mixed {count} files into {len(dst.pages)} pages")
 
 
 register(Tool(
@@ -664,6 +880,7 @@ def combine_reorder(ctx):
             f, p, r = (int(float(x)) for x in str(spec).split(":"))
         except ValueError:
             raise TaskError(f"Invalid page reference '{spec}'") from None
+        r = _quarter(r)
         if f == -1:
             ref = dst.pages[-1] if len(dst.pages) else (docs[0].pages[0] if docs and len(docs[0].pages) else None)
             w, h = visible_size(ref) if ref is not None else PAGE_SIZES_PT["a4"]
@@ -697,30 +914,38 @@ register(Tool(
 
 def rotate_pages(ctx):
     per_source = ctx.params.get("pageRotationsPerSource") or []
-    bulk = _int(ctx.param("rotation"), 0)
+    if isinstance(per_source, str):
+        per_source = [x for x in per_source.split(",") if x.strip()]
+    bulk = _quarter(ctx.param("rotation", 0))
+    parsed = []
+    for spec in per_source:
+        try:
+            f, p, deg = (int(float(x)) for x in str(spec).split(":"))
+        except ValueError:
+            raise TaskError(f"Invalid rotation '{spec}'") from None
+        parsed.append((f, p, _quarter(deg)))
+    if per_source and not any(deg for _, _, deg in parsed):
+        raise TaskError("Choose how much to rotate the pages")
     for n, inp in enumerate(ctx.inputs):
+        ctx.check_cancelled()
         src = open_pdf(inp)
         total = len(src.pages)
         changes: dict[int, int] = {}
-        for spec in per_source:
-            try:
-                f, p, deg = (int(float(x)) for x in str(spec).split(":"))
-            except ValueError:
-                raise TaskError(f"Invalid rotation '{spec}'") from None
+        for f, p, deg in parsed:
             if f == n and 1 <= p <= total:
                 changes[p] = deg
         if bulk and not per_source:
             for p in pages_or_error(ctx.param("pages") or "all", total):
                 changes[p] = bulk
-        if not changes:
-            if per_source:
-                continue
+        if not changes and not per_source:
             raise TaskError("Choose how much to rotate the pages")
+        # files without rotated pages are still returned, so every uploaded file comes back
         for p, deg in changes.items():
             page = src.pages[p - 1]
             page.obj.Rotate = (rotation(page) + deg) % 360
         save_pdf(src, ctx.output(output_name(ctx, inp)))
-    ctx.remark("Pages rotated")
+    rotated = len(ctx.inputs)
+    ctx.remark("Pages rotated" if rotated == 1 else f"Pages rotated in {rotated} files")
 
 
 register(Tool(

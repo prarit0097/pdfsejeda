@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | {{ app_name }}{% endblock %}
+{% block main %}
+<article class="wrap prose" style="padding-top:36px;padding-bottom:36px">
+<h1>{{ title }}</h1>
+<p>Use the same upload, process and download flow as the web tools. All addresses below are relative to this installation.</p>
+<p><a class="btn btn-primary" href="/api/docs">Interactive API reference</a> <a class="btn" href="/api/tools">Tool catalog and options</a></p>
+{% if not html_api %}
+<h2>1. Upload a file</h2>
+<pre><code>curl -F "file=@document.pdf" http://localhost:8000/api/files/upload</code></pre>
+<p>The response includes <code>id</code>, <code>name</code>, <code>size</code> and, for readable PDFs, <code>pages</code>. Use the returned ID in your task.</p>
+<h2>2. Create a task</h2>
+<pre><code>POST /api/tasks
+Content-Type: application/json
+
+{"type":"extractPages","files":["YOUR_FILE_ID"],"pages":"1-3"}</code></pre>
+{% else %}
+<h2>1. Create an HTML conversion task</h2>
+<p>Send HTML directly, or use <code>urls</code> with one public web address per line. You can also upload an HTML file and include its ID in <code>files</code>.</p>
+<pre><code>POST /api/tasks
+Content-Type: application/json
+
+{"type":"htmlToPdf","files":[],"htmlCode":"&lt;h1&gt;Invoice&lt;/h1&gt;","pageSize":"A4"}</code></pre>
+<p>Options include <code>pageOrientation</code>, <code>pageMargin</code>, <code>pageMarginUnits</code>, <code>viewportWidth</code>, <code>delay</code>, <code>lang</code>, <code>timezone</code>, and <code>usePrintMedia</code>. The live catalog lists every available option. Private network addresses and network WebSockets are blocked.</p>
+{% endif %}
+<p>A successful task request returns the task ID as a JSON string. A busy server returns HTTP 429; an enabled hourly quota returns HTTP 402. Invalid input returns HTTP 400.</p>
+<h2>{{ '2' if html_api else '3' }}. Poll and download</h2>
+<pre><code>GET /api/tasks/YOUR_TASK_ID/change</code></pre>
+<p>Poll every three seconds until <code>status</code> is <code>Completed</code> or <code>Failed</code>. For completed tasks, prefix <code>resultFullUrlPattern</code> with your server's scheme, then replace <code>%7B%7Bfilename%7D%7D</code> with the URL-encoded <code>resultFilename</code>. Multiple results are packaged as a ZIP; individual filenames appear in <code>resultItems</code>.</p>
+<p>You can open <code>/result?id=YOUR_TASK_ID</code> in a browser, cancel with <code>POST /api/tasks/YOUR_TASK_ID/cancel</code>, or delete with <code>DELETE /api/tasks/YOUR_TASK_ID</code>.</p>
+<h2>Keep IDs private</h2>
+<p>File IDs and task IDs grant access to their files and actions. Treat them like passwords. Anyone with a result link or task ID can retrieve that result until it expires. Do not place confidential task IDs in public logs.</p>
+<p>Uploads expire {{ ttl_hours }} hours after their last keep-alive. Results expire {{ ttl_hours }} hours after completion. Task records are held in memory, so restarting the server invalidates task links.</p>
+<p>{% if html_api %}<a href="/html-to-pdf">Try HTML conversion</a> · <a href="/developers">All PDF APIs</a>{% else %}<a href="/html-pdf-api">HTML to PDF API guide</a>{% endif %}</p>
+</article>
+{% endblock %}

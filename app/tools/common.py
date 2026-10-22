@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from pathlib import Path
+import threading
 
 import pikepdf
 
@@ -14,6 +15,10 @@ PAGE_SIZES_PT = {  # width, height in points (portrait)
     "a5": (420, 595), "a6": (298, 420), "letter": (612, 792), "legal": (612, 1008),
     "ledger": (1224, 792), "legder": (1224, 792), "tabloid": (792, 1224), "executive": (522, 756),
 }
+
+# PDFium is not thread-safe, even for different documents. Keep all native
+# handles inside this reentrant scope; document.close() also closes its children.
+PDFIUM_LOCK = threading.RLock()
 
 UNIT_PT = {"inch": 72.0, "in": 72.0, "cm": 72 / 2.54, "mm": 72 / 25.4, "pt": 1.0, "px": 0.75}
 
@@ -76,18 +81,24 @@ def output_name(ctx, inp: InputFile, suffix: str = "", ext: str = ".pdf") -> str
 
 @contextmanager
 def pdfium_doc(inp: InputFile):
-    import pypdfium2 as pdfium
+    """Open, use and close PDFium under one process-wide native-library lock.
 
-    try:
-        doc = pdfium.PdfDocument(str(inp.path), password=inp.password or None)
-    except pdfium.PdfiumError as e:
-        if "password" in str(e).lower():
-            raise TaskError(f"'{inp.name}' is password protected. Enter its password and try again.") from None
-        raise TaskError(f"'{inp.name}' could not be rendered ({_short(e)})") from None
-    try:
-        yield doc
-    finally:
-        doc.close()
+    Do not use retained document/page/text/bitmap handles outside this scope.
+    PIL/NumPy data backed by the default native bitmap buffers may outlive it.
+    """
+    with PDFIUM_LOCK:
+        import pypdfium2 as pdfium
+
+        try:
+            doc = pdfium.PdfDocument(str(inp.path), password=inp.password or None)
+        except pdfium.PdfiumError as e:
+            if "password" in str(e).lower():
+                raise TaskError(f"'{inp.name}' is password protected. Enter its password and try again.") from None
+            raise TaskError(f"'{inp.name}' could not be rendered ({_short(e)})") from None
+        try:
+            yield doc
+        finally:
+            doc.close()
 
 
 def _short(e: Exception) -> str:

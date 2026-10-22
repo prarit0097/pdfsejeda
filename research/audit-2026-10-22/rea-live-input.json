@@ -1,0 +1,173 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "headless": true
+  },
+  "start_url": {
+    "url": "https://www.sejda.com/"
+  },
+  "actions": [
+    {
+      "step_id": "ready-0",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "page-1",
+      "action": "goto",
+      "destination": {
+        "url": "https://www.sejda.com/compress-pdf"
+      },
+      "wait_until": "domcontentloaded",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "ready-1",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "page-2",
+      "action": "goto",
+      "destination": {
+        "url": "https://www.sejda.com/merge-pdf"
+      },
+      "wait_until": "domcontentloaded",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "ready-2",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "page-3",
+      "action": "goto",
+      "destination": {
+        "url": "https://www.sejda.com/pdf-editor"
+      },
+      "wait_until": "domcontentloaded",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "ready-3",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "page-4",
+      "action": "goto",
+      "destination": {
+        "url": "https://www.sejda.com/pdf-forms"
+      },
+      "wait_until": "domcontentloaded",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "ready-4",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "page-5",
+      "action": "goto",
+      "destination": {
+        "url": "https://www.sejda.com/crop-pdf"
+      },
+      "wait_until": "domcontentloaded",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "ready-5",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "page-6",
+      "action": "goto",
+      "destination": {
+        "url": "https://www.sejda.com/html-to-pdf"
+      },
+      "wait_until": "domcontentloaded",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "ready-6",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "page-7",
+      "action": "goto",
+      "destination": {
+        "url": "https://www.sejda.com/workflows"
+      },
+      "wait_until": "domcontentloaded",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "ready-7",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    }
+  ],
+  "capture": {
+    "after_each_step": [
+      "dom"
+    ],
+    "at_end": [
+      "url",
+      "screenshot",
+      "accessibility"
+    ],
+    "events": [
+      "console"
+    ],
+    "network": {
+      "request_body": false,
+      "response_body": false,
+      "header_values": false
+    }
+  }
+}

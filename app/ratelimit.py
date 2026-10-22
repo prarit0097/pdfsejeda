@@ -38,5 +38,22 @@ class TaskQuota:
             wait = int(WINDOW - (now - q[0]))
             return True, limit - len(q), wait
 
+    def refund(self, ip: str) -> None:
+        """Give back the last task (it was rejected before it could run)."""
+        with self._lock:
+            q = self._hits.get(ip)
+            if q:
+                q.pop()
+
+    def prune(self) -> None:
+        """Forget IPs with no task in the last hour (keeps memory bounded)."""
+        now = time.time()
+        with self._lock:
+            for ip in list(self._hits):
+                q = self._hits[ip]
+                self._prune(q, now)
+                if not q:
+                    del self._hits[ip]
+
 
 quota = TaskQuota()

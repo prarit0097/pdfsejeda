@@ -28,7 +28,7 @@
   <p class="muted" id="no-results" hidden>No tool matches your search.</p>
 
   <section class="features">
-    <div class="feature"><span class="tool-ico" style="--c:var(--cat-security)">{{ icon("shield") }}</span><h3>Private by design</h3><p class="muted">Uploads are processed and then deleted after {{ ttl_hours|round|int }} hours. Download links work only for you.</p></div>
+    <div class="feature"><span class="tool-ico" style="--c:var(--cat-security)">{{ icon("shield") }}</span><h3>Private by design</h3><p class="muted">Files expire automatically. Keep result links private: anyone with the link can download until it expires.</p></div>
     <div class="feature"><span class="tool-ico" style="--c:var(--cat-from_pdf)">{{ icon("bolt") }}</span><h3>Fast</h3><p class="muted">Files are processed on the server, so even a slow laptop or phone handles large PDFs.</p></div>
     <div class="feature"><span class="tool-ico" style="--c:var(--cat-pages)">{{ icon("workflow") }}</span><h3>Chain tools</h3><p class="muted">Send a result straight into another tool, or save a chain of steps as a reusable workflow.</p></div>
     <div class="feature"><span class="tool-ico" style="--c:var(--cat-to_pdf)">{{ icon("cloud") }}</span><h3>Works anywhere</h3><p class="muted">Upload from your device or paste a link. Nothing to install.</p></div>
@@ -36,29 +36,5 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script>
-(() => {
-  const q = document.getElementById("tool-search"), chips = document.querySelectorAll(".chip"), none = document.getElementById("no-results");
-  let cat = "all";
-  function apply() {
-    const term = q.value.trim().toLowerCase();
-    let any = false;
-    document.querySelectorAll(".tool-section").forEach(sec => {
-      const key = sec.dataset.section;
-      const sectionOn = term ? key !== "popular" : (cat === "all" || key === cat);
-      let visible = 0;
-      sec.querySelectorAll(".tool-card").forEach(card => {
-        const on = sectionOn && (!term || card.dataset.search.includes(term));
-        card.hidden = !on; if (on) visible++;
-      });
-      sec.hidden = visible === 0; if (visible) any = true;
-    });
-    none.hidden = any;
-  }
-  q.addEventListener("input", apply);
-  chips.forEach(c => c.addEventListener("click", () => {
-    chips.forEach(x => x.setAttribute("aria-pressed", x === c)); cat = c.dataset.cat; q.value = ""; apply();
-  }));
-})();
-</script>
+<script src="/static/js/home.js?v=1"></script>
 {% endblock %}

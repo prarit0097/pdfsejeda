@@ -1,0 +1,130 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://127.0.0.1:8000/compress-pdf"
+  },
+  "actions": [
+    {
+      "step_id": "menu",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[data-action=\"upload-menu\"]"
+      },
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "url-dialog",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "#upload-menu [data-action=\"url\"]"
+      },
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "url-value",
+      "action": "fill",
+      "locator": {
+        "kind": "css",
+        "selector": ".modal input[name=\"url\"]"
+      },
+      "value": {
+        "source": "literal",
+        "value": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      },
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "add-file",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": ".modal .btn-primary"
+      },
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "work-visible",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "#task-form"
+      },
+      "state": "visible",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "upload-done",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": ".file-item .progress"
+      },
+      "state": "hidden",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "submit",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "#submit-btn"
+      },
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "result",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "#stage-result .state-icon.ok"
+      },
+      "state": "visible",
+      "timeout_ms": 45000
+    },
+    {
+      "step_id": "preview",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "#preview-btn"
+      },
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "preview-ready",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "iframe.preview-frame"
+      },
+      "state": "visible",
+      "timeout_ms": 10000
+    }
+  ],
+  "capture": {
+    "after_each_step": [
+      "dom"
+    ],
+    "at_end": [
+      "url",
+      "accessibility",
+      "screenshot"
+    ],
+    "events": [
+      "console",
+      "page-errors",
+      "network"
+    ],
+    "network": {
+      "request_body": false,
+      "response_body": false,
+      "header_values": false
+    }
+  }
+}

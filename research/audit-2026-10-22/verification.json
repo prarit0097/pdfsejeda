@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-22",
+  "python_tests": {
+    "passed": 170,
+    "failed": 0,
+    "warnings": 2,
+    "clean_environment": ".venv Python 3.13"
+  },
+  "http_smoke": {
+    "passed": 58,
+    "failed": 0
+  },
+  "generic_browser": {
+    "passed": 62,
+    "failed": 0
+  },
+  "editor_browser": {
+    "passed_scenario_groups": 8,
+    "failed": 0
+  },
+  "concurrent_http_tasks": {
+    "passed": 16,
+    "failed": 0
+  },
+  "docker_build": "unverified; Docker CLI absent",
+  "pdfjs_manifest_files_verified": 201
+}

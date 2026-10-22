@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Result unavailable | {{ app_name }}{% endblock %}
+{% block main %}
+<section class="wrap prose" style="padding-top:60px;padding-bottom:60px">
+  <h1>This result is no longer available</h1>
+  <p>The link may have expired, the result may have been deleted, or the server may have restarted. Upload your original file to run the tool again.</p>
+  <a class="btn btn-primary" href="/">Choose a PDF tool</a>
+</section>
+{% endblock %}

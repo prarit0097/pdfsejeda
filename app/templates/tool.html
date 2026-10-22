@@ -3,7 +3,7 @@
 {% block title %}{{ tool.title }} — free online | {{ app_name }}{% endblock %}
 {% block description %}{{ tool.tagline }} Free online tool, no sign-up. Files are deleted after {{ ttl_hours|round|int }} hours.{% endblock %}
 {% block head %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script type="module" src="/static/js/pdf-loader.js?v=1"></script>
 {% endblock %}
 {% block main %}
 {% set basic = tool.options|rejectattr("advanced")|list %}
@@ -105,6 +105,6 @@
 }|tojson }}</script>
 {% endblock %}
 {% block scripts %}
-<script src="/static/js/tool.js?v=3"></script>
+<script src="/static/js/tool.js?v=4"></script>
 <script src="/static/js/pages-ui.js?v=1"></script>
 {% endblock %}

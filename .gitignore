@@ -8,3 +8,6 @@ data/
 *.egg-info/
 .DS_Store
 Thumbs.db
+data-*/
+# Raw observations can contain ephemeral tokens; retain locally and publish summaries.
+research/audit-2026-10-22/rea-*-evidence.json

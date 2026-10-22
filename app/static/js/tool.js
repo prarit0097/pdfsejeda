@@ -91,12 +91,19 @@
       x.upload.onprogress = e => e.lengthComputable && onProgress?.(e.loaded, e.total);
       x.onload = () => {
         if (x.status >= 200 && x.status < 300) { try { resolve(JSON.parse(x.responseText)); } catch { resolve({}); } }
-        else reject(new Error(x.responseText || `Upload failed (${x.status})`));
+        else reject(new Error(errText(x.responseText) || `Upload failed (${x.status})`));
       };
       x.onerror = () => reject(new Error("Network error during upload"));
       x.send(body);
     });
   }
+
+  /** Server error bodies are plain text; framework errors are {"detail": "..."}. */
+  function errText(t) {
+    try { const j = JSON.parse(t); if (j && typeof j.detail === "string") return j.detail; if (j && j.detail) return "The request was rejected"; } catch {}
+    return String(t || "").slice(0, 300);
+  }
+  Tool.errText = errText;
 
   function uploadSimple(entry) {
     const fd = new FormData(); fd.append("file", entry.blob, entry.name);
@@ -110,9 +117,12 @@
     async function send(start) {
       const end = Math.min(start + CHUNK, size) - 1;
       const fd = new FormData(); fd.append("file", entry.blob.slice(start, end + 1), entry.name);
-      const r = await xhrPost("/api/files/upload-chunked", fd, {
-        "Content-Range": `bytes ${start}-${end}/${size}`, "X-Upload-Id": uploadId, "X-File-Name": encodeURIComponent(entry.name),
-      });
+      const headers = { "Content-Range": `bytes ${start}-${end}/${size}`, "X-Upload-Id": uploadId, "X-File-Name": encodeURIComponent(entry.name) };
+      let r;
+      for (let attempt = 1; ; attempt++) { // a flaky network shouldn't fail a 200 MB upload: retry each chunk twice
+        try { r = await xhrPost("/api/files/upload-chunked", fd, headers); break; }
+        catch (err) { if (attempt >= 3 || /too large|invalid/i.test(err.message)) throw err; await new Promise(res => setTimeout(res, 1000 * attempt)); }
+      }
       done += end - start + 1; entry.progress = done / size * 100; renderProgress(entry);
       if (r.id) result = r;
     }
@@ -133,11 +143,13 @@
     try { if (new URL(url).host === location.host) return toast("That link points to this site. Please use a link to the file itself.", "err"); }
     catch { return toast("That doesn't look like a valid web address", "err"); }
     if (!cfg.multiple) Tool.files = [];
-    const entry = { localId: ++localCounter, name: decodeURIComponent(url.split("/").pop().split("?")[0] || "file"), status: "uploading", progress: 30, rotation: 0 };
+    let guess = url.split("/").pop().split(/[?#]/)[0] || "file";
+    try { guess = decodeURIComponent(guess); } catch {}
+    const entry = { localId: ++localCounter, name: guess, status: "uploading", progress: 30, rotation: 0 };
     Tool.files.push(entry); showWork(); render();
     try {
       const r = await fetch("/api/files", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
-      if (!r.ok) throw new Error(await r.text());
+      if (!r.ok) throw new Error(errText(await r.text()) || "Could not add that link");
       Object.assign(entry, await r.json(), { status: "ready", progress: 100 });
       if (!extOk(entry.name)) toast(`“${entry.name}” may not be supported by this tool`, "err");
       if (entry.passwordProtected) await askPassword(entry);
@@ -151,7 +163,8 @@
       if (!v) { entry.status = "error"; entry.error = "Password needed"; return; }
       const r = await fetch(`/api/files/${entry.id}/password`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: v.password }) });
       if (r.ok) { const j = await r.json(); entry.pages = j.pages; entry.passwordProtected = false; entry.password = v.password; return; }
-      toast(await r.text(), "err");
+      toast(errText(await r.text()) || "Could not unlock the file", "err");
+      if (r.status === 404) { entry.status = "error"; entry.error = "Expired — please upload again"; return; }
     }
   }
 
@@ -164,10 +177,11 @@
   }
 
   function resetAll() {
+    pollGen++; // stop polling a task whose screen is gone
+    form.hidden = true; resultStage.hidden = true; uploadStage.hidden = false; // before render(): render() calls resetAll() when the list empties
     Tool.files = []; render(); Tool.emit();
     document.dispatchEvent(new CustomEvent("editor-close"));
-    form.hidden = true; resultStage.hidden = true; uploadStage.hidden = false;
-    history.replaceState(null, "", location.pathname);
+    history.replaceState(null, "", location.pathname + location.search);
   }
 
   function render() {
@@ -183,6 +197,10 @@
           <div class="meta">${f.status === "uploading" ? "Uploading…" : f.status === "error" ? `<span class="badge badge-err">${esc(f.error)}</span>` :
             [fmtSize(f.size), f.pages ? `${f.pages} page${f.pages > 1 ? "s" : ""}` : "", f.rotation ? `rotated ${f.rotation}°` : ""].filter(Boolean).join(" · ")}</div>
           ${f.status === "uploading" ? `<div class="progress"><i style="width:${f.progress}%"></i></div>` : ""}
+          ${cfg.type === "alternateMix" && f.status === "ready" ? `<div class="mix-controls" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px">
+            <label class="small">Pages per turn <input class="input" type="number" min="1" max="10000" step="1" data-mix-step aria-label="Pages per turn for ${esc(f.name)}" value="${f.mixStep ?? Number(fieldValue("step") || 1)}" style="width:80px;padding:5px 8px"></label>
+            <label class="check small"><input type="checkbox" data-mix-reverse aria-label="Reverse pages in ${esc(f.name)}" ${(f.mixReverse ?? (Tool.readyFiles().indexOf(f) > 0 && fieldValue("reverse") === "true")) ? "checked" : ""}> Reverse pages</label>
+          </div>` : ""}
         </div>
         ${cfg.pageUi === "files" && f.status === "ready" ? `<button class="icon-btn" type="button" data-rotate title="Rotate">${icon("rotate")}</button>` : ""}
         <button class="icon-btn" type="button" data-remove title="Remove">${icon("x")}</button>
@@ -200,6 +218,13 @@
     const f = Tool.files.find(x => x.localId == li.dataset.local);
     if (e.target.closest("[data-remove]")) { Tool.files = Tool.files.filter(x => x !== f); render(); Tool.emit(); }
     if (e.target.closest("[data-rotate]")) { f.rotation = (f.rotation + 90) % 360; render(); }
+  });
+  list?.addEventListener("change", e => {
+    const item = e.target.closest(".file-item");
+    const file = item && Tool.files.find(f => f.localId == item.dataset.local);
+    if (!file) return;
+    if (e.target.matches("[data-mix-step]")) file.mixStep = Number(e.target.value);
+    if (e.target.matches("[data-mix-reverse]")) file.mixReverse = e.target.checked;
   });
   let dragEl = null;
   list?.addEventListener("dragstart", e => { dragEl = e.target.closest(".file-item"); dragEl?.classList.add("dragging"); });
@@ -239,6 +264,9 @@
   }
   form?.addEventListener("change", syncShowIf);
   form?.addEventListener("input", syncShowIf);
+  form?.addEventListener("change", e => {
+    if (cfg.type === "alternateMix" && ["step", "reverse"].includes(e.target.name)) render();
+  });
   syncShowIf();
 
   // ---------- submit ----------
@@ -257,12 +285,17 @@
     const ready = Tool.readyFiles();
     body.files = ready.map(f => f.id);
     if (cfg.pageUi === "files") body.rotations = ready.map(f => f.rotation || 0);
+    if (cfg.type === "alternateMix") {
+      const commonStep = Number(body.step || 1), commonReverse = !!body.reverse;
+      body.step = ready.map(f => f.mixStep ?? commonStep);
+      body.reverse = ready.map((f, i) => f.mixReverse ?? (i > 0 && commonReverse));
+    }
     Object.assign(body, Tool.extraParams(body));
     body.uri = location.pathname;
     return body;
   }
 
-  let submitting = false;
+  let submitting = false, pollGen = 0;
   form?.addEventListener("submit", e => {
     e.preventDefault();
     if (Tool.files.some(f => f.status === "uploading")) return toast("Please wait until the uploads finish");
@@ -274,7 +307,7 @@
   });
 
   /** POST a task body and show the processing/result screen. Used by the form and by the editor. */
-  async function submitBody(body) {
+  async function submitBody(body, { onCompleted } = {}) {
     if (submitting) return false;
     submitting = true;
     const btn = $("#submit-btn"); if (btn) btn.disabled = true;
@@ -282,9 +315,9 @@
       const r = await fetch("/api/tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (r.status === 402) { const j = await r.json(); showQuota(Number(r.headers.get("x-ratelimit-wait") || 0), j.reason); return false; }
       if (r.status === 429) { toast("Too many attempts. Please try again in a little while.", "err"); return false; }
-      if (!r.ok) { toast(await r.text() || "The server rejected this task", "err"); return false; }
-      rememberStep(body);
-      showProcessing(await r.json());
+      if (!r.ok) { toast(errText(await r.text()) || "The server rejected this task", "err"); return false; }
+      session.removeItem("lastStep");
+      showProcessing(await r.json(), () => { rememberStep(body); onCompleted?.(); });
       return true;
     } catch { toast("You appear to be offline. Check your connection and try again.", "err"); return false; }
     finally { submitting = false; if (btn) btn.disabled = false; }
@@ -292,43 +325,85 @@
   Tool.submitBody = submitBody;
   Tool.showProcessing = id => showProcessing(id);
 
+  // Browsers may disable storage (privacy settings), or exhaust its quota.
+  const session = {
+    getItem(key) { try { return sessionStorage.getItem(key); } catch { return null; } },
+    setItem(key, value) { try { sessionStorage.setItem(key, value); return true; } catch { return false; } },
+    removeItem(key) { try { sessionStorage.removeItem(key); } catch {} },
+  };
+
   // ---------- workflow recording ----------
   const NOT_RECORDABLE = new Set(["edit", "fillSign", "editForms", "combineReorder", "htmlToPdf"]);
   const TELEMETRY = ["files", "uri", "rotations", "pageRotationsPerSource", "filePages", "formValues"];
-  function rememberStep(body) {
-    if (NOT_RECORDABLE.has(body.type)) { sessionStorage.removeItem("lastStep"); return; }
-    const step = { ...body, uri: location.pathname, title: cfg.title };
-    TELEMETRY.forEach(k => { if (k !== "uri") delete step[k]; });
-    sessionStorage.setItem("lastStep", JSON.stringify(step));
+  function cleanWorkflowStep(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+    const clean = entry => Array.isArray(entry) ? entry.map(clean) : entry && typeof entry === "object"
+      ? Object.fromEntries(Object.entries(entry).filter(([key]) => !/password|secret|token|authorization/i.test(key) && !["__proto__", "constructor", "prototype"].includes(key)).map(([key, val]) => [key, clean(val)])) : entry;
+    const step = clean(value);
+    TELEMETRY.forEach(key => { if (key !== "uri") delete step[key]; });
+    return step;
   }
-  function workflowChain() { try { return JSON.parse(sessionStorage.getItem("workflowChain") || "[]"); } catch { return []; } }
+  Tool.cleanWorkflowStep = cleanWorkflowStep;
+  function rememberStep(body) {
+    if (NOT_RECORDABLE.has(body.type)) { session.removeItem("lastStep"); return; }
+    const step = cleanWorkflowStep({ ...body, uri: location.pathname, title: cfg.title });
+    session.setItem("lastStep", JSON.stringify(step));
+  }
+  function workflowChain() {
+    try {
+      const chain = JSON.parse(session.getItem("workflowChain") || "[]");
+      return Array.isArray(chain) ? chain.map(cleanWorkflowStep).filter(Boolean).slice(-10) : [];
+    } catch { return []; }
+  }
+  // Scrub credentials left by earlier app versions before saving or export.
+  for (const key of ["lastStep", "workflowChain"]) {
+    try {
+      const old = JSON.parse(session.getItem(key) || "null");
+      if (old) session.setItem(key, JSON.stringify(key === "lastStep" ? cleanWorkflowStep(old) : workflowChain()));
+    } catch { session.removeItem(key); }
+  }
 
   function showQuota(wait, reason) {
-    resultStage.hidden = false;
-    let left = wait;
+    pollGen++;
+    form.hidden = true; resultStage.hidden = false;
+    document.dispatchEvent(new CustomEvent("editor-close"));
+    const until = Date.now() + Math.max(0, wait) * 1000, gen = pollGen;
     resultStage.innerHTML = `<div class="result"><div class="state-icon err">${icon("clock", "icon-lg")}</div>
-      <h2>Hourly limit reached</h2><p class="muted">You've used all free tasks for this hour (${esc(reason)}). You can start a new task in <b id="quota-clock"></b>.</p></div>`;
-    const tick = () => { const m = Math.floor(left / 60), s = left % 60; const el = $("#quota-clock"); if (el) el.textContent = `${m}:${String(s).padStart(2, "0")}`; if (left-- > 0) setTimeout(tick, 1000); };
+      <h2>Hourly limit reached</h2><p class="muted">You've used all free tasks for this hour${reason && reason !== "tasks-per-hour" ? ` (${esc(reason)})` : ""}. You can start a new task in <b id="quota-clock" role="timer" aria-live="off"></b>.</p>
+      <div class="result-actions"><button class="btn btn-primary" type="button" id="quota-retry" disabled>Try again</button><button class="btn btn-ghost" type="button" id="quota-back">Back to options</button></div></div>`;
+    $("#quota-back").onclick = backToForm;
+    $("#quota-retry").onclick = () => { backToForm(); if (!cfg.editor && !cfg.workflow) form.requestSubmit?.(); };
+    const tick = () => {
+      if (gen !== pollGen) return;
+      const left = Math.max(0, Math.round((until - Date.now()) / 1000)), m = Math.floor(left / 60), s = left % 60;
+      const el = $("#quota-clock"); if (!el) return;
+      el.textContent = `${m}:${String(s).padStart(2, "0")}`;
+      if (left > 0) setTimeout(tick, 1000); else { $("#quota-retry").disabled = false; el.textContent = "now"; }
+    };
     tick();
   }
 
   // ---------- results ----------
-  function showProcessing(taskId) {
+  function showProcessing(taskId, onCompleted) {
     form.hidden = true; resultStage.hidden = false;
     document.dispatchEvent(new CustomEvent("editor-close"));
     resultStage.innerHTML = `<div class="result"><div class="spinner"></div><h2>Working on it…</h2><p class="muted" id="proc-note">Your files are being processed.</p>
       <button class="btn btn-ghost btn-sm" type="button" id="cancel-btn">Cancel</button></div>`;
-    $("#cancel-btn").onclick = async () => { await fetch(`/api/tasks/${taskId}/cancel`, { method: "POST" }); backToForm(); };
-    history.replaceState(null, "", `#results-${taskId}`);
+    const gen = ++pollGen;
+    $("#cancel-btn").onclick = async () => { pollGen++; try { await fetch(`/api/tasks/${taskId}/cancel`, { method: "POST" }); } catch {} backToForm(); };
+    history.replaceState(null, "", `${location.pathname}${location.search}#results-${taskId}`);
     let polls = 0;
     const poll = async () => {
+      if (gen !== pollGen) return; // the user moved on (cancel, start over, another task)
       polls++;
       try {
         const r = await fetch(`/api/tasks/${taskId}/change?_=${Date.now()}`);
+        if (gen !== pollGen) return;
         if (r.status === 404) return showFailed("These files have expired. Please upload them again.");
+        if (!r.ok) throw new Error(String(r.status));
         const t = await r.json();
         const st = String(t.status).toLowerCase();
-        if (st === "completed") return showCompleted(t);
+        if (st === "completed") { onCompleted?.(); return showCompleted(t); }
         if (st === "failed") return showFailed(t.failureReason || "Processing failed");
         if (polls === 10) { const n = $("#proc-note"); if (n) n.textContent = "This is taking longer than usual. Large files can need up to a few minutes."; }
         setTimeout(poll, 3000);
@@ -357,12 +432,12 @@
       ${(t.warnings || []).length ? `<div class="warnings">${t.warnings.map(w => `<div class="alert alert-warn">${icon("alert")}<span>${esc(w)}</span></div>`).join("")}</div>` : ""}
       ${multi ? `<div class="result-items card">${t.resultItems.map(n => `<a href="${urlFor(t, n)}" download="${esc(n)}">${icon(/\.pdf$/i.test(n) ? "file" : "image")}<span style="flex:1">${esc(n)}</span>${icon("download")}</a>`).join("")}</div>` : ""}
       <div class="result-actions" style="margin-top:26px">
-        <div style="position:relative"><button class="btn" type="button" id="continue-btn">${icon("workflow")} Continue in another tool ${icon("chevron")}</button>
+        <div style="position:relative"><button class="btn" type="button" id="continue-btn" aria-haspopup="true" aria-expanded="false">${icon("workflow")} Continue in another tool ${icon("chevron")}</button>
           <div class="menu" id="continue-menu" hidden style="bottom:110%;left:0;max-height:320px;overflow:auto"></div></div>
         <button class="btn btn-ghost" type="button" id="edit-again">Change options</button>
         <button class="btn btn-ghost" type="button" id="start-over">Start over</button>
         <button class="btn btn-ghost" type="button" id="delete-btn" title="Delete the result from the server now">${icon("trash")} Delete now</button>
-        ${sessionStorage.getItem("lastStep") && !cfg.workflow ? `<button class="btn btn-ghost" type="button" id="save-wf">${icon("workflow")} Save as workflow${workflowChain().length ? ` (${workflowChain().length + 1} steps)` : ""}</button>` : ""}
+        ${session.getItem("lastStep") && !cfg.workflow ? `<button class="btn btn-ghost" type="button" id="save-wf">${icon("workflow")} Save as workflow${workflowChain().length ? ` (${workflowChain().length + 1} steps)` : ""}</button>` : ""}
       </div>
       <div id="preview-slot"></div>
     </div>`;
@@ -384,28 +459,41 @@
     const ext = t.resultFilename.split(".").pop().toLowerCase();
     const multi = (t.resultItems || []).length > 1;
     const usable = Tool.catalog.filter(x => x.slug !== cfg.slug && x.accept.some(a => multi ? t.resultItems.some(n => n.toLowerCase().endsWith("." + a)) : a === ext));
-    menu.innerHTML = usable.map(x => `<button type="button" data-slug="${x.slug}">${esc(x.title)}</button>`).join("") || `<span class="muted small" style="padding:8px">No tool accepts this file</span>`;
-    menu.hidden = false;
+    menu.innerHTML = usable.map(x => `<button type="button" role="menuitem" data-slug="${esc(x.slug)}">${esc(x.title)}</button>`).join("") || `<span class="muted small" style="padding:8px">No tool accepts this file</span>`;
+    menu.setAttribute("role", "menu");
+    menu.hidden = false; $("#continue-btn").setAttribute("aria-expanded", "true");
+    menu.querySelector("button")?.focus();
+    menu.onkeydown = ev => {
+      if (ev.key === "Escape") { menu.hidden = true; $("#continue-btn").setAttribute("aria-expanded", "false"); $("#continue-btn").focus(); }
+      if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+        ev.preventDefault();
+        const items = [...menu.querySelectorAll("button")], i = items.indexOf(document.activeElement);
+        items[(i + (ev.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus();
+      }
+    };
     menu.onclick = async e => {
       const b = e.target.closest("[data-slug]"); if (!b) return;
       const r = await fetch(`/api/tasks/${t.id}/continue`, { method: "POST" });
       if (!r.ok) return toast("These files have expired", "err");
-      sessionStorage.setItem("continueFiles", JSON.stringify(await r.json()));
-      const last = sessionStorage.getItem("lastStep");
-      if (last) sessionStorage.setItem("workflowChain", JSON.stringify([...workflowChain(), JSON.parse(last)].slice(-10)));
+      if (!session.setItem("continueFiles", JSON.stringify(await r.json()))) return toast("Browser storage is unavailable. Download the result and upload it in the next tool.", "err");
+      const last = session.getItem("lastStep");
+      if (last) session.setItem("workflowChain", JSON.stringify([...workflowChain(), JSON.parse(last)].slice(-10)));
       location.href = "/" + b.dataset.slug;
     };
-    document.addEventListener("click", function off(ev) { if (!menu.contains(ev.target)) { menu.hidden = true; document.removeEventListener("click", off); } });
+    document.addEventListener("click", function off(ev) { if (!menu.contains(ev.target)) { menu.hidden = true; $("#continue-btn")?.setAttribute("aria-expanded", "false"); document.removeEventListener("click", off); } });
   }
 
   async function saveWorkflow() {
-    const steps = [...workflowChain(), JSON.parse(sessionStorage.getItem("lastStep"))];
+    let last = null; try { last = JSON.parse(session.getItem("lastStep") || "null"); } catch {}
+    if (!last) return toast("Nothing to save yet", "err");
+    const steps = [...workflowChain(), cleanWorkflowStep(last)];
     const v = await dialog({ title: "Save as workflow", text: steps.map(x => x.title).join(" → "), fields: [{ name: "name", label: "Name", value: steps.map(x => x.title).join(" + "), required: true }], ok: "Save" });
     if (!v?.name) return;
-    const list = JSON.parse(localStorage.getItem("workflows") || "[]");
+    let list = []; try { list = JSON.parse(localStorage.getItem("workflows") || "[]"); if (!Array.isArray(list)) list = []; } catch {}
+    list = list.filter(w => w && Array.isArray(w.steps)).map(w => ({ ...w, steps: w.steps.map(cleanWorkflowStep).filter(Boolean) }));
     list.unshift({ id: Date.now().toString(36), name: v.name.trim(), created: Date.now(), steps });
     try { localStorage.setItem("workflows", JSON.stringify(list)); } catch { return toast("Could not save: browser storage is full", "err"); }
-    sessionStorage.removeItem("workflowChain");
+    session.removeItem("workflowChain");
     toast("Workflow saved. Find it under Workflows.");
   }
 
@@ -417,7 +505,9 @@
   }
 
   function backToForm() {
-    resultStage.hidden = true; history.replaceState(null, "", location.pathname);
+    pollGen++;
+    resultStage.hidden = true; history.replaceState(null, "", location.pathname + location.search);
+    if (!Tool.files.length && !cfg.workflow && cfg.type !== "htmlToPdf") { uploadStage.hidden = false; return; }
     if (cfg.editor) document.dispatchEvent(new CustomEvent("editor-open")); else form.hidden = false;
   }
   Tool.reset = () => resetAll();
@@ -432,7 +522,7 @@
     const items = readRecent(), box = $("#recent");
     if (!box) return;
     box.hidden = !items.length;
-    $("#recent-list").innerHTML = items.map(r => `<div class="recent-item">${icon("file")}<a href="${r.url}" download style="flex:1">${esc(r.name)}</a><span class="muted small">${esc(r.tool)} · ${Math.round((Date.now() - r.at) / 60000)} min ago</span></div>`).join("");
+    $("#recent-list").innerHTML = items.map(r => `<div class="recent-item">${icon("file")}<a href="${esc(r.url)}" download="${esc(r.name)}" style="flex:1">${esc(r.name)}</a><span class="muted small">${esc(r.tool)} · ${Math.round((Date.now() - r.at) / 60000)} min ago</span></div>`).join("");
   }
   renderRecent();
 
@@ -441,11 +531,15 @@
     if (r.status === 404) { f.status = "error"; f.error = "Expired — please upload again"; render(); Tool.emit(); }
   })), 10 * 60 * 1000);
 
+  // ---------- reopen a result after reload (#results-<taskId>) ----------
+  const hashTask = /^#results-([A-Z0-9]{8,64}-\d{12})$/.exec(location.hash);
+  if (hashTask && !cfg.workflow) { uploadStage.hidden = true; showProcessing(hashTask[1]); }
+
   // ---------- files handed over from another tool ----------
-  if (!sessionStorage.getItem("continueFiles") && !cfg.workflow) sessionStorage.removeItem("workflowChain");
+  if (!session.getItem("continueFiles") && !cfg.workflow) session.removeItem("workflowChain");
   try {
-    const handed = JSON.parse(sessionStorage.getItem("continueFiles") || "null");
-    sessionStorage.removeItem("continueFiles");
+    const handed = JSON.parse(session.getItem("continueFiles") || "null");
+    session.removeItem("continueFiles");
     if (Array.isArray(handed) && handed.length) {
       const usable = handed.filter(f => extOk(f.name));
       (cfg.multiple ? usable : usable.slice(0, 1)).forEach(f => Tool.files.push({ ...f, localId: ++localCounter, status: "ready", progress: 100, rotation: 0 }));

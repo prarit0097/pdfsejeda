@@ -18,7 +18,7 @@ Remote: https://github.com/prarit0097/pdfsejeda (push after every completed unit
 | HTML | **Jinja2** server-rendered pages, one page per tool (like Sejda) | SEO-friendly, no SPA build step |
 | Front-end JS | Vanilla ES modules, no framework | small, fast; Sejda's UX does not need React |
 | Styling | Hand-written CSS with design tokens, light + dark themes | original design, no CSS framework lock-in |
-| PDF preview | **PDF.js** (Apache-2.0), loaded from CDN | same role as on Sejda |
+| PDF preview | **PDF.js** (Apache-2.0), self-hosted with worker/fonts/codecs | same role as on Sejda |
 | PDF core | **pikepdf** (qpdf, MPL-2.0) + **pypdf** (BSD) | structural edits, encryption, outlines, forms |
 | Rendering | **pypdfium2** (Apache/BSD) | page → image, thumbnails, auto-crop, deskew, flatten |
 | Drawing overlays | **reportlab** (BSD) | text, page numbers, Bates, watermarks, editor ops |
@@ -102,10 +102,10 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [x] Editor page: PDF.js pages, toolbar (text, edit text, image, whiteout, shapes, line/arrow, draw, highlight/strike/underline, link, form fields, sign, insert/delete/rotate page, undo)
 - [x] Server `edit` handler applying all operation arrays
 - [x] Fill forms (`formValues`), create form fields, signatures (draw/type/upload)
-- [x] Local crash recovery (localStorage draft per file name+size, 48 h)
+- [x] Local crash recovery (localStorage draft per document SHA-256, 48 h; kept until successful save)
 
 ### Phase 7 — Platform extras
-- [x] Workflows (record → replay tool chains, stored in IndexedDB)
+- [x] Workflows (record → replay tool chains, stored in localStorage; credentials prompted at run time)
 - [x] Recent files panel, "continue with another tool"
 - [x] Rate-limit UI (remaining tasks, countdown)
 
@@ -122,6 +122,24 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [ ] Accounts and paid plans (higher limits) — not needed for the free tool set
 - [ ] Desktop/offline build
 - [ ] Edit-text: keep the document's own embedded font where possible
+
+## 3b. Verification and parity pass (2026-10-22)
+
+The earlier phase checkboxes record implementation progress, not proof of exact Sejda parity.
+The current pass preserves existing work and verifies actual files and browser interactions.
+
+- [x] Fresh REA browser evidence for eight public Sejda pages, without submitting confidential files
+- [x] Repair failing tests; exercise real LibreOffice, Chromium and Tesseract
+- [x] Bound job admission and strengthen secret task IDs; test expiry/cancellation and uploads
+- [x] Preserve editor drafts through failed saves; scrub workflow secrets
+- [x] Advanced PDF form creation and filling (choice fields, radio groups, limits and comb)
+- [x] Self-host current PDF.js, worker, fonts, CMaps and codecs
+- [x] Individual and odd/even drawn crop regions
+- [x] Add working developer guides and shareable result entry point
+- [x] Finish and verify per-file alternate mix controls and editor find/replace
+- [x] Verify HTML redirects and relative assets remain pinned to public IPs
+- [x] Final full Python, live HTTP, desktop/mobile browser and clean-install checks
+- [x] Record exact remaining product/infrastructure parity gaps in research and rules
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

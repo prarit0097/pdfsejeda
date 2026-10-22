@@ -2,6 +2,7 @@ import io
 
 import pikepdf
 import pypdf
+import pytest
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
@@ -37,6 +38,16 @@ def test_compress_never_grows():
     f = store(make_pdf(1), "tiny.pdf")
     task, out = run_tool("compress", [f])
     assert len(out["tiny.pdf"]) <= f.size
+
+
+def test_compress_strict_fails_when_not_reduced():
+    from app.jobs import TaskError
+
+    # First obtain an optimized PDF, so the second run cannot save more bytes.
+    _, out = run_tool("compress", [store(make_pdf(1), "tiny.pdf")])
+    f = store(out["tiny.pdf"], "optimized.pdf")
+    with pytest.raises(TaskError, match="already optimized"):
+        run_tool("compress", [f], failIfOutputSizeNotReduced=True)
 
 
 def test_crop_margins_and_auto(pdf3):

@@ -3,9 +3,9 @@
 {% block title %}{{ tool.title }} — free online PDF editor | {{ app_name }}{% endblock %}
 {% block description %}{{ tool.tagline }} Free, no sign-up, no watermark.{% endblock %}
 {% block head %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script type="module" src="/static/js/pdf-loader.js?v=1"></script>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Dancing+Script:wght@600&family=Homemade+Apple&family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/editor.css?v=2">
+<link rel="stylesheet" href="/static/css/editor.css?v=5">
 {% endblock %}
 {% block main %}
 <section class="tool-hero wrap" id="editor-hero">
@@ -46,6 +46,7 @@
       <button type="button" data-tool="select" title="Select & move (V)">{{ icon("arrow-right") }}<span>Select</span></button>
       <button type="button" data-tool="text" title="Add text (T)">{{ icon("text") }}<span>Text</span></button>
       <button type="button" data-tool="edittext" title="Edit existing text">{{ icon("edit") }}<span>Edit text</span></button>
+      <button type="button" data-action="find" title="Find and replace existing text">{{ icon("search") }}<span>Find & replace</span></button>
       <button type="button" data-tool="sign" title="Signature">{{ icon("sign") }}<span>Sign</span></button>
       <button type="button" data-tool="image" title="Image">{{ icon("image") }}<span>Image</span></button>
     </div>
@@ -66,6 +67,9 @@
     <div class="ed-group">
       <button type="button" data-tool="field-text" title="Form text box">{{ icon("form") }}<span>Text field</span></button>
       <button type="button" data-tool="field-check" title="Form checkbox">{{ icon("check") }}<span>Checkbox</span></button>
+      <button type="button" data-tool="field-dropdown" title="Dropdown with selectable options">{{ icon("chevron") }}<span>Dropdown</span></button>
+      <button type="button" data-tool="field-listbox" title="List box with optional multiple selection">{{ icon("form") }}<span>List box</span></button>
+      <button type="button" data-tool="field-radio" title="Radio buttons: use the same field name to group buttons">{{ icon("grayscale") }}<span>Radio</span></button>
       <button type="button" data-action="date" title="Insert today's date">{{ icon("clock") }}<span>Date</span></button>
     </div>
     <div class="ed-group ed-right">
@@ -76,6 +80,22 @@
     </div>
   </div>
   <div class="ed-props" id="ed-props" hidden></div>
+  <section id="ed-find" hidden aria-label="Find and replace" style="padding:10px 16px;border-bottom:1px solid var(--line);background:var(--bg-elev)">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <label>Find <input class="input" id="ed-find-text" name="findText" type="search" style="width:180px"></label>
+      <label>Replace with <input class="input" id="ed-replace-text" name="replaceText" type="text" style="width:180px"></label>
+      <label class="check"><input id="ed-find-case" name="replaceMatchCase" type="checkbox"> Match case</label>
+      <button class="btn btn-sm" id="ed-find-search" type="button">Search</button>
+      <button class="btn btn-sm" id="ed-find-replace" type="button" disabled>Replace selected</button>
+      <button class="btn btn-sm" id="ed-find-all" type="button" disabled>Replace all</button>
+      <button class="btn btn-ghost btn-sm" id="ed-find-close" type="button">Close</button>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px">
+      <span id="ed-find-count" role="status" aria-live="polite">Enter text to find.</span>
+      <label>Match <select id="ed-find-results" aria-label="Select a match" style="max-width:min(450px,calc(100vw - 100px))" disabled></select></label>
+    </div>
+    <p class="muted small" style="margin:6px 0 0">Visual replacement covers existing text and draws new text. Original text remains in the PDF. Font matching is approximate; search supports horizontal text, including adjacent text fragments on the same line.</p>
+  </section>
   <div class="ed-pages" id="ed-pages"></div>
   <div class="ed-footer">
     <span class="muted small" id="ed-status"></span>
@@ -101,5 +121,5 @@
 {% endblock %}
 {% block scripts %}
 <script src="/static/js/tool.js?v=3"></script>
-<script src="/static/js/editor.js?v=2"></script>
+<script src="/static/js/editor.js?v=4"></script>
 {% endblock %}

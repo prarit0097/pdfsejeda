@@ -1,26 +1,36 @@
 """Stamp & number tools: watermark, header/footer (and page numbers), Bates numbering."""
 from __future__ import annotations
 
-import io
+import math
 import time
 
 import pikepdf
 
 from ..jobs import TaskError
 from .common import open_pdf, output_name, pages_or_error, save_pdf
-from .draw import font_for, hex_to_rgb, place_page, stamp, visible_size
+from .draw import draw_text, fit_page_content, hex_to_rgb, stamp, text_width, visible_size
 from .imaging import is_image
 from .registry import IMAGES, PDF, Opt, Tool, register
 
 LOCATIONS = [("top-left", "Top left"), ("top-center", "Top center"), ("top-right", "Top right"),
              ("bottom-left", "Bottom left"), ("bottom-center", "Bottom center"), ("bottom-right", "Bottom right")]
 FONTS = [("helvetica", "Sans-serif"), ("times_roman", "Serif"), ("courier", "Monospace")]
-SIZES = [(str(s), str(s)) for s in (6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 36)]
+SIZES = [(str(s), str(s)) for s in (6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 30, 36, 45, 60)]
 
 
 def _num(v, default=0.0):
     try:
         return float(v)
+    except (TypeError, ValueError):
+        return default
+
+
+def _int(v, default: int) -> int:
+    """Integer option where 0 is a valid value (unlike `int(x or default)`)."""
+    if v is None or (isinstance(v, str) and not v.strip()):
+        return default
+    try:
+        return int(float(v))
     except (TypeError, ValueError):
         return default
 
@@ -38,34 +48,40 @@ def roman(n: int) -> str:
     return out
 
 
+def _label_margin(size: float) -> float:
+    return max(18, size * 1.6)
+
+
+def _label_room(text: str, size: float) -> float:
+    """Height of the band a label needs (margin + its lines), used by "add margins"."""
+    lines = max(1, len(text.split("\n")))
+    return _label_margin(size) + size * 0.8 + (lines - 1) * size * 1.2 + size * 0.6
+
+
 def _draw_label(c, w, h, text, location, font, size, color, margin=None):
     lines = text.split("\n")
-    margin = margin if margin is not None else max(18, size * 1.6)
+    margin = margin if margin is not None else _label_margin(size)
     c.setFillColorRGB(*color)
     lead = size * 1.2
     vert, horiz = location.split("-")
     for i, line in enumerate(lines):
-        fname = font_for(font, line)
-        c.setFont(fname, size)
         y = (h - margin - size * 0.8 - i * lead) if vert == "top" else (margin + (len(lines) - 1 - i) * lead)
         if horiz == "left":
-            c.drawString(margin, y, line)
+            draw_text(c, margin, y, line, font, size, "left")
         elif horiz == "right":
-            c.drawRightString(w - margin, y, line)
+            draw_text(c, w - margin, y, line, font, size, "right")
         else:
-            c.drawCentredString(w / 2, y, line)
+            draw_text(c, w / 2, y, line, font, size, "center")
 
 
 def _shrink_for_margin(pdf, idx: int, location: str, room: float):
-    """Scale page content down so a header/footer of height `room` doesn't cover it."""
-    from .draw import new_blank_page
-
+    """Scale page content down in place (links, bookmarks and form fields keep working) so a
+    header/footer band of height `room` doesn't cover it."""
     page = pdf.pages[idx]
     w, h = visible_size(page)
-    new = new_blank_page(pdf, w, h, index=idx + 1)
+    room = min(room, h * 0.4)
     y = room if location.startswith("bottom") else 0
-    place_page(pdf, new, pdf.pages[idx], (0, y, w, h - room))
-    del pdf.pages[idx]
+    fit_page_content(pdf, page, (0, y, w, h - room))
 
 
 # ---------------------------------------------------------------------------
@@ -80,7 +96,7 @@ def header_footer(ctx):
     font = ctx.param("font", "helvetica")
     size = _num(ctx.param("fontSize"), 10) or 10
     color = hex_to_rgb(ctx.param("color"))
-    start_from = int(_num(ctx.param("pageCountStartFrom"), 1) or 1)
+    start_from = _int(ctx.param("pageCountStartFrom"), 1)
     add_margins = ctx.flag("addMargins")
     date = time.strftime("%Y-%m-%d")
     for inp in ctx.inputs:
@@ -91,13 +107,13 @@ def header_footer(ctx):
         for i in sel:
             ctx.check_cancelled()
             idx = i - 1
-            if add_margins:
-                _shrink_for_margin(pdf, idx, location, size * 2.6)
             n = start_from + idx
-            text = (pattern.replace("[PAGE_ARABIC]", str(n)).replace("[PAGE_ROMAN]", roman(n))
-                    .replace("[PAGE_ROMAN_UPPER]", roman(n).upper()).replace("[TOTAL_PAGES_ARABIC]", str(total_numbered))
+            text = (pattern.replace("[PAGE_ARABIC]", str(n)).replace("[PAGE_ROMAN_UPPER]", roman(n).upper())
+                    .replace("[PAGE_ROMAN]", roman(n)).replace("[TOTAL_PAGES_ARABIC]", str(total_numbered))
                     .replace("[TOTAL_PAGES_ROMAN]", roman(total_numbered)).replace("[BASE_NAME]", inp.stem)
                     .replace("[FILE_NAME]", inp.name).replace("[DATE]", date))
+            if add_margins:
+                _shrink_for_margin(pdf, idx, location, _label_room(text, size))
             stamp(pdf, pdf.pages[idx], lambda c, w, h, t=text: _draw_label(c, w, h, t, location, font, size, color))
         save_pdf(pdf, ctx.output(output_name(ctx, inp)))
     ctx.remark("Header and footer added")
@@ -154,10 +170,10 @@ def bates(ctx):
     if not pattern:
         raise TaskError("Enter the text to stamp, including [BATES_NUMBER]")
     case = (ctx.param("caseName") or "Case").strip()
-    digits = int(_num(ctx.param("batesDigits"), 6) or 6)
-    number = int(_num(ctx.param("batesStartFrom"), 1) or 1)
-    step = int(_num(ctx.param("batesIncrement"), 1) or 1)
-    file_no = int(_num(ctx.param("fileCountStartFrom"), 1) or 1)
+    digits = max(1, min(12, _int(ctx.param("batesDigits"), 6)))
+    number = max(0, _int(ctx.param("batesStartFrom"), 1))
+    step = max(1, _int(ctx.param("batesIncrement"), 1))
+    file_no = _int(ctx.param("fileCountStartFrom"), 1)
     location = ctx.param("pageLocation", "bottom-right")
     font = ctx.param("font", "helvetica")
     size = _num(ctx.param("fontSize"), 10) or 10
@@ -168,10 +184,10 @@ def bates(ctx):
         pdf = open_pdf(inp)
         for idx in range(len(pdf.pages)):
             ctx.check_cancelled()
-            if add_margins:
-                _shrink_for_margin(pdf, idx, location, size * 2.6)
             text = (pattern.replace("[BATES_NUMBER]", str(number).zfill(digits)).replace("[FILE_NUMBER]", str(file_no + f))
                     .replace("[PAGE_ARABIC]", str(idx + 1)).replace("[CASE]", case).replace("[BASE_NAME]", inp.stem))
+            if add_margins:
+                _shrink_for_margin(pdf, idx, location, _label_room(text, size))
             stamp(pdf, pdf.pages[idx], lambda c, w, h, t=text: _draw_label(c, w, h, t, location, font, size, color))
             number += step
         save_pdf(pdf, ctx.output(output_name(ctx, inp)))
@@ -220,7 +236,7 @@ def watermark(ctx):
     color = hex_to_rgb(ctx.param("color"), (0.8, 0.1, 0.1))
     angle = _num(ctx.param("rotation"), 45)
     font = ctx.param("font", "helvetica")
-    position = ctx.param("pageLocation", "center")
+    position = {"centered": "center", "middle": "center"}.get(ctx.param("pageLocation", "center"), ctx.param("pageLocation", "center"))
     under = ctx.param("layer", "over") == "under"
     img_scale = max(0.05, min(1.0, _num(ctx.param("imageScale"), 50) / 100))
     img_reader = None
@@ -251,10 +267,18 @@ def watermark(ctx):
             else:
                 fs = size * (0.5 if position == "tile" else 1)
                 lines = text.split("\n")
+                # shrink text that would run off the page once rotated
+                tw = max(text_width(line, font, fs, bold=True) for line in lines)
+                th = fs * 1.2 * len(lines)
+                t = math.radians(angle)
+                bw = abs(tw * math.cos(t)) + abs(th * math.sin(t))
+                bh = abs(tw * math.sin(t)) + abs(th * math.cos(t))
+                room_w, room_h = (w / 3, h / 4) if position == "tile" else (w * 0.95, h * (0.95 if position == "center" else 0.3))
+                k = min(1.0, room_w / bw if bw else 1, room_h / bh if bh else 1)
+                fs *= k
                 c.setFillColorRGB(*color)
                 for i, line in enumerate(lines):
-                    c.setFont(font_for(font, line, bold=True), fs)
-                    c.drawCentredString(0, -fs * 0.35 + (len(lines) / 2 - i - 0.5) * fs * 1.2, line)
+                    draw_text(c, 0, -fs * 0.35 + (len(lines) / 2 - i - 0.5) * fs * 1.2, line, font, fs, "center", bold=True)
             c.restoreState()
         c.restoreState()
 
@@ -278,7 +302,8 @@ register(Tool(
         Opt("color", "Color", "color", default="#d6336c", show_if={"watermarkType": "text"}),
         Opt("imageScale", "Image size (% of page)", "range", default=50, min=5, max=100, show_if={"watermarkType": "image"}),
         Opt("opacity", "Opacity (%)", "range", default=40, min=5, max=100),
-        Opt("rotation", "Angle", "select", [("0", "0°"), ("45", "45°"), ("90", "90°"), ("-45", "−45°")], "45"),
+        Opt("rotation", "Angle", "select", [("0", "0°"), ("30", "30°"), ("45", "45°"), ("60", "60°"), ("90", "90°"),
+            ("-30", "−30°"), ("-45", "−45°"), ("-60", "−60°"), ("180", "180°")], "45"),
         Opt("pageLocation", "Position", "radio", [("center", "Center"), ("top", "Top"), ("bottom", "Bottom"), ("tile", "Tiled")], "center", advanced=True),
         Opt("layer", "Layer", "radio", [("over", "Over the content"), ("under", "Behind the content")], "over", advanced=True),
         Opt("font", "Font", "radio", FONTS, "helvetica", advanced=True),

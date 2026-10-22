@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from .config import settings
@@ -28,7 +28,8 @@ def accept_label(tool) -> str:
 
 templates.env.globals.update(accept_attr=accept_attr, accept_label=accept_label)
 
-INFO_PAGES ={"about": "About", "privacy": "Privacy", "terms": "Terms of use", "help": "Help & FAQ"}
+INFO_PAGES ={"about": "About", "privacy": "Privacy", "terms": "Terms of use", "help": "Help & FAQ",
+             "developers": "Developer API", "html-pdf-api": "HTML to PDF API"}
 
 
 def _tools_by_category():
@@ -58,10 +59,24 @@ async def workflows(request: Request):
     return _render(request, "workflows.html")
 
 
+@router.get("/result", response_class=HTMLResponse)
+async def result(request: Request, id: str = ""):
+    """A shareable result entry point; the existing tool controller handles polling and expiry."""
+    from .jobs import queue
+    from .tools.registry import get_tool
+
+    task = queue.get(id)
+    if not task:
+        return _render(request, "expired.html", status=404)
+    return RedirectResponse(f"/{get_tool(task.type).slug}#results-{task.id}", status_code=303,
+                            headers={"Cache-Control": "no-store, private", "X-Robots-Tag": "noindex, nofollow"})
+
+
 @router.get("/{slug}", response_class=HTMLResponse)
 async def page(request: Request, slug: str):
     if slug in INFO_PAGES:
-        return _render(request, f"info/{slug}.html", title=INFO_PAGES[slug])
+        template = "info/developers.html" if slug in ("developers", "html-pdf-api") else f"info/{slug}.html"
+        return _render(request, template, title=INFO_PAGES[slug], html_api=slug == "html-pdf-api")
     tool = by_slug(slug)
     if not tool:
         return _render(request, "404.html", status=404)
