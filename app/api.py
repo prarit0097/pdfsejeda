@@ -180,6 +180,45 @@ async def view_file(file_id: str):
                         headers={"Cache-Control": "no-store, private", "Content-Disposition": "inline"})
 
 
+@router.get("/files/{file_id}/outline")
+async def file_outline(file_id: str):
+    """Bookmarks as editable text ('Title | page', indented) for the bookmarks tool."""
+    from .tools.common import open_pdf
+    from .tools.outlines import read_outline
+    from .tools.security_tools import outline_to_text
+    from .jobs import InputFile
+
+    try:
+        f = files.get(file_id)
+        with open_pdf(InputFile(f.id, f.name, f.path, f.password)) as pdf:
+            return {"text": outline_to_text(read_outline(pdf)), "pages": len(pdf.pages)}
+    except (FileNotFound, TaskError) as e:
+        return _bad(str(e) or "File not found", 404)
+
+
+@router.get("/files/{file_id}/metadata")
+async def file_metadata(file_id: str):
+    from .tools.common import open_pdf
+    from .jobs import InputFile
+
+    try:
+        f = files.get(file_id)
+        with open_pdf(InputFile(f.id, f.name, f.path, f.password)) as pdf:
+            out = {}
+            for k in ("Title", "Author", "Subject", "Keywords", "Creator", "Producer", "CreationDate", "ModDate"):
+                v = pdf.docinfo.get("/" + k)
+                if v is None:
+                    continue
+                s = str(v)
+                m = re.match(r"D:(\d{4})(\d{2})(\d{2})(\d{2})?(\d{2})?", s)
+                if k.endswith("Date") and m:
+                    s = f"{m[1]}-{m[2]}-{m[3]} {m[4] or '00'}:{m[5] or '00'}"
+                out[k] = s
+            return out
+    except (FileNotFound, TaskError) as e:
+        return _bad(str(e) or "File not found", 404)
+
+
 @router.get("/files/{file_id}")
 async def file_info(file_id: str):
     try:

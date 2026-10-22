@@ -75,6 +75,14 @@
   function build() {
     const files = pdfFiles();
     if (!files.length) { root.innerHTML = ""; return; }
+    if (mode === "metadata") return prefillMetadata(files[0]);
+    if (mode === "bookmarks") return prefillBookmarks(files[0]);
+    if (mode === "crop") {
+      const want = document.querySelector('input[name="cropMode"]:checked')?.value === "area";
+      if (!want) { root.innerHTML = ""; area = null; return; }
+      if (!root.querySelector(".area-wrap")) buildArea(files[0], "Draw the area to keep. It is applied to every page.");
+      return;
+    }
     if (mode === "area") return buildArea(files[0]);
     if (mode === "select" || mode === "split") return buildSingle(files);
     if (mode === "rotate" || mode === "organize") return buildMulti(files);
@@ -120,8 +128,25 @@
     root.querySelectorAll('[data-sortable="true"] .thumb').forEach(t => t.setAttribute("draggable", "true"));
   }
 
-  function buildArea(f) {
-    root.innerHTML = `<div class="thumbs-toolbar"><span class="muted small">Draw a box around the text that identifies each document (page 1 shown).</span><span style="flex:1"></span><button class="btn btn-sm btn-ghost" type="button" data-area-clear>Clear</button></div>
+  let prefilledFor = null;
+  async function prefillMetadata(f) {
+    if (prefilledFor === f.id) return;
+    prefilledFor = f.id;
+    const r = await fetch(`/api/files/${f.id}/metadata`); if (!r.ok) return;
+    const meta = await r.json();
+    Object.entries(meta).forEach(([k, v]) => { const el = document.querySelector(`[name="metadata.${k}"]`); if (el) el.value = v; });
+  }
+  async function prefillBookmarks(f) {
+    if (prefilledFor === f.id) return;
+    prefilledFor = f.id;
+    const r = await fetch(`/api/files/${f.id}/outline`); if (!r.ok) return;
+    const j = await r.json(), ta = document.querySelector('[name="bookmarks"]');
+    if (ta) { ta.value = j.text; ta.rows = Math.min(24, Math.max(6, j.text.split("\n").length + 2)); ta.placeholder = `Chapter 1 | 1\n  Section 1.1 | 2\nChapter 2 | ${Math.min(5, j.pages)}`; }
+  }
+  document.addEventListener("change", e => { if (mode === "crop" && e.target.name === "cropMode") build(); });
+
+  function buildArea(f, hint = "Draw a box around the text that identifies each document (page 1 shown).") {
+    root.innerHTML = `<div class="thumbs-toolbar"><span class="muted small">${esc(hint)}</span><span style="flex:1"></span><button class="btn btn-sm btn-ghost" type="button" data-area-clear>Clear</button></div>
       <div style="padding:18px;text-align:center;background:var(--bg-sunken)"><div class="area-wrap"><canvas></canvas><div class="area-box" hidden></div></div></div>`;
     const wrap = root.querySelector(".area-wrap"), canvas = wrap.querySelector("canvas"), box = wrap.querySelector(".area-box");
     let pageSize = null;
@@ -242,12 +267,13 @@
     if (mode === "organize" && items.length) {
       return { filePages: items.filter(it => !it.deleted).map(it => it.blank ? `-1:-1:${it.rot}` : `${it.fileIdx}:${it.page}:${it.rot}`) };
     }
-    if (mode === "area") return area ? { area: roundObj(area) } : {};
+    if (mode === "area" || mode === "crop") return area ? { area: roundObj(area) } : {};
     return {};
   };
   Tool.validators.push(() => {
     if (mode === "organize" && items.length && !items.some(it => !it.deleted)) return "Keep at least one page";
     if (mode === "select" && pagesInput && !pagesInput.value.trim()) return "Select at least one page";
+    if (mode === "crop" && document.querySelector('input[name="cropMode"]:checked')?.value === "area" && !area) return "Draw the area to keep on the page";
     return "";
   });
 

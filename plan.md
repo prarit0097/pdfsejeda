@@ -88,10 +88,10 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [x] Thumbnail page picker (select, rotate, reorder, delete) for organize/rotate/delete/extract/split
 
 ### Phase 4 — Modify tools
-- [ ] compress, crop (manual + auto), resize, n-up, flip, grayscale, deskew, flatten, repair
-- [ ] watermark (text + image), header/footer, page numbers, Bates numbering
-- [ ] edit metadata, bookmarks editor, delete annotations, rename by text
-- [ ] encrypt, unlock
+- [x] compress, crop (manual + auto), resize, n-up, flip, grayscale, deskew, flatten, repair
+- [x] watermark (text + image), header/footer, page numbers, Bates numbering
+- [x] edit metadata, bookmarks editor, delete annotations, rename by text
+- [x] encrypt, unlock
 
 ### Phase 5 — Convert tools
 - [ ] pdf→jpg/png/tiff, jpg→pdf, extract images, extract text

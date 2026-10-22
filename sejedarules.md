@@ -72,6 +72,30 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 - `combineReorder` — `/organize-pdf` — `filePages ["fileIdx:page:rot"]` in final order, `"-1:-1:rot"` = blank page, `outputFilename`. Without `filePages`: all pages of all files.
 - `rotatePages` — `/rotate-pdf-pages` — `pageRotationsPerSource ["fileIdx:page:deg"]` (per page, wins) or `rotation` + `pages` (bulk). Rotation is added to the existing /Rotate.
 
+**Optimize & layout** (`app/tools/modify.py`)
+- `compress` — `/compress-pdf` — `imageQuality` 0.65/0.8/1 (JPEG q 55/72/90), `imageDpi` (downsample above it, estimated from page size), `imageConversion` grayscale, `discardMultimedia`. Re-encodes each image only if smaller, drops unused resources, saves with object streams. Never returns a bigger file (unless `failIfOutputSizeNotReduced`).
+- `crop` — `/crop-pdf` — `cropMode` auto (render with PDFium, find non-white bbox, union over pages if `sameForAllPages`) / margins (`unit` + 4 margins) / area (drawn on page 1). Sets CropBox and MediaBox.
+- `resizePages` — `/resize-pdf` — `pageSize` (a1–a6, letter, legal, tabloid, ledger, executive, custom, original = keep size + margins), margins in `unit`. Content is scaled into the new page.
+- `nup` — `/n-up-pdf` — `n` 2/4/8/16/32, `pageOrdering`, `preservePageSize`, `rightToLeft`.
+- `flip` — `/flip-pdf` — `flipMode` horizontal/vertical, done with a `cm` matrix in displayed space.
+- `grayscale` — `/grayscale-pdf` — `textConversion` grayscale/black, `imageConversion`, `compressImages`. Rewrites colour operators (rg/RG/k/K/sc/scn, colour spaces) in page and form content streams; images re-encoded as gray JPEG. Patterns/shadings are left as they are.
+- `deskew` — `/deskew-pdf` — `onlyStronglySkewed`, `pages`, optional manual `angles {page: deg}`. Angle found by projection-profile variance on a PDFium render (−10°…10°), applied as a rotation around the page centre.
+- `flatten` — `/flatten-pdf` — `flattenMode` onlyforms (generate appearances, flatten widgets, drop AcroForm) / all (rasterize each page at `resolution` dpi).
+- `repair` — `/repair-pdf` — qpdf recovery first, pypdf page-by-page salvage second.
+
+**Stamp & number** (`app/tools/stamp.py`)
+- `headerFooter` — `/header-footer-pdf` and `pageNumbers` — `/page-numbers-pdf` — `pattern` tokens `[PAGE_ARABIC] [PAGE_ROMAN] [TOTAL_PAGES_ARABIC] [BASE_NAME] [FILE_NAME] [DATE]`, `pageLocation` (6 spots), `font`, `fontSize`, `color`, `pages`, `pageCountStartFrom`, `addMargins` (shrinks content to make room).
+- `batesNumbering` — `/bates-numbering-pdf` — `style` presets or custom `pattern` with `[BATES_NUMBER] [FILE_NUMBER] [PAGE_ARABIC] [CASE]`, `batesStartFrom`, `batesDigits`, `batesIncrement`, `fileCountStartFrom`. Numbering continues across files.
+- `watermark` — `/watermark-pdf` — `watermarkType` text/image (the image is uploaded alongside the PDFs), `opacity`, `rotation`, `pageLocation` center/top/bottom/tile, `layer` over/under, `fontSize`, `color`, `pages`.
+
+**Security & document** (`app/tools/security_tools.py`)
+- `encrypt` — `/encrypt-pdf` — `userPassword`, optional `restrictPermissions` + `ownerPassword` + `permissions[]`, `encryptionAlgorithm` aes_256 (R6) / aes_128 (R4) / rc4_128 (R3).
+- `decrypt` — `/unlock-pdf` — the password is set with `POST /api/files/<id>/password` before the task; the file is saved without encryption.
+- `editMetadata` — `/edit-pdf-metadata` — `metadata.Title|Author|Subject|Keywords|Creator|Producer|CreationDate|ModDate`, `removeAllMetadata`. The page pre-fills fields from `GET /api/files/<id>/metadata`. Stale XMP is removed so readers show the new values.
+- `editBookmarks` — `/pdf-bookmarks` — `bookmarks` text (“Title | page”, two-space indent per level) or `jsonData` tree. Pre-filled from `GET /api/files/<id>/outline`.
+- `deleteAnnotations` — `/delete-pdf-annotations` — `annotationTypes` (all or one type), `pages`. Form widgets are never removed.
+- `renameByText` — `/rename-pdf` — `area` (drawn on page 1) + `renamePattern` tokens `[TEXT] [BASENAME] [FILENUMBER] [DATE]`.
+
 **Shared building blocks** (`app/tools/`)
 - `common.py` — open/save PDFs with passwords, page sizes, `output_name` (honours `outputFilenamePattern`).
 - `draw.py` — `stamp()` draws with reportlab in *displayed* coordinates (after /Rotate) and merges onto a page; `place_page()` draws one page scaled into a rectangle of another (n-up, resize, normalize). Font picking (`font_for`) falls back to a Unicode TTF for non-Latin text.
@@ -104,5 +128,6 @@ Format: `type` — `/page-slug` — key options — how it works. Every tool liv
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22 — Phase 4: compress, crop, resize, n-up, flip, grayscale, deskew, flatten, repair, header/footer, page numbers, Bates, watermark, encrypt, unlock, metadata, bookmarks, delete annotations, rename by text; `/api/files/<id>/outline` and `/metadata`; 38 tests — `app/tools/modify.py`, `stamp.py`, `security_tools.py`
 - 2026-10-22 — Phase 1–3: platform core (config, FileStore, JobQueue, page parser, HMAC links, SSRF-safe URL import, per-IP quota), full `/api` (upload, chunked upload, URL import, password, touch, view, tasks, change, download, cancel, delete, continue, tools), UI (design system, home, generic tool page, thumbnails), 11 organize tools, 21 tests — `app/`, `tests/`
 - 2026-10-22 — Project started: plan.md and sejedarules.md written; Python/FastAPI stack chosen — `plan.md`, `sejedarules.md`

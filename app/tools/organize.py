@@ -52,7 +52,7 @@ def set_visible_crop(page: pikepdf.Page, vx0: float, vy0: float, vx1: float, vy1
     pts = [(vx0, vy0), (vx1, vy1), (vx0, vy1), (vx1, vy0)]
     xs = [m[0] * x + m[2] * y + m[4] for x, y in pts]
     ys = [m[1] * x + m[3] * y + m[5] for x, y in pts]
-    page.obj.CropBox = pikepdf.Array([min(xs), min(ys), max(xs), max(ys)])
+    page.obj.CropBox = pikepdf.Array([float(min(xs)), float(min(ys)), float(max(xs)), float(max(ys))])
 
 
 def _naming(ctx, inp, n: int, page: int | None = None, bookmark: str = "", text: str = "") -> str:
