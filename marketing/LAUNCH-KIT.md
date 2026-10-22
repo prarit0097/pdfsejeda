@@ -50,6 +50,13 @@ These are alternatives for relevant channels, not a batch to post everywhere. Pu
 
 ## Account and submission requirements
 
+Current policy/status update2026-10-22: AlternativeTo now explicitly excludes
+PDF suites; do not submit this app there. Owner resumed webmaster setup and Google
+ownership is verified, with sitemap fetch unresolved. Blogger creation failed
+reCAPTCHA connectivity; SaaSHub awaits required terms consent. Use current
+[eligibility research](PLACEMENTS-2026-10-22.md) and [publication ledger](SEO-STATUS.md)
+instead of treating older preparation statements as current completion evidence.
+
 Research checked against primary pages on 2026-10-22. Requirements can change; the authenticated form is the final authority. None of these account-owned steps has been completed by preparing this kit.
 
 | Destination | What is needed | Concrete next action and evidence to save |

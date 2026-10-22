@@ -1,5 +1,33 @@
 # Search launch evidence
 
+## Latest resumed launch — 2026-10-22 (supersedes historical account states below)
+
+Owner resumed Google/Bing setup with existing Chrome Google session. Release
+`21d0e18` deployed: seven original guides, 59 public sitemap URLs and PS PDF
+WebSite alias. Fresh independent public crawl: 59 pages/eight responsive checks
+passed. Full Python: 671 passed, zero failures/skips, two warnings (61.09s);
+pip consistency passed. App healthy/no OOM;15 other containers preserved.
+Historical19 virtual-host responses/full staged/public PDF smoke not rerun.
+
+Google Search Console ownership **verified via HTML tag**. Sitemap submission
+dialog confirmed success, but the row reports **Couldn't fetch**, Unknown type,
+zero discovered pages. Fetch/indexing remains unresolved; no ranking claim.
+Proof local ignored screenshot:data-seo-launch/google-sitemap.png.
+Property:https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fpdf.praritsidana.com%2F
+
+Bing not yet attempted. Blogger blog creation failed because reCAPTCHA service
+could not connect; no article published. SaaSHub URL prepared; Continue accepts
+terms and required action-time consent is pending. No new public external
+backlink; GitHub remains the one previously verified referring domain.
+AlternativeTo currently excludes PDF suites; previous suggestion below is stale.
+See [current placement policies](PLACEMENTS-2026-10-22.md),
+[articles](ARTICLES-2026-10-22.md) and [usage continuation](USAGE-RESUME.md).
+
+Owner-requested usage pause at90% used, checkpoint2026-10-22T18:23:45Z,
+resume no earlier than2026-10-22T23:53:45Z and recovered usage. Active current-chat
+heartbeat:continue-pdf-seo-after-usage-cooldown (330-minute cadence); scheduling
+is best effort, PC/app must stay available. Detailed next steps in sejedarules.md.
+
 Date: 2026-10-22. Product: **Prarit Sidana PDF**.
 Canonical origin: https://pdf.praritsidana.com.
 

@@ -1,5 +1,11 @@
 # Search ownership and publication checklist
 
+**Current update2026-10-22:** owner resumed setup. Google ownership is now
+verified; sitemap submitted but Google reports Couldn't fetch, requiring diagnosis.
+Bing pending. Earlier deferral/session-unavailable statements below are historical.
+See [latest status](SEO-STATUS.md) and current guide checkpoint. AlternativeTo
+currently excludes PDF suites; use [current eligibility](PLACEMENTS-2026-10-22.md).
+
 Canonical site: https://pdf.praritsidana.com/. Brand: **Prarit Sidana PDF**.
 Owner confirmed on 2026-10-22 that Google Search Console and Bing Webmaster Tools
 have not been set up. No authenticated browser/account session is available to

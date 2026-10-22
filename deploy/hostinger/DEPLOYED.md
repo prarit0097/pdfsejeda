@@ -1,5 +1,17 @@
 # Hostinger deployment record
 
+## Latest SEO/content release — 21d0e18
+
+2026-10-22: deployed seven guides/59 public URLs and PS PDF site-name alias.
+Only pdfnova app recreated; real Google verification setting configured privately.
+Image:`sha256:f4452f8b5eac8f2f467f1fbd0ac0712ec3fd9dc49ba611e3cf5a300acdfd0440`.
+Rollback:`pdfnova-web:release-dee688f`. Healthy/no OOM;15 other container identities
+preserved. Public59-page/eight responsive checks passed; local671 Python cases
+passed(two warnings), no failures/skips. Historical19-host response comparison,
+full staged pool and public PDF smoke not rerun. Google ownership verified;
+sitemap accepted but fetch unresolved. No DNS/proxy/firewall change or other app
+restart. Current continuation/status:../../marketing/SEO-STATUS.md and sejedarules.md.
+
 Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 
 ## Location and isolation
