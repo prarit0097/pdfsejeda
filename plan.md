@@ -170,7 +170,7 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Adaptive ink/paper separation and matching preview scale
 - [x] Generated colour/shadow/transparency fixtures and real saved-PDF validation
 - [x] Local original-photo review without committing private images
-- [ ] Deploy and verify cleanup and signature regressions on public HTTPS
+- [x] Deploy and verify cleanup and signature regressions on public HTTPS
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

@@ -540,6 +540,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22: Transparency correction `82a374e` deployed and verified on public HTTPS: cleanup 9/9, signature workflows 4/4, healthy container, no OOM; existing 15 container identities and 19 host status/redirect responses unchanged. Existing saved signature pixels are unchanged; re-upload the original photo to regenerate them. Deployment records updated.
+
 - 2026-10-22: Corrected signature photo transparency and inconsistent preview scaling. Added `scripts/signature_cleanup_regression.py`: eight generated ink/paper cases plus real saved-PDF transparency checks passed locally (9/9). The matching original photo was inspected locally without saving it to the server: sampled grey-paper pixels fully transparent, 99.27% of dark blue core pixels retained at alpha above 180/255. No private images or derived evidence committed. Python suite: 170 passed, two existing warnings. Public release verification recorded separately after deployment.
 
 - 2026-10-22: Signature release `b01934b` deployed to public HTTPS. All four dedicated signature groups passed on the live app, including rendered PDF colour/transparency, saved reuse/removal, camera permission/fallback and synthetic capture cleanup, mobile touch drawing, and disabled local storage. Container healthy; existing 15 containers and 19 virtual-host responses unchanged. Updated deployment evidence and retained the prior UI image for rollback.
