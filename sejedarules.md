@@ -537,6 +537,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22: Linux image built successfully with verified offline wheels. Private server verification passed: pytest 170, HTTP smoke 58/58, generic browser 62/62, editor/mobile 8 groups, concurrent PDF jobs 8/8 and simultaneous HTML 2/2. Added the dedicated HTTPS vhost and proxy scheme trust for the loopback-only backend; public activation verification pending. Files: `deploy/hostinger/`.
+
 - 2026-10-22: Added optional offline Linux wheel preparation with 54 official PyPI SHA-256 hashes after CDN timeouts and an incomplete alternate index prevented image installation; added an external deployment mode to editor browser checks. Deployment remains under verification. Files: `deploy/hostinger/`, `Dockerfile`, `scripts/editor_regression.py`.
 
 - 2026-10-22: Hostinger deployment in progress. SSH access and pdf.praritsidana.com confirmed; TLS issuance and renewal dry-run passed. Added guarded bootstrap, process init, proxy header sanitization, private baseline exclusions, selectable package mirrors and download retries. HTTPS browser regression now allows its own origin while blocking external assets. Linux processing verification is pending. Files: `Dockerfile`, `deploy/hostinger/`, `scripts/browser_regression.py`.

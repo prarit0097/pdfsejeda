@@ -6,6 +6,7 @@ venv/
 .env.hostinger
 .deploy-baseline.json
 deploy/hostinger/wheelhouse/*.whl
+deploy/hostinger/wheelhouse/*.part
 data/
 .pytest_cache/
 *.egg-info/

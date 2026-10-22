@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **build/verification in progress; processing not publi
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `85710eb` |
+| Image build revision | `14a3907` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
 | Backend | `127.0.0.1:8086` to container port 8000 |
 | Persistent volume | `pdfnova_pdfnova-data` mounted at `/data` |
@@ -51,7 +51,10 @@ signatures, Python version pins and HTTPS certificate verification enabled.
 - Let's Encrypt certificate expires 2027-01-20; renewal dry-run passed.
 - Existing `certbot.timer` is active; the separate `pdfnova-nginx-reload` deploy
   hook reloads Nginx only when this domain's certificate renews.
-- Linux image, automated tests, live processing and browser checks: pending.
+- Linux image built; private pytest 170 passed, HTTP smoke 58/58, browser 62/62,
+  editor/mobile 8 groups, concurrent PDF 8/8 and simultaneous HTML 2/2 passed.
+  Cgroup peak before final editor run: 578289664 bytes, 168 PIDs, zero OOM events.
+  Public activation verification remains pending.
 - Final existing-app comparison after startup: pending.
 
 ## Operations
