@@ -616,10 +616,13 @@ promotional use. Avoid ineligible registrations, fabricated endorsements and
 bulk low-value backlink creation. No top position or recommendation is promised.
 
 ## 8. Change log
+
+- 2026-10-23 (Asia/Calcutta): Owner explicitly approved prepared SaaSHub terms acceptance: "Haan, SaaSHub terms accept karo". Specific consent received; do not repeat this question unless terms/destination/scope materially changes. Check at2026-10-22T19:17:15Z: primary92% used/8% remaining and existing cooldown unelapsed, so no browser/submission work resumed; existing resume deadline preserved. Documentation-only acknowledgment; diff check passed, no fresh app tests/deployment/publication; prior671-test result remains dated evidence.
 +
 
 ### Active SEO continuation checkpoint — 2026-10-22
 
+- **SaaSHub consent update (2026-10-23 Asia/Calcutta):** owner approved accepting the prepared submission's Terms of Service/Privacy Policy. Proceed at continuation without asking again for this same step; older pending-consent notes below are historical. No submission completed yet. Usage8% remaining at19:17:15Z; cooldown remains active, deadline unchanged.
 - checkpoint_at_utc: `2026-10-22T18:23:45Z`; resume_not_before_utc: `2026-10-22T23:53:45Z` (2026-10-23 05:23:45 Asia/Calcutta). Primary coding usage 90% used/10% remaining; weekly14% used. Owner-requested pause; stop substantive promotion until deadline and recovered usage.
 - Active current-chat heartbeat: `continue-pdf-seo-after-usage-cooldown`, 330-minute cadence. Successfully created with thread destination after initial missing-destination validation failure. PC/app/repo must be available; exact wakeup best effort. No Windows task, background Codex loop or credential scraping installed. Five specialist agents completed bounded work.
 - Latest deployed source `21d0e18`; seven guides and 59 public URLs supersede older snapshot counts. Image `sha256:f4452f8b5eac8f2f467f1fbd0ac0712ec3fd9dc49ba611e3cf5a300acdfd0440`, rollback `pdfnova-web:release-dee688f`. Only app recreated; private environment backup outside Git; no DNS/proxy/firewall changes. Public59-page crawl/eight responsive checks passed; app healthy/no OOM and15 other container identities preserved. Nineteen historical host responses not rechecked; no fresh public PDF smoke/full staged pool.

@@ -2,6 +2,10 @@
 
 ## Latest resumed launch — 2026-10-22 (supersedes historical account states below)
 
+2026-10-23 Asia/Calcutta update: owner expressly approved SaaSHub terms acceptance.
+Submission still pending the active usage cooldown; consent is received and should
+not be requested again for the same prepared step. No new external action occurred.
+
 Owner resumed Google/Bing setup with existing Chrome Google session. Release
 `21d0e18` deployed: seven original guides, 59 public sitemap URLs and PS PDF
 WebSite alias. Fresh independent public crawl: 59 pages/eight responsive checks
