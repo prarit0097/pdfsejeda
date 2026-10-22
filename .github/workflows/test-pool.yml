@@ -1,0 +1,35 @@
+name: Full generated-fixture test pool
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**/*.md', 'qa/verification.json', 'deploy/hostinger/verification.json']
+  pull_request:
+    paths-ignore: ['**/*.md', 'qa/verification.json', 'deploy/hostinger/verification.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install actual conversion engines
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice-writer tesseract-ocr tesseract-ocr-eng fonts-dejavu-core fonts-liberation
+      - run: python -m pip install -r requirements-test.txt
+      - run: python -m playwright install --with-deps chromium
+      - name: Run isolated pool
+        run: python scripts/run_test_pool.py
+      - name: Retain generated-fixture evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-fixture-test-results
+          path: data-qa-pool/runs/
+          retention-days: 14

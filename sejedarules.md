@@ -452,7 +452,19 @@ Use generated non-confidential fixtures. Inspect output contents, page counts, f
 
 The concurrency script submits 16 tasks, so disable/increase the hourly quota for that isolated test environment. Do not weaken public deployment settings merely to make a test pass. Browser tests require Playwright/Chromium. OCR/Office tests can depend on installed engines; report skips and fallbacks rather than treating them as proof of full engine coverage.
 
-Last recorded full verification, **2026-10-22**:
+**Full regression pool (2026-10-22):** the plan is `qa/TEST-PLAN.md`, feature traceability is `qa/FEATURE-COVERAGE.md`, and commands/evidence rules are in `qa/README.md`. `qa/tool_scenarios.py` explicitly defines every canonical tool's generated input and semantic output checks; inventory drift fails `tests/test_tool_catalogue.py`. `tests/test_page_contracts.py` covers all pages, assets, navigation and 160 declared options; `tests/test_api_contracts.py` adds cross-tool rejection, missing-resource, active-content and byte-range checks. `scripts/tool_ui_regression.py` submits every tool through the visible UI at desktop and mobile sizes, interacts with all declared fields and parses downloaded results. Dedicated shared/editor/signature/concurrency suites remain separate evidence layers.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
+.\.venv\Scripts\python.exe -m playwright install chromium
+.\.venv\Scripts\python.exe scripts/run_test_pool.py
+# Include actual public fixture URL import and external HTML conversion:
+.\.venv\Scripts\python.exe scripts/run_test_pool.py --include-network
+```
+
+The runner creates an isolated loopback server, temporary data, disabled test quota, and per-stage JSON/JUnit/branch coverage under ignored `data-qa-pool/runs/`. Do not point the exhaustive pool at public production. `.github/workflows/test-pool.yml` configures Ubuntu CI with actual engines and artifact retention; its presence alone does not prove a hosted CI run. Coverage of option rendering/interaction does not imply every semantic option combination or arbitrary document is correct. Latest verified pool: 576 Python cases (zero failures/skips, two warnings), 43/43 tool submissions and 160/160 control interactions at each desktop/mobile viewport, 51 public page shells, shared groups 5/5, browser 63/63, editor 8/8, signatures 4/4, cleanup 10/10, concurrency 16/16 and network smoke 58/58. Python statement coverage 78.82%, branch coverage 64.86%; this is not complete branch/document coverage. Detailed results are recorded in `qa/VERIFICATION.md`; preserve remaining limits and report skips honestly.
+
+Historical initial audit verification, **2026-10-22**:
 
 | Verification | Recorded result |
 |---|---|
@@ -539,6 +551,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 ## 8. Change log
 
 Newest first. One line per change: date — what — where.
+
+- 2026-10-22: Planned and implemented the full application regression pool: explicit 43-tool semantic HTTP catalogue, 51-page/160-option contracts, cross-tool errors/ranges/active-content checks, all-tool desktop/mobile UI submissions, shared-feature workflows, an isolated staged runner with JSON/JUnit/branch coverage and CI configuration. Python pool expanded from 170 to 576 cases. Found and fixed PDF-to-image UI incorrectly requiring a page selection despite its blank/all-pages default; extract/delete selection remains required. Full integrated verification recorded after completion in `qa/VERIFICATION.md`.
 
 - 2026-10-22: Cursor preview release `0fb90e1` deployed and verified on public HTTPS: signature workflow groups 4/4 locally/publicly, including preview alignment/scroll/Escape/single-placement checks; public colour/transparency/PDF checks 10/10. Local Python 170 passed (two warnings). Container healthy/no OOM; existing 15 container identities and 19 host status/redirect responses unchanged. Deployment records updated.
 

@@ -326,7 +326,7 @@
   };
   Tool.validators.push(() => {
     if (mode === "organize" && items.length && !items.some(it => !it.deleted)) return "Keep at least one page";
-    if (mode === "select" && pagesInput && !pagesInput.value.trim()) return "Select at least one page";
+    if (mode === "select" && ["extractPages", "deletePages"].includes(Tool.cfg.type) && pagesInput && !pagesInput.value.trim()) return "Select at least one page";
     if (mode === "crop" && document.querySelector('input[name="cropMode"]:checked')?.value === "area") {
       const scope = document.querySelector('input[name="cropScope"]:checked')?.value || "all";
       const found = scope === "all" ? !!cropAreas.all : Object.keys(cropAreas).some(k => scope === "individual" ? /^\d+$/.test(k) : ["odd", "even"].includes(k));

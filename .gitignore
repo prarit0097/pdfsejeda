@@ -16,3 +16,6 @@ data-*/
 data-qa-*.log
 # Raw observations can contain ephemeral tokens; retain locally and publish summaries.
 research/audit-2026-10-22/rea-*-evidence.json
+
+.coverage*
+htmlcov/

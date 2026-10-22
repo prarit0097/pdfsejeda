@@ -193,6 +193,17 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Verify hover adds no objects, preview passes clicks through and placed PNG is unchanged
 - [x] Deploy and verify cursor preview on public HTTPS
 
+## 3j. Full application regression pool
+
+Detailed plan: [qa/TEST-PLAN.md](qa/TEST-PLAN.md).
+
+- [x] Inventory 43 tools and 160 declared options; save plan before implementation
+- [x] Add page/option/asset and missing API contract checks
+- [x] Add explicit per-tool semantic scenarios and all-tool UI submissions
+- [x] Add isolated one-command runner and structured coverage/results
+- [x] Run complete pool, repair defects and record remaining limits
+- [ ] Deploy discovered PDF-to-image fix and run bounded public verification
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).

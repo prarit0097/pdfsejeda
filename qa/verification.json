@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-22",
+  "status": "passed",
+  "command": "python scripts/run_test_pool.py --include-network",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.13.5",
+  "stages": [
+    {
+      "stage": "python",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 64.5,
+      "log": "python.log",
+      "junit": {
+        "tests": 576,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "coverage": {
+        "covered_lines": 4067,
+        "num_statements": 5160,
+        "percent_covered": 75.0282326369283,
+        "percent_covered_display": "75",
+        "missing_lines": 1093,
+        "excluded_lines": 0,
+        "percent_statements_covered": 78.81782945736434,
+        "percent_statements_covered_display": "79",
+        "num_branches": 1924,
+        "num_partial_branches": 342,
+        "covered_branches": 1248,
+        "missing_branches": 676,
+        "percent_branches_covered": 64.86486486486487,
+        "percent_branches_covered_display": "65"
+      }
+    },
+    {
+      "stage": "all-tool-ui",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 84.27,
+      "log": "all-tool-ui.log"
+    },
+    {
+      "stage": "all-tool-ui-mobile",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 93.85,
+      "log": "all-tool-ui-mobile.log"
+    },
+    {
+      "stage": "shared-features",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 10.96,
+      "log": "shared-features.log"
+    },
+    {
+      "stage": "browser",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 33.73,
+      "log": "browser.log"
+    },
+    {
+      "stage": "editor",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 22.87,
+      "log": "editor.log"
+    },
+    {
+      "stage": "signature",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 14.83,
+      "log": "signature.log"
+    },
+    {
+      "stage": "signature-cleanup",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 6.83,
+      "log": "signature-cleanup.log"
+    },
+    {
+      "stage": "concurrency",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 2.19,
+      "log": "concurrency.log"
+    },
+    {
+      "stage": "network-smoke",
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 41.78,
+      "log": "network-smoke.log"
+    }
+  ],
+  "inventory": {
+    "tools": 43,
+    "public_pages": 51,
+    "declared_options": 160
+  },
+  "ui": {
+    "desktop": {
+      "tool_submissions": 43,
+      "page_shell_checks": 51,
+      "declared_option_interactions": 160,
+      "failed": 0
+    },
+    "mobile": {
+      "tool_submissions": 43,
+      "page_shell_checks": 51,
+      "declared_option_interactions": 160,
+      "failed": 0
+    }
+  },
+  "engine_checks": {
+    "LibreOffice": "real engine; no fallback counted as real engine",
+    "Tesseract": "generated scan recognized",
+    "Chromium": "HTML code and public URL printed"
+  },
+  "ci": "Configured; hosted CI result not claimed",
+  "application_bug_fixed": "Blank/all-pages PDF-to-image UI submission incorrectly blocked by shared extract/delete selection validator",
+  "limitations": [
+    "Generated fixture coverage, not arbitrary-document fidelity or all option combinations",
+    "Physical cameras and non-Chromium browsers not exercised",
+    "External public fixture fetches run only with --include-network",
+    "Python coverage measures unit/API process only, not browser/server subprocess code coverage",
+    "All declared controls are interacted with, but every semantic option combination is not established",
+    "Linux hosted CI result has not been observed"
+  ],
+  "local_raw_run": "data-qa-pool/runs/20261022T171214729720Z",
+  "source_sha256": {
+    "app/static/js/pages-ui.js": "e0f8b348184fe7bc73bd0c02f0fe6a898ac7581fd7e38905c1b0a9e1a1dbc255",
+    "app/templates/tool.html": "940c50dd537308ae7ce1b904c4bc6cc149b8c5399eccc8fd2c90a061a3297d34",
+    "qa/tool_scenarios.py": "ac48fe7732bcfd5ec0bc0a6c62e03fbd3dd948ce189a43dc0364a012459011c0",
+    "scripts/run_test_pool.py": "7dbf50ef8dc25349a7793e556b591217251d3e74a58b4b6c110d2d2cb7b3ac92",
+    "scripts/tool_ui_regression.py": "f96196d208de14f16df29f040778dd90458345952bfcd74eaf0882f91e1076cc",
+    "scripts/shared_feature_regression.py": "ba0e94afe3a678626729add164aabf2ba350b80453223bb0bd1184825b27e617",
+    "tests/test_api_contracts.py": "e894af37b785bf270a125f28f9ba2a1ed63d9104f46b40d653f88e80757ce244",
+    "tests/test_page_contracts.py": "45a5357e38f7a60437252bda4492cbe59f2448623f67b2ec540d87bf863e419d",
+    "tests/test_tool_catalogue.py": "9fb0ef54528caf552006adefcb07fac67e356ae073946356487ffda74c1345f3"
+  }
+}
