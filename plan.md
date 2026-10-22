@@ -99,10 +99,10 @@ Editor: PDF.js renders in the browser; the browser sends **operation arrays** (`
 - [x] word→pdf (LibreOffice), html→pdf (Playwright), OCR (OCRmyPDF/Tesseract)
 
 ### Phase 6 — PDF editor, forms, sign
-- [ ] Editor page: PDF.js pages, toolbar (text, edit text, image, whiteout, shapes, line/arrow, draw, highlight/strike/underline, link, form fields, sign, insert/delete/rotate page, undo)
-- [ ] Server `edit` handler applying all operation arrays
-- [ ] Fill forms (`formValues`), create form fields, signatures (draw/type/upload)
-- [ ] Local crash recovery (IndexedDB)
+- [x] Editor page: PDF.js pages, toolbar (text, edit text, image, whiteout, shapes, line/arrow, draw, highlight/strike/underline, link, form fields, sign, insert/delete/rotate page, undo)
+- [x] Server `edit` handler applying all operation arrays
+- [x] Fill forms (`formValues`), create form fields, signatures (draw/type/upload)
+- [x] Local crash recovery (localStorage draft per file name+size, 48 h)
 
 ### Phase 7 — Platform extras
 - [ ] Workflows (record → replay tool chains, stored in IndexedDB)

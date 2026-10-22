@@ -70,6 +70,8 @@
     showWork(); render();
   }
 
+  Tool.addFiles = files => addFiles(files);
+
   async function upload(entry) {
     try {
       const info = entry.blob.size > CHUNK ? await uploadChunked(entry) : await uploadSimple(entry);
@@ -156,11 +158,14 @@
   // ---------- file list ----------
   function showWork() {
     if (!Tool.files.length) return;
-    uploadStage.hidden = true; form.hidden = false; resultStage.hidden = true;
+    uploadStage.hidden = true; resultStage.hidden = true;
+    if (cfg.editor) document.dispatchEvent(new CustomEvent("editor-open"));
+    else form.hidden = false;
   }
 
   function resetAll() {
     Tool.files = []; render(); Tool.emit();
+    document.dispatchEvent(new CustomEvent("editor-close"));
     form.hidden = true; resultStage.hidden = true; uploadStage.hidden = false;
     history.replaceState(null, "", location.pathname);
   }
@@ -258,25 +263,31 @@
   }
 
   let submitting = false;
-  form?.addEventListener("submit", async e => {
+  form?.addEventListener("submit", e => {
     e.preventDefault();
-    if (submitting) return;
     if (Tool.files.some(f => f.status === "uploading")) return toast("Please wait until the uploads finish");
     const ready = Tool.readyFiles();
     if (cfg.type !== "htmlToPdf" && ready.length < cfg.minFiles) return toast(cfg.minFiles > 1 ? `Please add at least ${cfg.minFiles} files` : "Please add a file first", "err");
     for (const v of Tool.validators) { const msg = v(); if (msg) return toast(msg, "err"); }
-    const body = collect();
-    submitting = true; $("#submit-btn").disabled = true;
+    submitBody(collect());
+  });
+
+  /** POST a task body and show the processing/result screen. Used by the form and by the editor. */
+  async function submitBody(body) {
+    if (submitting) return false;
+    submitting = true;
+    const btn = $("#submit-btn"); if (btn) btn.disabled = true;
     try {
       const r = await fetch("/api/tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      if (r.status === 402) { const j = await r.json(); return showQuota(Number(r.headers.get("x-ratelimit-wait") || 0), j.reason); }
-      if (r.status === 429) return toast("Too many attempts. Please try again in a little while.", "err");
-      if (!r.ok) return toast(await r.text() || "The server rejected this task", "err");
-      const taskId = await r.json();
-      showProcessing(taskId);
-    } catch { toast("You appear to be offline. Check your connection and try again.", "err"); }
-    finally { submitting = false; $("#submit-btn").disabled = false; }
-  });
+      if (r.status === 402) { const j = await r.json(); showQuota(Number(r.headers.get("x-ratelimit-wait") || 0), j.reason); return false; }
+      if (r.status === 429) { toast("Too many attempts. Please try again in a little while.", "err"); return false; }
+      if (!r.ok) { toast(await r.text() || "The server rejected this task", "err"); return false; }
+      showProcessing(await r.json());
+      return true;
+    } catch { toast("You appear to be offline. Check your connection and try again.", "err"); return false; }
+    finally { submitting = false; if (btn) btn.disabled = false; }
+  }
+  Tool.submitBody = submitBody;
 
   function showQuota(wait, reason) {
     resultStage.hidden = false;
@@ -290,6 +301,7 @@
   // ---------- results ----------
   function showProcessing(taskId) {
     form.hidden = true; resultStage.hidden = false;
+    document.dispatchEvent(new CustomEvent("editor-close"));
     resultStage.innerHTML = `<div class="result"><div class="spinner"></div><h2>Working on it…</h2><p class="muted" id="proc-note">Your files are being processed.</p>
       <button class="btn btn-ghost btn-sm" type="button" id="cancel-btn">Cancel</button></div>`;
     $("#cancel-btn").onclick = async () => { await fetch(`/api/tasks/${taskId}/cancel`, { method: "POST" }); backToForm(); };
@@ -375,7 +387,11 @@
     $("#retry").onclick = backToForm; $("#start-over").onclick = resetAll;
   }
 
-  function backToForm() { resultStage.hidden = true; form.hidden = false; history.replaceState(null, "", location.pathname); }
+  function backToForm() {
+    resultStage.hidden = true; history.replaceState(null, "", location.pathname);
+    if (cfg.editor) document.dispatchEvent(new CustomEvent("editor-open")); else form.hidden = false;
+  }
+  Tool.reset = () => resetAll();
 
   // ---------- recent results (this device only) ----------
   const RECENT_KEY = "recentResults", TTL = 2 * 3600 * 1000 - 5 * 60 * 1000;

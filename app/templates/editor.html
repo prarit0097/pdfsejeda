@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon, tool_ico, tool_card %}
+{% block title %}{{ tool.title }} — free online PDF editor | {{ app_name }}{% endblock %}
+{% block description %}{{ tool.tagline }} Free, no sign-up, no watermark.{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Dancing+Script:wght@600&family=Homemade+Apple&family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/editor.css?v=2">
+{% endblock %}
+{% block main %}
+<section class="tool-hero wrap" id="editor-hero">
+  {{ tool_ico(tool) }}
+  <h1>{{ tool.title }}</h1>
+  <p>{{ tool.tagline }}</p>
+</section>
+
+<div class="wrap">
+  <div class="workspace" id="workspace">
+    <section id="stage-upload" class="dropzone">
+      <div class="upload-row">
+        <div class="split-btn" style="position:relative">
+          <button class="btn btn-primary btn-lg" type="button" data-action="pick">{{ icon("upload") }} Upload a PDF</button>
+          <button class="btn btn-primary btn-lg more" type="button" data-action="upload-menu" aria-label="More upload options">{{ icon("chevron") }}</button>
+          <div class="menu" id="upload-menu" hidden style="top:100%;right:0;margin-top:6px">
+            <button type="button" data-action="pick">{{ icon("upload") }} From this device</button>
+            <button type="button" data-action="url">{{ icon("link") }} From a web address (URL)</button>
+            <button type="button" data-action="blank">{{ icon("file") }} Start with a blank page</button>
+          </div>
+        </div>
+      </div>
+      <p class="drop-hint">or drop a PDF here · up to {{ max_file_mb }} MB</p>
+      <input type="file" id="file-input" hidden accept=".pdf">
+    </section>
+    <form id="task-form" hidden><ul id="file-list"></ul><strong id="files-title" hidden></strong><button id="submit-btn" hidden></button></form>
+    <section id="stage-result" class="card" hidden aria-live="polite"></section>
+    <div class="card recent" id="recent" hidden>
+      <div class="panel-head"><strong>Recent results</strong><span class="muted small">kept on this device until the files expire</span></div>
+      <div id="recent-list"></div>
+    </div>
+  </div>
+</div>
+
+<div id="editor" class="editor" hidden>
+  <div class="ed-bar" role="toolbar" aria-label="Editor tools">
+    <div class="ed-group" data-group="main">
+      <button type="button" data-tool="select" title="Select & move (V)">{{ icon("arrow-right") }}<span>Select</span></button>
+      <button type="button" data-tool="text" title="Add text (T)">{{ icon("text") }}<span>Text</span></button>
+      <button type="button" data-tool="edittext" title="Edit existing text">{{ icon("edit") }}<span>Edit text</span></button>
+      <button type="button" data-tool="sign" title="Signature">{{ icon("sign") }}<span>Sign</span></button>
+      <button type="button" data-tool="image" title="Image">{{ icon("image") }}<span>Image</span></button>
+    </div>
+    <div class="ed-group">
+      <button type="button" data-tool="whiteout" title="Whiteout: cover content with white">{{ icon("eraser") }}<span>Whiteout</span></button>
+      <button type="button" data-tool="rect" title="Rectangle">{{ icon("crop") }}<span>Box</span></button>
+      <button type="button" data-tool="ellipse" title="Ellipse">{{ icon("grayscale") }}<span>Circle</span></button>
+      <button type="button" data-tool="line" title="Line">{{ icon("split") }}<span>Line</span></button>
+      <button type="button" data-tool="arrow" title="Arrow">{{ icon("arrow-right") }}<span>Arrow</span></button>
+      <button type="button" data-tool="draw" title="Freehand drawing">{{ icon("sign") }}<span>Draw</span></button>
+    </div>
+    <div class="ed-group">
+      <button type="button" data-tool="highlight" title="Highlight an area">{{ icon("watermark") }}<span>Highlight</span></button>
+      <button type="button" data-tool="strike" title="Strike through">{{ icon("x") }}<span>Strike</span></button>
+      <button type="button" data-tool="underline" title="Underline">{{ icon("text") }}<span>Underline</span></button>
+      <button type="button" data-tool="link" title="Link">{{ icon("link") }}<span>Link</span></button>
+    </div>
+    <div class="ed-group">
+      <button type="button" data-tool="field-text" title="Form text box">{{ icon("form") }}<span>Text field</span></button>
+      <button type="button" data-tool="field-check" title="Form checkbox">{{ icon("check") }}<span>Checkbox</span></button>
+      <button type="button" data-action="date" title="Insert today's date">{{ icon("clock") }}<span>Date</span></button>
+    </div>
+    <div class="ed-group ed-right">
+      <button type="button" data-action="undo" title="Undo (Ctrl+Z)">{{ icon("rotate-left") }}<span>Undo</span></button>
+      <button type="button" data-action="zoom-out" title="Zoom out">−</button>
+      <span class="ed-zoom" id="ed-zoom">100%</span>
+      <button type="button" data-action="zoom-in" title="Zoom in">+</button>
+    </div>
+  </div>
+  <div class="ed-props" id="ed-props" hidden></div>
+  <div class="ed-pages" id="ed-pages"></div>
+  <div class="ed-footer">
+    <span class="muted small" id="ed-status"></span>
+    <label class="check small" id="flatten-wrap"><input type="checkbox" id="ed-flatten"> Flatten form fields when saving</label>
+    <button class="btn btn-ghost" type="button" data-action="close">Start over</button>
+    <button class="btn btn-primary btn-lg" type="button" data-action="save">{{ icon("check") }} Apply changes</button>
+  </div>
+  <input type="file" id="ed-image-input" hidden accept="image/*">
+</div>
+
+<div class="wrap">
+  <section class="steps">
+    <div class="step"><div class="num">1</div><h3>Open your PDF</h3><p class="muted">Upload it, drop it here or paste a link.</p></div>
+    <div class="step"><div class="num">2</div><h3>Edit on the page</h3><p class="muted">Pick a tool, then click or drag on the page. Fill form fields directly.</p></div>
+    <div class="step"><div class="num">3</div><h3>Apply & download</h3><p class="muted">Changes are written into the PDF on the server.</p></div>
+  </section>
+  {% if related %}<section class="related"><h2>Related tools</h2><div class="tool-grid">{% for t in related %}{{ tool_card(t) }}{% endfor %}</div></section>{% endif %}
+</div>
+<script id="tool-config" type="application/json">{{ {
+  "type": tool.type, "slug": tool.slug, "title": tool.title, "accept": ["pdf"], "multiple": false, "minFiles": 1, "maxFiles": 1,
+  "pageUi": none, "maxFileMb": max_file_mb, "editor": true
+}|tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/tool.js?v=2"></script>
+<script src="/static/js/editor.js?v=2"></script>
+{% endblock %}
