@@ -540,6 +540,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 
 Newest first. One line per change: date — what — where.
 
+- 2026-10-22: Cursor preview release `0fb90e1` deployed and verified on public HTTPS: signature workflow groups 4/4 locally/publicly, including preview alignment/scroll/Escape/single-placement checks; public colour/transparency/PDF checks 10/10. Local Python 170 passed (two warnings). Container healthy/no OOM; existing 15 container identities and 19 host status/redirect responses unchanged. Deployment records updated.
+
 - 2026-10-22: Added pending-signature cursor preview: selected PNG follows mouse/pen at placement size, stays aligned while scrolling, never captures clicks or adds a document object, and hides after drop/Escape/page-area exit/blur/editor close. Touch stays tap-to-place. Signature regression now checks cursor bounds, scrolling, Escape, unchanged placed PNG and one-time placement. Local Python 170 passed (two warnings); signature workflow groups 4/4 passed. Deployment verification recorded separately.
 
 - 2026-10-22: One-time placement/full RGB preservation release `547f072` deployed and verified. Local Python 170 passed (two existing warnings); local/public cleanup-colour-placement 10/10 and signature groups 4/4 passed, including desktop/mobile repeat-click suppression and explicit reselection. Selected preview, placed PNG and saved PDF RGBA match exactly. Local original-photo retained pixels matched RGB within canvas rounding; no private-photo server save. Healthy/no OOM; 15 existing container identities and 19 host status/redirect responses unchanged.

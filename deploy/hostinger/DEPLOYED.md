@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `547f072` |
+| Image build revision | `0fb90e1` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -201,6 +201,24 @@ save or committed to Git. Existing saved PNGs require regeneration to change the
 Image: `sha256:87fd445d9a63ac95e8f97ae284fe5b12c8735b3e02ae452d6f8ce31b792212f1`.
 Healthy, no OOM; existing 15 container identities and 19 host status/redirect
 responses unchanged. Rollback tag: `pdfnova-web:release-cbb33b6`.
+
+## Signature cursor preview (0fb90e1)
+
+A pending signature now follows the mouse/pen over the document area at its
+actual placement size, centred on the pointer. A fixed, pointer-transparent
+visual overlay stays aligned while scrolling; it is never added to PDF objects.
+It hides after placement, Escape, leaving the document area, browser blur or
+editor close. Touch retains direct tap placement. Original PNG pixels and
+single-use placement remain unchanged.
+
+Local Python: 170 passed, two existing warnings. Local and public signature
+workflow groups: 4/4, including cursor-centre bounds, scroll alignment, Escape,
+no hover-created objects, pointer-event passthrough, identical placed PNG and
+single placement. Public cleanup/colour/actual saved PDF checks: 10/10.
+
+Image: `sha256:51c6658cc33326ccb5dda4ff49fe28e04e31260b6ea2f5d5bfdec29b5cd7d95b`.
+Healthy, no OOM; 15 existing container identities and 19 host status/redirect
+responses unchanged. Rollback tag: `pdfnova-web:release-547f072`.
 
 ## Operations
 

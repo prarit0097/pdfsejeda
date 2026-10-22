@@ -191,7 +191,7 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Show pending signature centred on mouse/pen at actual placement size
 - [x] Keep preview aligned during scrolling; hide after drop, Escape, leaving page area or editor close
 - [x] Verify hover adds no objects, preview passes clicks through and placed PNG is unchanged
-- [ ] Deploy and verify cursor preview on public HTTPS
+- [x] Deploy and verify cursor preview on public HTTPS
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

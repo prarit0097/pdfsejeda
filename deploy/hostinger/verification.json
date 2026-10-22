@@ -8,32 +8,29 @@
   "compose_project": "pdfnova",
   "backend": "127.0.0.1:8086",
   "volume": "pdfnova_pdfnova-data",
-  "image_build_revision": "547f072",
-  "image": "sha256:87fd445d9a63ac95e8f97ae284fe5b12c8735b3e02ae452d6f8ce31b792212f1",
+  "image_build_revision": "0fb90e1",
+  "image": "sha256:51c6658cc33326ccb5dda4ff49fe28e04e31260b6ea2f5d5bfdec29b5cd7d95b",
   "runtime_profile_revision": "c06399de368b5b58089887a77562d2da3605f560",
   "current_release_checks": {
     "windows_pytest": {
       "passed": 170,
       "warnings": 2
     },
-    "local_signature_cleanup_checks": 10,
-    "public_https_signature_cleanup_checks": 10,
     "local_signature_scenario_groups": 4,
     "public_https_signature_scenario_groups": 4,
-    "cleanup_actual_saved_pdf_checked": true,
-    "matching_original_photo_review": "Local only: every retained pixel at alpha >= 140 matches original RGB within two levels of canvas rounding; private photo not submitted in server save tests.",
+    "public_https_signature_cleanup_checks": 10,
+    "cursor_preview_centre_matches_pointer": true,
+    "cursor_preview_tracks_scrolling": true,
+    "cursor_preview_escape_and_placement_cleanup": true,
+    "cursor_preview_no_hover_objects_or_pointer_interception": true,
+    "cursor_preview_and_placed_png_source_match": true,
+    "one_time_placement_desktop_mobile": true,
+    "selected_preview_placement_embedded_pdf_rgba_exact_match": true,
     "camera_test_source": "synthetic local MediaStream and permission denial; physical camera not accessed",
     "healthy": true,
     "oom_killed": false,
     "existing_container_identities_preserved": 15,
-    "existing_virtual_host_responses_unchanged": 19,
-    "signature_icons_within_separate_buttons_desktop_mobile": true,
-    "mobile_duplicate_delete_taps": true,
-    "generated_foreground_rgb_tolerance": 2,
-    "one_time_placement_desktop_mobile": true,
-    "explicit_signature_reselection_allows_another_placement": true,
-    "selected_preview_placement_embedded_pdf_rgba_exact_match": true,
-    "mixed_blue_tones_rgb_preserved": true
+    "existing_virtual_host_responses_unchanged": 19
   },
   "initial_deployment": {
     "date": "2026-10-22",
@@ -205,6 +202,34 @@
       "signature_icons_within_separate_buttons_desktop_mobile": true,
       "mobile_duplicate_delete_taps": true,
       "generated_foreground_rgb_tolerance": 2
+    }
+  },
+  "previous_single_placement_release": {
+    "image_build_revision": "547f072",
+    "image": "sha256:87fd445d9a63ac95e8f97ae284fe5b12c8735b3e02ae452d6f8ce31b792212f1",
+    "checks": {
+      "windows_pytest": {
+        "passed": 170,
+        "warnings": 2
+      },
+      "local_signature_cleanup_checks": 10,
+      "public_https_signature_cleanup_checks": 10,
+      "local_signature_scenario_groups": 4,
+      "public_https_signature_scenario_groups": 4,
+      "cleanup_actual_saved_pdf_checked": true,
+      "matching_original_photo_review": "Local only: every retained pixel at alpha >= 140 matches original RGB within two levels of canvas rounding; private photo not submitted in server save tests.",
+      "camera_test_source": "synthetic local MediaStream and permission denial; physical camera not accessed",
+      "healthy": true,
+      "oom_killed": false,
+      "existing_container_identities_preserved": 15,
+      "existing_virtual_host_responses_unchanged": 19,
+      "signature_icons_within_separate_buttons_desktop_mobile": true,
+      "mobile_duplicate_delete_taps": true,
+      "generated_foreground_rgb_tolerance": 2,
+      "one_time_placement_desktop_mobile": true,
+      "explicit_signature_reselection_allows_another_placement": true,
+      "selected_preview_placement_embedded_pdf_rgba_exact_match": true,
+      "mixed_blue_tones_rgb_preserved": true
     }
   }
 }
