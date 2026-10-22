@@ -165,6 +165,13 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Local automated, browser, editor and dedicated signature regressions
 - [x] Deploy and verify the signature flow on public HTTPS
 
+## 3f. Signature photo transparency correction
+
+- [x] Adaptive ink/paper separation and matching preview scale
+- [x] Generated colour/shadow/transparency fixtures and real saved-PDF validation
+- [x] Local original-photo review without committing private images
+- [ ] Deploy and verify cleanup and signature regressions on public HTTPS
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).

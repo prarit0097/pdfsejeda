@@ -23,8 +23,99 @@
     out.getContext("2d").drawImage(canvas, l, t, r - l + 1, b - t + 1, 6, 6, r - l + 1, b - t + 1);
     return { dataUrl: out.toDataURL("image/png"), ratio: out.width / out.height };
   }
+  function localExtreme(source, w, h, radius, horizontal, maximum) {
+    const out = new Float32Array(source.length), length = horizontal ? w : h, lines = horizontal ? h : w;
+    const deque = new Int32Array(length + radius + 1);
+    for (let line = 0; line < lines; line++) {
+      let head = 0, tail = 0;
+      const at = i => horizontal ? line * w + Math.min(i, length - 1) : Math.min(i, length - 1) * w + line;
+      for (let end = 0; end < length + radius; end++) {
+        const value = source[at(end)];
+        while (tail > head && (maximum ? source[at(deque[tail - 1])] <= value : source[at(deque[tail - 1])] >= value)) tail--;
+        deque[tail++] = end;
+        while (deque[head] < end - radius * 2) head++;
+        if (end >= radius) out[at(end - radius)] = source[at(deque[head])];
+      }
+    }
+    return out;
+  }
+  function inkOnly(source, w, h) {
+    // Ignore the large white margins before separating ink from photographed paper.
+    // Otherwise Otsu would split white versus the entire grey paper cutout.
+    const hist = new Uint32Array(256), luminance = new Float32Array(w * h);
+    let total = 0, sum = 0;
+    for (let i = 0; i < source.length; i += 4) {
+      const y = Math.round((source[i] + source[i + 1] + source[i + 2]) / 3);
+      luminance[i / 4] = source[i + 3] > 24 ? y : 255;
+      if (source[i + 3] > 24 && y < 240) { hist[y]++; total++; sum += y; }
+    }
+    if (!total) return new Uint8ClampedArray(source.length);
+    let lower = 0, lowerSum = 0, best = -1, split = 0;
+    for (let y = 0; y < 240; y++) {
+      lower += hist[y]; lowerSum += y * hist[y];
+      if (!lower || lower === total) continue;
+      const delta = lowerSum / lower - (sum - lowerSum) / (total - lower);
+      const variance = lower * (total - lower) * delta * delta;
+      if (variance > best) { best = variance; split = y; }
+    }
+    lower = 0; lowerSum = 0;
+    for (let y = 0; y <= split; y++) { lower += hist[y]; lowerSum += hist[y] * y; }
+    const upper = total - lower;
+    const lowMean = lower ? lowerSum / lower : sum / total;
+    const highMean = upper ? (sum - lowerSum) / upper : 255;
+    const photographedPaper = upper / total > 0.35 && highMean - lowMean > 28 && highMean < 230;
+    // Estimate ink from the darker core, rather than mixed antialiased edge pixels.
+    const target = Math.max(1, photographedPaper ? lower * 0.05 : total * 0.65);
+    let count = 0, inkCut = 239;
+    for (let y = 0; y < 240; y++) { count += hist[y]; if (count >= target) { inkCut = y; break; } }
+    const ink = [0, 0, 0], paper = [0, 0, 0]; let inkCount = 0, paperCount = 0;
+    for (let i = 0; i < source.length; i += 4) {
+      if (source[i + 3] <= 24) continue;
+      const y = Math.round((source[i] + source[i + 1] + source[i + 2]) / 3);
+      if (y <= inkCut) { for (let c = 0; c < 3; c++) ink[c] += source[i + c]; inkCount++; }
+      if (photographedPaper && y > split && Math.abs(y - highMean) < 15) { for (let c = 0; c < 3; c++) paper[c] += source[i + c]; paperCount++; }
+    }
+    if (!inkCount) return new Uint8ClampedArray(source.length);
+    for (let c = 0; c < 3; c++) { ink[c] /= inkCount; paper[c] = paperCount ? paper[c] / paperCount : 255; }
+    const inkMean = (ink[0] + ink[1] + ink[2]) / 3;
+    const direction = ink.map(v => v - inkMean), norm = Math.hypot(...direction);
+    const coloured = norm > 12 && Math.max(...ink) - Math.min(...ink) > Math.max(16, Math.max(...ink) * 0.22);
+    const unit = direction.map(v => v / (norm || 1));
+    const paperColour = Math.max(0, paper.reduce((v, c, n) => v + c * unit[n], 0));
+    const colourNoise = Math.max(3, (norm - paperColour) * 0.06);
+    // Morphological closing fills narrow pen strokes, estimating the paper
+    // underneath them while retaining the larger paper cutout and its shadows.
+    const radius = Math.max(4, Math.min(24, Math.round(Math.max(w, h) / 100)));
+    const dilated = localExtreme(localExtreme(luminance, w, h, radius, true, true), w, h, radius, false, true);
+    const background = localExtreme(localExtreme(dilated, w, h, radius, true, false), w, h, radius, false, false);
+    const paperMean = (paper[0] + paper[1] + paper[2]) / 3;
+    const out = new Uint8ClampedArray(source.length);
+    for (let i = 0; i < source.length; i += 4) {
+      const y = (source[i] + source[i + 1] + source[i + 2]) / 3;
+      let bg = background[i / 4];
+      if (bg < inkMean + 12) bg = Math.max(bg, paperMean); // wide, solid ink cores
+      const noise = Math.max(5, (bg - inkMean) * 0.045);
+      let alpha = Math.pow(Math.min(1, Math.max(0, (bg - y - noise) / Math.max(18, bg - inkMean - noise))), 0.85);
+      if (photographedPaper) {
+        // Local paper texture must not become faint ink across the whole cutout.
+        const boundary = (lowMean + highMean) / 2;
+        alpha *= Math.min(1, Math.max(0, (boundary + 8 - y) / 16));
+      }
+      if (coloured) {
+        // A grey shadow has little chromatic projection even when it is dark.
+        // Coloured, faint pen strokes can survive above the luminance cutoff.
+        const projection = source[i] * unit[0] + source[i + 1] * unit[1] + source[i + 2] * unit[2];
+        const colourAlpha = Math.pow(Math.min(1, Math.max(0, (projection - paperColour - colourNoise) / Math.max(8, norm - paperColour - colourNoise))), 0.8);
+        alpha = y >= 245 ? 0 : Math.max(colourAlpha, alpha);
+      }
+      // Reconstruct pen colour to avoid retaining grey-paper RGB in soft edges.
+      out[i] = ink[0]; out[i + 1] = ink[1]; out[i + 2] = ink[2]; out[i + 3] = source[i + 3] * alpha;
+    }
+    return out;
+  }
+
   async function variants(src) {
-    const img = await image(src), k = Math.min(1, 1000 / Math.max(img.width, img.height));
+    const img = await image(src), k = Math.min(1, 1800 / Math.max(img.width, img.height));
     const original = document.createElement("canvas"); original.width = Math.max(1, Math.round(img.width * k)); original.height = Math.max(1, Math.round(img.height * k));
     original.getContext("2d").drawImage(img, 0, 0, original.width, original.height);
     const outputs = [{ dataUrl: original.toDataURL("image/png"), ratio: original.width / original.height }];
@@ -32,14 +123,15 @@
       const c = document.createElement("canvas"); c.width = original.width; c.height = original.height;
       const ctx = c.getContext("2d"); ctx.drawImage(original, 0, 0);
       const data = ctx.getImageData(0, 0, c.width, c.height);
-      for (let i = 0; i < data.data.length; i += 4) {
-        const rgb = [data.data[i], data.data[i + 1], data.data[i + 2]], mean = (rgb[0] + rgb[1] + rgb[2]) / 3;
-        const neutral = Math.max(...rgb) - Math.min(...rgb) < 48;
-        // A removes light paper; B also removes neutral grey paper/shadows.
-        const alpha = mode === 0 ? Math.min(1, Math.max(0, (244 - mean) / 38)) : neutral ? Math.min(1, Math.max(0, (150 - mean) / 65)) : Math.min(1, Math.max(0, (245 - mean) / 25));
-        data.data[i + 3] *= alpha;
+      if (mode === 0) data.data.set(inkOnly(data.data, c.width, c.height));
+      else for (let i = 0; i < data.data.length; i += 4) {
+        // B preserves the photo/grey paper while removing nearly white margins.
+        const light = Math.min(data.data[i], data.data[i + 1], data.data[i + 2]);
+        data.data[i + 3] *= Math.min(1, Math.max(0, (250 - light) / 25));
       }
-      ctx.putImageData(data, 0, 0); outputs.push(trim(c));
+      ctx.putImageData(data, 0, 0);
+      const cropped = trim(c);
+      outputs.push(cropped ? { ...cropped, previewUrl: c.toDataURL("image/png") } : null);
     }
     return outputs;
   }
@@ -131,7 +223,7 @@
           container.innerHTML = '<h3>Choose an image version:</h3>';
           for (const [i, label] of ["Original", "Transparent A", "Transparent B"].entries()) {
             const button = document.createElement("button"); button.type = "button"; button.dataset.variant = String(i); button.setAttribute("aria-label", label); button.setAttribute("aria-pressed", "false"); button.disabled = !options[i];
-            const img = document.createElement("img"); img.alt = label; if (options[i]) img.src = options[i].dataUrl;
+            const img = document.createElement("img"); img.alt = label; if (options[i]) img.src = options[i].previewUrl || options[i].dataUrl;
             const text = document.createElement("span"); text.textContent = label; button.append(img, text);
             button.onclick = () => { error(""); chosen[target] = options[i]; container.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === button))); };
             container.append(button);
