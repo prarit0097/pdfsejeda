@@ -10,7 +10,7 @@ Date: 2026-10-22. Status: **live and verified** at https://pdf.praritsidana.com.
 | Server | 187.127.132.106, Ubuntu 24.04.4 LTS |
 | Repository | https://github.com/prarit0097/pdfsejeda |
 | Application folder | `/opt/pdfnova` |
-| Image build revision | `cbb33b6` |
+| Image build revision | `547f072` |
 | Runtime profile revision | `c06399d` |
 | Runtime Python | `3.12.15` |
 | Compose project / container | `pdfnova` / `pdfnova-web-1` |
@@ -175,6 +175,32 @@ Healthy, no OOM; 15 existing container identities and 19 host status/redirect
 responses unchanged. Rollback image: `pdfnova-web:release-82a374e`.
 Existing saved signature images retain their old pixels; regenerate from the
 original photo to apply corrected colour handling.
+
+## One-time signature placement and full colour preservation (547f072)
+
+One Sign selection now permits one placement. Pending image state clears and
+Select mode activates immediately afterward. Blank-page clicks do not paste
+more signatures; choosing a saved signature again arms another placement.
+Existing rotate/duplicate/delete controls remain available.
+
+Removed the remaining faint-edge recolouring branch. Cleanup now changes alpha
+only and retains original RGB throughout, subject to canvas rounding. Regression
+includes mixed blue tones that previously hit that branch. It checks the selected
+preview crop against the placed PNG and compares placed RGBA pixels exactly with
+the saved PDF image, including its transparency mask. Known generated paper masks
+check background removal; global neutral-colour counts are avoided because
+antialiased blue ink blended over yellow can legitimately form neutral shades.
+
+Local Python: 170 passed, two existing warnings. Local and public HTTPS:
+10/10 cleanup/colour/placement checks and 4/4 signature workflow groups, including
+desktop/mobile repeated page clicks and explicit signature reselection. Matching
+original photo reviewed locally: every retained pixel at alpha >= 140 preserved
+RGB within two levels of canvas rounding. No private photo submitted for a server
+save or committed to Git. Existing saved PNGs require regeneration to change them.
+
+Image: `sha256:87fd445d9a63ac95e8f97ae284fe5b12c8735b3e02ae452d6f8ce31b792212f1`.
+Healthy, no OOM; existing 15 container identities and 19 host status/redirect
+responses unchanged. Rollback tag: `pdfnova-web:release-cbb33b6`.
 
 ## Operations
 

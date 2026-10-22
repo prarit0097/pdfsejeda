@@ -184,7 +184,7 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Clear pending signature and return to Select after one placement
 - [x] Remove remaining faint-edge RGB replacement
 - [x] Check mixed blue tones, repeat-click suppression, explicit reselection and exact preview/placement/PDF RGBA
-- [ ] Deploy and verify one-time placement and colour checks on public HTTPS
+- [x] Deploy and verify one-time placement and colour checks on public HTTPS
 
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.

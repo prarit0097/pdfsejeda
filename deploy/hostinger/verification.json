@@ -8,20 +8,20 @@
   "compose_project": "pdfnova",
   "backend": "127.0.0.1:8086",
   "volume": "pdfnova_pdfnova-data",
-  "image_build_revision": "cbb33b6",
-  "image": "sha256:43a971bf6eb7c0b59e7a5d43b28663f872f5a0b740920a02d9b9b9e720e813af",
+  "image_build_revision": "547f072",
+  "image": "sha256:87fd445d9a63ac95e8f97ae284fe5b12c8735b3e02ae452d6f8ce31b792212f1",
   "runtime_profile_revision": "c06399de368b5b58089887a77562d2da3605f560",
   "current_release_checks": {
     "windows_pytest": {
       "passed": 170,
       "warnings": 2
     },
-    "local_signature_cleanup_checks": 9,
-    "public_https_signature_cleanup_checks": 9,
+    "local_signature_cleanup_checks": 10,
+    "public_https_signature_cleanup_checks": 10,
     "local_signature_scenario_groups": 4,
     "public_https_signature_scenario_groups": 4,
     "cleanup_actual_saved_pdf_checked": true,
-    "matching_original_photo_review": "Local only: original and cleaned dark blue foreground mean RGB both [28.5,26.6,67.8]; median per-channel difference zero. Private original and evidence excluded from Git and server save tests.",
+    "matching_original_photo_review": "Local only: every retained pixel at alpha >= 140 matches original RGB within two levels of canvas rounding; private photo not submitted in server save tests.",
     "camera_test_source": "synthetic local MediaStream and permission denial; physical camera not accessed",
     "healthy": true,
     "oom_killed": false,
@@ -29,7 +29,11 @@
     "existing_virtual_host_responses_unchanged": 19,
     "signature_icons_within_separate_buttons_desktop_mobile": true,
     "mobile_duplicate_delete_taps": true,
-    "generated_foreground_rgb_tolerance": 2
+    "generated_foreground_rgb_tolerance": 2,
+    "one_time_placement_desktop_mobile": true,
+    "explicit_signature_reselection_allows_another_placement": true,
+    "selected_preview_placement_embedded_pdf_rgba_exact_match": true,
+    "mixed_blue_tones_rgb_preserved": true
   },
   "initial_deployment": {
     "date": "2026-10-22",
@@ -158,6 +162,30 @@
   "previous_transparency_release": {
     "image_build_revision": "82a374e",
     "image": "sha256:2a1ad9719f339771ada3599a5994760081e7b7d9c719c25b94342a49282abec8",
+    "checks": {
+      "windows_pytest": {
+        "passed": 170,
+        "warnings": 2
+      },
+      "local_signature_cleanup_checks": 9,
+      "public_https_signature_cleanup_checks": 9,
+      "local_signature_scenario_groups": 4,
+      "public_https_signature_scenario_groups": 4,
+      "cleanup_actual_saved_pdf_checked": true,
+      "matching_original_photo_review": "Local only: original and cleaned dark blue foreground mean RGB both [28.5,26.6,67.8]; median per-channel difference zero. Private original and evidence excluded from Git and server save tests.",
+      "camera_test_source": "synthetic local MediaStream and permission denial; physical camera not accessed",
+      "healthy": true,
+      "oom_killed": false,
+      "existing_container_identities_preserved": 15,
+      "existing_virtual_host_responses_unchanged": 19,
+      "signature_icons_within_separate_buttons_desktop_mobile": true,
+      "mobile_duplicate_delete_taps": true,
+      "generated_foreground_rgb_tolerance": 2
+    }
+  },
+  "previous_signature_controls_release": {
+    "image_build_revision": "cbb33b6",
+    "image": "sha256:43a971bf6eb7c0b59e7a5d43b28663f872f5a0b740920a02d9b9b9e720e813af",
     "checks": {
       "windows_pytest": {
         "passed": 170,
