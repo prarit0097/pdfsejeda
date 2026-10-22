@@ -5,8 +5,8 @@
 {% block body_class %}editor-page{% endblock %}
 {% block head %}
 <script type="module" src="/static/js/pdf-loader.js?v=1"></script>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Dancing+Script:wght@600&family=Homemade+Apple&family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/editor.css?v=6">
+<link rel="stylesheet" href="/static/vendor/signature-fonts/fonts.css?v=1">
+<link rel="stylesheet" href="/static/css/editor.css?v=7">
 {% endblock %}
 {% block main %}
 <section class="tool-hero wrap" id="editor-hero">
@@ -53,7 +53,7 @@
       <button type="button" data-tool="text" title="Add text (T)">{{ icon("text") }}<span>Text</span></button>
       <button type="button" data-tool="edittext" title="Edit existing text">{{ icon("edit") }}<span>Edit text</span></button>
       <button type="button" data-action="find" title="Find and replace existing text">{{ icon("search") }}<span>Find & replace</span></button>
-      <button type="button" data-tool="sign" title="Signature">{{ icon("sign") }}<span>Sign</span></button>
+      <button type="button" data-tool="sign" title="Signature" aria-haspopup="true" aria-expanded="false">{{ icon("sign") }}<span>Sign</span>{{ icon("chevron") }}</button>
       <button type="button" data-tool="image" title="Image">{{ icon("image") }}<span>Image</span></button>
     </div>
     <div class="ed-group">
@@ -127,5 +127,6 @@
 {% endblock %}
 {% block scripts %}
 <script src="/static/js/tool.js?v=3"></script>
-<script src="/static/js/editor.js?v=5"></script>
+<script src="/static/js/signatures.js?v=1"></script>
+<script src="/static/js/editor.js?v=6"></script>
 {% endblock %}

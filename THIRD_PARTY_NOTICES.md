@@ -14,3 +14,13 @@ the manifest, and rerun the editor and browser regressions.
 Python dependency versions are listed in `requirements.txt`. Optional runtime
 engines are LibreOffice, Tesseract and Playwright Chromium. This notice records
 asset provenance; it is not a completed audit of every transitive dependency.
+
+
+Signature fonts are self-hosted under `app/static/vendor/signature-fonts`:
+Dancing Script, Caveat, Homemade Apple, Sacramento, Allura, Great Vibes, Pacifico,
+Satisfy, Shadows Into Light, Marck Script, Parisienne and Yellowtail. The font
+binaries come from the official Google Fonts service; each corresponding
+SIL Open Font License or Apache-2.0 text is retained as `*-LICENSE.txt`.
+The directory's `manifest.json` records family names, official download/licence
+URLs and SHA-256 hashes. Upstream: https://github.com/google/fonts.
+Do not remove these licences or relabel the original font family names.

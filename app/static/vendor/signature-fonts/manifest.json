@@ -1,0 +1,86 @@
+[
+  {
+    "family": "Dancing Script",
+    "file": "dancingscript.ttf",
+    "url": "https://fonts.gstatic.com/s/dancingscript/v29/If2cXTr6YS-zF4S-kcSWSVi_sxjsohD9F50Ruu7BMSoHTQ.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/dancingscript/OFL.txt",
+    "sha256": "cbf45d12702db573b174863d83fc137f29ac270240f289aa41942b36032d5201"
+  },
+  {
+    "family": "Caveat",
+    "file": "caveat.ttf",
+    "url": "https://fonts.gstatic.com/s/caveat/v23/WnznHAc5bAfYB2QRah7pcpNvOx-pjfJ9SII.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/OFL.txt",
+    "sha256": "012f33f9814bf9614973983335c3a375fe267c094e7c09a02a276cd1dcd4180a"
+  },
+  {
+    "family": "Homemade Apple",
+    "file": "homemadeapple.ttf",
+    "url": "https://fonts.gstatic.com/s/homemadeapple/v24/Qw3EZQFXECDrI2q789EKQZJob3x9.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/apache/homemadeapple/LICENSE.txt",
+    "sha256": "9a97d4447953ab43ac279a8ea94a90749e809221586608b2ddd86b5159b5fa11"
+  },
+  {
+    "family": "Sacramento",
+    "file": "sacramento.ttf",
+    "url": "https://fonts.gstatic.com/s/sacramento/v17/buEzpo6gcdjy0EiZMBUG0Co.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sacramento/OFL.txt",
+    "sha256": "15597dce1d707e88a188f804fb927e526b2ad959d03e9df9c812492ceed0a4ab"
+  },
+  {
+    "family": "Allura",
+    "file": "allura.ttf",
+    "url": "https://fonts.gstatic.com/s/allura/v23/9oRPNYsQpS4zjuAPjA.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/allura/OFL.txt",
+    "sha256": "814c49d38316cfa0c3bc629ace488ea838b72996276c523b2cdceb31f88b044c"
+  },
+  {
+    "family": "Great Vibes",
+    "file": "greatvibes.ttf",
+    "url": "https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN-XC.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/greatvibes/OFL.txt",
+    "sha256": "9d76b8c67f5289c310114c935c5c3831fc3c25bc2bb888a28210c1659d701b9e"
+  },
+  {
+    "family": "Pacifico",
+    "file": "pacifico.ttf",
+    "url": "https://fonts.gstatic.com/s/pacifico/v23/FwZY7-Qmy14u9lezJ96A.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/pacifico/OFL.txt",
+    "sha256": "0adbdce4f5422e632945cc29001dc19f0bbda1336626ca7ea9c921d49bcc0bf4"
+  },
+  {
+    "family": "Satisfy",
+    "file": "satisfy.ttf",
+    "url": "https://fonts.gstatic.com/s/satisfy/v22/rP2Hp2yn6lkG50LoOZQ.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/apache/satisfy/LICENSE.txt",
+    "sha256": "d394db8f27c568545da4dc2cbb798c04d9c70cea9beb434039dcf3651a4cde7b"
+  },
+  {
+    "family": "Shadows Into Light",
+    "file": "shadowsintolight.ttf",
+    "url": "https://fonts.gstatic.com/s/shadowsintolight/v22/UqyNK9UOIntux_czAvDQx_ZcHqZXBNQDcg.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/shadowsintolight/OFL.txt",
+    "sha256": "9e22fccbcbd08bb567db3c25e97eb894aa96fb090ab61ebe78fb23a65a4fc7f6"
+  },
+  {
+    "family": "Marck Script",
+    "file": "marckscript.ttf",
+    "url": "https://fonts.gstatic.com/s/marckscript/v22/nwpTtK2oNgBA3Or78gapdwuCzw.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/marckscript/OFL.txt",
+    "sha256": "334d5b19adc74ad1a97bcc403deafa2df7cb338d05da95d67a4587ed0f7c329e"
+  },
+  {
+    "family": "Parisienne",
+    "file": "parisienne.ttf",
+    "url": "https://fonts.gstatic.com/s/parisienne/v14/E21i_d3kivvAkxhLEVZpcy8.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/parisienne/OFL.txt",
+    "sha256": "c392ecb4825fe6eaf091f69927c732379dd63b794b37f64e5ecc2745a729841e"
+  },
+  {
+    "family": "Yellowtail",
+    "file": "yellowtail.ttf",
+    "url": "https://fonts.gstatic.com/s/yellowtail/v25/OZpGg_pnoDtINPfRIlLotlw.ttf",
+    "license_url": "https://raw.githubusercontent.com/google/fonts/main/apache/yellowtail/LICENSE.txt",
+    "sha256": "01418091041e0e73525b18416e3f9db9d63be7f9c0443c16465743bf3a9db48b"
+  }
+]

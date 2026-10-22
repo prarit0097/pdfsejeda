@@ -72,6 +72,7 @@ CSP = "; ".join([
     "img-src 'self' data: blob:",
     "connect-src 'self'",
     "frame-src 'self'",
+    "media-src 'self' blob:",  # local signature camera preview; no remote media sources
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -45,7 +45,7 @@
 11. **Keep private material out of Git.** Never commit real passwords, `.env`, uploaded documents, result files, virtual environments or raw browser evidence containing tokens. Use generated fixtures for tests; preserve third-party notices and vendored-asset provenance.
 12. **Change only the authorized scope.** New external integrations, outbound email, accounts and payments must not be silently enabled. The current exclusions below remain in force until the user changes them.
 
-**Current scope (user clarification, 2026-10-22):** accounts/billing, cloud integrations and email signing are deferred. Do not implement them or count their absence as a blocker for the current PDF-tool delivery. Local PDF signing (draw/type/upload signatures), password protection, URL import and local workflows remain in scope.
+**Current scope (user clarification, 2026-10-22):** accounts/billing, cloud integrations and email signing are deferred. Do not implement them or count their absence as a blocker for the current PDF-tool delivery. Local PDF signing (type/draw/upload/camera signatures), password protection, URL import and local workflows remain in scope.
 
 ---
 
@@ -68,7 +68,7 @@ The implementation uses original PDFNova branding and copy. Behavioral research 
 | Included now | Meaning |
 |---|---|
 | Core PDF tools and editor | The 43 tools in §6, including form creation/filling and visual text editing |
-| Local PDF signatures | Draw, type or upload a signature and place it on the document; this is a visual signature, not a certificate-based digital-signature service |
+| Local PDF signatures | Type, draw, upload or photograph a signature and place it on the document; this is a visual signature, not a certificate-based digital-signature service |
 | File input | Local uploads, chunked uploads and public URL import |
 | Results and automation | Download, preview, continue to another tool, local saved workflows |
 | Interface | Tool search/categories, light/dark theme, desktop/mobile interactions, help and developer guides |
@@ -262,7 +262,7 @@ The API also accepts `pdfToDoc` as an alias for `pdfToOfficeWord`, and `pdfToExc
 
 **Editor** (`app/tools/editor.py`, `templates/editor.html`, `static/js/editor.js`, `static/css/editor.css`)
 - Task types `edit` (`/pdf-editor`), `fillSign` (`/sign-pdf`), `editForms` (`/pdf-forms`) share one handler and one page; only the starting tool differs.
-- **Browser side:** PDF.js renders pages lazily; objects (text, edited text, image/signature, box, circle, whiteout, line, arrow, freehand, highlight/strike/underline, link, form text box, checkbox, dropdown, listbox, radio) live in an overlay. Each object stores x, y, w, h in PDF points, top-left origin, in the page's displayed orientation. Existing form fields are shown as real inputs (from `page.getAnnotations()`); their values go to `formValues`. "Edit text" puts clickable spans over PDF.js text items; clicking one creates an `edittext` object (white box over the old text + new text). Page bar: rotate, delete, insert blank page. Undo stack (80 steps), Delete key, Esc. Signatures: draw / type (cursive Google fonts) / upload (white turned transparent), up to 4 remembered in localStorage. Drafts autosave to localStorage under a SHA-256 of document bytes; page-only changes recover too. Submission flushes pending drafts and only a completed save clears that saved revision. Expired/corrupt drafts are pruned on opening the editor. Find & replace locates adjacent horizontal PDF.js text runs, supports case matching, selected/all replacements and undo. Text replacement and whiteout are visual overlays: original text remains extractable; they are not redaction.
+- **Browser side:** PDF.js renders pages lazily; objects (text, edited text, image/signature, box, circle, whiteout, line, arrow, freehand, highlight/strike/underline, link, form text box, checkbox, dropdown, listbox, radio) live in an overlay. Each object stores x, y, w, h in PDF points, top-left origin, in the page's displayed orientation. Existing form fields are shown as real inputs (from `page.getAnnotations()`); their values go to `formValues`. "Edit text" puts clickable spans over PDF.js text items; clicking one creates an `edittext` object (white box over the old text + new text). Page bar: rotate, delete, insert blank page. Undo stack (80 steps), Delete key, Esc. Signatures: Sign opens a reusable local signature library with remove controls and New Signature. Creation has Type/Draw/Upload Image/Camera tabs, 12 self-hosted font previews, seven ink colours, pen width/clear, and Original/Transparent A/Transparent B image previews. Save signature controls device persistence (up to eight PNGs within a 2.5 MB JSON budget). Camera starts only on explicit request and stops on tab change, capture or dialog close; denied/unavailable cameras offer a photo-file fallback. Placed signatures support drag/resize, rotate, duplicate, delete and existing undo/draft recovery. Transparency uses light-paper and neutral-grey-paper heuristics; Original preserves the photo when cleanup removes desired ink. Drafts autosave to localStorage under a SHA-256 of document bytes; page-only changes recover too. Submission flushes pending drafts and only a completed save clears that saved revision. Expired/corrupt drafts are pruned on opening the editor. Find & replace locates adjacent horizontal PDF.js text runs, supports case matching, selected/all replacements and undo. Text replacement and whiteout are visual overlays: original text remains extractable; they are not redaction.
 - **Wire format:** `pageOrder ["orig:rot" | "-1:rot"]` then operation arrays with **bottom-left** coordinates — see the docstring at the top of `editor.py`. Sejda-style `deletePageOperations` / `insertPageOperations` / `rotatePageOperations` are also accepted when `pageOrder` is absent.
 - **Server side:** builds the page list, groups drawing ops per page and draws them in one `stamp()` per page (order: edited text, shapes, highlights, images, freehand, lines, new text); links become Link annotations (user-space rects); new text/checkbox/dropdown/listbox/radio fields get clipped appearance streams with rotated placement; choices accept export/display pairs and multiselect, radio fields share groups, text supports defaults/maxLength/comb, and required flags are preserved; `formValues` are filled with pypdf afterwards (checkbox/radio map to their real "on" state); `flattenForms` flattens at the end.
 - `tool.js` exposes `Tool.submitBody(body, {onCompleted})`, `Tool.addFiles(files)`, `Tool.reset()` so the editor reuses the upload, result and recent-results flow. Events: `files-changed`, `editor-open`, `editor-close`.
@@ -306,7 +306,7 @@ Find/replace works on horizontal PDF.js text runs, including adjacent fragments.
 | Storage | Data/purpose | Lifetime/behavior |
 |---|---|---|
 | localStorage | `theme`, recent results | Theme persists; recent links are filtered by the client-side result lifetime |
-| localStorage | `signatures` | Up to four remembered signature images; remain until removed/site data is cleared |
+| localStorage | `signatures` | Up to eight validated PNG signatures within 2.5 MB; opt-out per creation; reuse/remove in Sign menu; remain until removed/site data is cleared |
 | localStorage | `editorDraft:v2:<document hash>` | Pages, overlays and form values; recovery window 48 hours, expired/corrupt drafts pruned when editor opens |
 | localStorage | `workflows` | Saved reusable chains; passwords/credentials are scrubbed |
 | sessionStorage | `lastStep`, `workflowChain` | Successful task recording and in-progress chain assembly |
@@ -324,6 +324,7 @@ Browser storage is local to that browser/profile/origin; there is no account syn
 - `static/js/tool.js` — `window.Tool`: uploads (simple ≤5 MB, chunked >5 MB, 3 parallel chunks, link import, password prompt), file reorder/rotate (merge), `show_if` conditional options, form → JSON, submit, 402 countdown, polling every 3 s, result screen (download, preview, ZIP items, continue in another tool, delete now), recent results in localStorage, keep-alive `touch` every 10 min, files handed over via sessionStorage `continueFiles`.
 - `static/js/pages-ui.js` — PDF.js thumbnails, selectors, rotations, organization, split marks, area/crop drawing, metadata and bookmark prefill.
 - `templates/editor.html`, `static/js/editor.js`, `static/css/editor.css`: green upload entry with device/URL menu and direct blank-document option; automatic editor opening after upload; visible heading, wrapped desktop blue outlined tools, toolbar-height-aware properties strip and centered green Apply changes. Mobile keeps a scrolling touch toolbar. Form overlays, signatures, find/replace and drafts remain available.
+- `static/js/signatures.js` and `static/vendor/signature-fonts/`: saved-signature chooser and responsive creation dialog; typed font previews, drawing, photo cleanup, camera and PNG creation run locally. The chosen image is included in the PDF edit request when applying changes. Local saved signatures are separate from server file expiry. Camera requires a secure browser context and permission; the regression uses a synthetic MediaStream rather than a physical device.
 - `static/js/workflows.js` — saved-chain management, import/export, credential prompts and step execution.
 - `static/js/home.js` / `theme.js` — home search/filtering and early theme application.
 - `static/js/pdf-loader.js` + `static/vendor/pdfjs/` — ES-module preview renderer, worker, fonts, CMaps and codecs; no CDN script is required.
@@ -402,7 +403,7 @@ Generate a secret locally with `python -c "import secrets; print(secrets.token_h
 | HTML printing | Python Playwright package and compatible Chromium browser | Missing package reports installation instructions; browser-launch failures may need server-log inspection |
 | Browser PDF preview/editing | Included PDF.js modules/assets | No external preview CDN needed; a current browser is required |
 | Unicode/complex-script output | Installed script-appropriate fonts; fonttools/uharfbuzz from requirements | Fallback/font coverage varies; missing glyph coverage can produce poor output |
-| Optional interface/signature web fonts | Access to Google Fonts | System/default fonts remain usable; cosmetic font appearance can differ |
+| Interface web font / signature fonts | Interface font may use Google Fonts; signature fonts are self-hosted | All 12 signature styles work without external font access; retain licences and manifest hashes |
 
 Inspect the actual runtime environment when diagnosing a missing engine. The UI listing a tool does not prove its optional system dependency is installed. A local user install and a Docker container have separate browser/font/engine paths.
 
@@ -538,6 +539,8 @@ Logs go to server stdout/stderr. Known task failures expose a safe message; unex
 ## 8. Change log
 
 Newest first. One line per change: date — what — where.
+
+- 2026-10-22: Expanded screenshot-guided local signatures: reusable/removable Sign library, Type/Draw/Upload Image/Camera tabs, 12 self-hosted licensed font styles, seven colours, photo transparency alternatives and per-signature rotation/duplication/deletion. Existing images, undo, drafts and PDF output retained. Local pytest 170 passed (2 warnings), generic browser 63/63, editor 8 groups and signature 4 groups passed, including actual PNG/PDF pixels, camera permission/track cleanup with a synthetic stream, mobile drawing and storage-disabled operation. Files: `signatures.js`, editor JS/CSS/template, CSP media policy, vendored fonts and `scripts/signature_regression.py`.
 
 - 2026-10-22: Home/editor UI update deployed at https://pdf.praritsidana.com from `60733fa`. Public browser 63/63 and actual mobile PDF editing/saving passed; current container healthy and existing 15 containers/19 virtual-host responses unchanged. Local pytest 170, browser 63/63 and editor 8 scenario groups passed. Deployment record distinguishes this UI release from the initial Linux engine/API audit.
 

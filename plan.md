@@ -156,6 +156,15 @@ The current pass preserves existing work and verifies actual files and browser i
 - [x] Verify actual upload, edit, saved PDF and blank-document flow; full regression suites
 - [x] Deploy and verify the updated flow on public HTTPS
 
+## 3e. Screenshot-guided signature features
+
+- [x] Saved-signature dropdown with reuse, removal and New Signature
+- [x] Type/Draw/Upload Image/Camera creation, font/colour previews and persistence choice
+- [x] Original/Transparent A/Transparent B image variants and camera cleanup/fallback
+- [x] Placed-signature rotate, duplicate, delete, drag/resize and actual PDF verification
+- [x] Local automated, browser, editor and dedicated signature regressions
+- [ ] Deploy and verify the signature flow on public HTTPS
+
 ## 4. Definition of done (per task)
 1. Code + test written, `pytest` passes.
 2. sejedarules.md updated (what changed, how it works).

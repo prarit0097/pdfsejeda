@@ -19,7 +19,6 @@
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
   const FONTS = [["Helvetica", "Sans"], ["Times", "Serif"], ["Courier", "Mono"]];
   const CSS_FONT = { Helvetica: "Helvetica, Arial, sans-serif", Times: "'Times New Roman', Times, serif", Courier: "'Courier New', monospace" };
-  const SIG_FONTS = ["Dancing Script", "Caveat", "Sacramento", "Homemade Apple"];
 
   let file = null, doc = null, pages = [], objects = [], formValues = {}, zoom = 1, tool = "select", selected = null;
   let history = [], pendingImage = null, idSeq = 1, renderToken = 0, fieldDefs = new Map(), pdfFieldNames = new Set();
@@ -359,7 +358,13 @@
       if (o.type === "text") el.insertAdjacentHTML("beforeend", `<span class="h" data-handle title="Drag to resize the text"></span>`);
     } else {
       Object.assign(el.style, { width: o.w * z + "px", height: o.h * z + "px" });
-      if (o.type === "image") el.innerHTML = `<img alt="" src="${o.src}">`;
+      if (o.type === "image") {
+        el.innerHTML = `<img alt="${o.signature ? "Signature" : ""}" src="${o.src}">`;
+        if (o.signature) {
+          el.classList.add("signature-object");
+          el.insertAdjacentHTML("beforeend", `<div class="signature-object-actions"><button type="button" data-object-action="rotate" aria-label="Rotate signature">${icon("rotate")}</button><button type="button" data-object-action="duplicate" aria-label="Duplicate signature">${icon("copy")}</button><button type="button" data-object-action="delete" aria-label="Delete signature">${icon("trash")}</button></div>`);
+        }
+      }
       if (o.type === "shape") Object.assign(el.style, {
         background: o.fill || "transparent", border: o.strokeWidth ? `${o.strokeWidth * z}px solid ${o.stroke}` : "none",
         borderRadius: o.shape === "ellipse" ? "50%" : "0" });
@@ -484,7 +489,7 @@
   ed.querySelector(".ed-bar").addEventListener("click", async e => {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.tool === "sign" || b.dataset.tool === "image") deselect();
-    if (b.dataset.tool === "sign") { const src = await signatureDialog(); if (!src) return; pendingImage = { src: src.dataUrl, ratio: src.ratio, sig: true }; setTool("sign"); return; }
+    if (b.dataset.tool === "sign") { const src = await window.PDFNovaSignatures.choose(b); if (!src) return; pendingImage = { src: src.dataUrl, ratio: src.ratio, sig: true }; setTool("sign"); return; }
     if (b.dataset.tool === "image") { $("#ed-image-input").click(); return; }
     if (b.dataset.tool) { deselect(); return setTool(b.dataset.tool); }
     const a = b.dataset.action;
@@ -597,6 +602,7 @@
     const key = pageEl.closest(".ed-pagewrap").dataset.key;
     const pt = toPt(e, pageEl);
     const objNode = e.target.closest(".obj");
+    if (e.target.closest("[data-object-action]")) return;
     if (e.target.closest("[data-del]")) { const o = byId(objNode.dataset.id); if (o) remove(o); return; }
     if (objNode) {
       const o = byId(objNode.dataset.id);
@@ -630,6 +636,27 @@
     pageEl.appendChild(draft);
     drag = { mode: "create", start: pt, pts: [pt.x, pt.y], key, pageEl, draft };
     pageEl.setPointerCapture(e.pointerId);
+  });
+
+  pagesEl.addEventListener("click", async e => {
+    const button = e.target.closest("[data-object-action]"); if (!button) return;
+    const o = byId(button.closest(".obj").dataset.id); if (!o || !o.signature) return;
+    e.stopPropagation();
+    if (button.dataset.objectAction === "delete") return remove(o);
+    if (button.dataset.objectAction === "duplicate") {
+      push(); const copy = JSON.parse(JSON.stringify(o)); delete copy.id;
+      const page = size(pages.find(p => p.key === o.page));
+      copy.x = clamp(o.x + 15, 0, Math.max(0, page.w - o.w)); copy.y = clamp(o.y + 15, 0, Math.max(0, page.h - o.h));
+      return select(add(copy));
+    }
+    try {
+      const img = await loadImg(o.src), canvas = document.createElement("canvas"); canvas.width = img.height; canvas.height = img.width;
+      const ctx = canvas.getContext("2d"); ctx.translate(canvas.width / 2, canvas.height / 2); ctx.rotate(Math.PI / 2); ctx.drawImage(img, -img.width / 2, -img.height / 2);
+      if (!objects.includes(o)) return;
+      push(); const center = { x: o.x + o.w / 2, y: o.y + o.h / 2 }, w = o.w; o.w = o.h; o.h = w;
+      const page = size(pages.find(p => p.key === o.page)); o.x = clamp(center.x - o.w / 2, 0, Math.max(0, page.w - o.w)); o.y = clamp(center.y - o.h / 2, 0, Math.max(0, page.h - o.h));
+      o.src = canvas.toDataURL("image/png"); renderObjects(o.page); paintProps(); saveDraft();
+    } catch { toast("Could not rotate this signature.", "err"); }
   });
 
   pagesEl.addEventListener("pointermove", e => {
@@ -740,7 +767,7 @@
     push();
     const w = pendingImage.sig ? 160 : Math.min(240, size(pages.find(p => p.key === key)).w * 0.5);
     const h = w / (pendingImage.ratio || 1);
-    const o = add({ type: "image", page: key, x: pt.x - w / 2, y: pt.y - h / 2, w, h, src: pendingImage.src, opacity: 1 });
+    const o = add({ type: "image", page: key, x: pt.x - w / 2, y: pt.y - h / 2, w, h, src: pendingImage.src, signature: !!pendingImage.sig, opacity: 1 });
     select(o);
     if (!pendingImage.sig) { pendingImage = null; setTool("select"); }
   }
@@ -752,69 +779,6 @@
     if ((e.key === "Delete" || e.key === "Backspace") && selected && !typing) { e.preventDefault(); remove(selected); }
     if (e.key === "Escape" && !typing) setTool("select");
   });
-
-  // ------------------------------------------------------------------ signatures
-  function signatureDialog() {
-    return new Promise(resolve => {
-      let saved = [];
-      try { saved = JSON.parse(localStorage.getItem("signatures") || "[]"); } catch {}
-      const back = document.createElement("div");
-      back.className = "modal-back";
-      back.innerHTML = `<div class="modal wide" role="dialog" aria-modal="true"><h3>Your signature</h3>
-        <div class="sig-tabs"><button class="chip" data-tab="draw" aria-pressed="true">Draw</button><button class="chip" data-tab="type" aria-pressed="false">Type</button><button class="chip" data-tab="upload" aria-pressed="false">Upload image</button></div>
-        <div data-pane="draw"><canvas class="sig-pad" width="1100" height="340"></canvas><div class="row" style="justify-content:space-between;margin-top:6px"><span class="muted small">Draw with your mouse, finger or pen.</span><button class="btn btn-sm btn-ghost" data-clear>Clear</button></div></div>
-        <div data-pane="type" hidden><input class="sig-type" placeholder="Your name" style="font-family:'${SIG_FONTS[0]}'"><div class="sig-fonts">${SIG_FONTS.map((f, i) => `<button type="button" data-font="${f}" aria-pressed="${i === 0}" style="font-family:'${f}'">Signature</button>`).join("")}</div></div>
-        <div data-pane="upload" hidden><input type="file" accept="image/*" class="input"><p class="muted small">A photo or scan of your signature on white paper works best.</p></div>
-        ${saved.length ? `<p class="muted small" style="margin:14px 0 0">Saved on this device:</p><div class="sig-saved">${saved.map((s, i) => `<img src="${s}" data-saved="${i}" alt="Saved signature">`).join("")}</div>` : ""}
-        <label class="check small" style="margin-top:12px"><input type="checkbox" data-remember checked> Remember this signature on this device</label>
-        <div class="row"><button class="btn btn-ghost" data-x>Cancel</button><button class="btn btn-primary" data-ok>Use signature</button></div></div>`;
-      document.body.appendChild(back);
-      const pad = back.querySelector(".sig-pad"), pctx = pad.getContext("2d");
-      let tab = "draw", font = SIG_FONTS[0], drawing = false, inked = false, uploaded = null;
-      pctx.lineWidth = 5; pctx.lineCap = "round"; pctx.lineJoin = "round"; pctx.strokeStyle = "#0b1f66";
-      const pos = e => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
-      pad.addEventListener("pointerdown", e => { drawing = true; inked = true; pad.setPointerCapture(e.pointerId); pctx.beginPath(); pctx.moveTo(...pos(e)); });
-      pad.addEventListener("pointermove", e => { if (drawing) { pctx.lineTo(...pos(e)); pctx.stroke(); } });
-      pad.addEventListener("pointerup", () => drawing = false);
-      const close = v => { back.remove(); resolve(v); };
-      back.addEventListener("click", async e => {
-        const t = e.target;
-        if (t.dataset.tab) { tab = t.dataset.tab; back.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-pressed", b === t)); back.querySelectorAll("[data-pane]").forEach(p => p.hidden = p.dataset.pane !== tab); }
-        if (t.dataset.font) { font = t.dataset.font; back.querySelectorAll("[data-font]").forEach(b => b.setAttribute("aria-pressed", b === t)); back.querySelector(".sig-type").style.fontFamily = `'${font}'`; }
-        if (t.hasAttribute("data-clear")) { pctx.clearRect(0, 0, pad.width, pad.height); inked = false; }
-        if (t.dataset.saved !== undefined) { const img = await loadImg(saved[+t.dataset.saved]); close({ dataUrl: saved[+t.dataset.saved], ratio: img.width / img.height }); }
-        if (t.hasAttribute("data-x") || t === back) close(null);
-        if (t.hasAttribute("data-ok")) {
-          let out = null;
-          if (tab === "draw") { if (!inked) return toast("Draw your signature first"); out = trimCanvas(pad); }
-          if (tab === "type") {
-            const name = back.querySelector(".sig-type").value.trim(); if (!name) return toast("Type your name first");
-            await document.fonts.load(`80px '${font}'`);
-            const c = document.createElement("canvas"), x = c.getContext("2d"); c.width = 1400; c.height = 300;
-            x.font = `110px '${font}'`; x.fillStyle = "#0b1f66"; x.textBaseline = "middle"; x.fillText(name, 30, 150);
-            out = trimCanvas(c);
-          }
-          if (tab === "upload") { if (!uploaded) return toast("Choose an image first"); out = uploaded; }
-          if (back.querySelector("[data-remember]").checked) {
-            try { localStorage.setItem("signatures", JSON.stringify([out.dataUrl, ...saved.filter(s => s !== out.dataUrl)].slice(0, 4))); } catch {}
-          }
-          close(out);
-        }
-      });
-      back.querySelector('[data-pane="upload"] input').addEventListener("change", async e => { if (e.target.files[0]) uploaded = await fileToDataUrl(e.target.files[0], 1200, true); });
-    });
-  }
-
-  function trimCanvas(c) {
-    const x = c.getContext("2d"), { width: w, height: h } = c, data = x.getImageData(0, 0, w, h).data;
-    let t = h, l = w, r = 0, b = 0;
-    for (let y = 0; y < h; y++) for (let i = 0; i < w; i++) if (data[(y * w + i) * 4 + 3] > 10) { if (y < t) t = y; if (y > b) b = y; if (i < l) l = i; if (i > r) r = i; }
-    if (r <= l || b <= t) return { dataUrl: c.toDataURL("image/png"), ratio: w / h };
-    const pad = 6, out = document.createElement("canvas");
-    out.width = r - l + pad * 2; out.height = b - t + pad * 2;
-    out.getContext("2d").drawImage(c, l - pad, t - pad, out.width, out.height, 0, 0, out.width, out.height);
-    return { dataUrl: out.toDataURL("image/png"), ratio: out.width / out.height };
-  }
 
   function loadImg(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
   async function fileToDataUrl(f, max, whiteToAlpha = false) {
