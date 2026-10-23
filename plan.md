@@ -1,5 +1,9 @@
 # plan.md — build plan, start to finish
 
+**2026-10-23 owner cancellation:** SEO/promotion loop stopped; existing heartbeat
+confirmed PAUSED. No further promotion or pending-submission monitoring unless
+the owner explicitly resumes. Earlier ongoing-program instructions are historical.
+
 This is the master plan for this repo. Work follows it phase by phase. When a phase or task is done, tick it here **and** log it in [sejedarules.md](sejedarules.md).
 
 Source of truth for *behaviour*: [research/SEJDA.md](research/SEJDA.md) (reverse-engineering of sejda.com).

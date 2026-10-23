@@ -1,5 +1,10 @@
 # SEO work: usage guard and continuation
 
+**Cancelled by owner2026-10-23:** no further SEO/promotion work requested.
+Existing automation `continue-pdf-seo-after-usage-cooldown` confirmed PAUSED.
+This supersedes all earlier continuation instructions below. Do not restart,
+monitor pending submissions or publish more content without a new owner request.
+
 **Execution update2026-10-23:** the scheduled continuation actually ran at
 01:25:37Z after the prior minimum deadline and recovered usage. Previous cooldown
 is completed; future threshold starts a new cooldown. The existing same-chat
