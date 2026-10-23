@@ -225,6 +225,8 @@ Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 - [x] Publish eligible original owner article and record verifiable external links (illustrated Blogger tutorial, one new owned referring site)
 - [ ] Complete eligible directory submissions without duplicates or invented endorsements
 - [x] Submit Launching Next free listing after owner confirmation; receipt165937 verified, editorial review/public listing pending
+- [x] Submit one free The Tool Directory listing; receipt verified, editorial publication pending
+- [x] Confirm Bing sitemap Success59 and fresh homepage indexability; indexing request accepted, indexed status pending
 - [x] Improve existing OCR guide with original illustration and practical output checks;671 tests/public59-page checks passed,deployed1f289d2
 - [x] Configure conditional usage checkpoint and 330-minute continuation through supported app scheduler (one delayed execution verified2026-10-23; exact-time availability not guaranteed)
 

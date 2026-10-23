@@ -2,6 +2,13 @@
 
 ## Verified update — 2026-10-23
 
+Bing sitemap now **Success /59 URLs**,zero errors/warnings. Homepage fresh Live
+URL test says indexable,despite stored older report saying not allowed. HTTP
+robots/meta corroborate current eligibility. One homepage indexing request
+accepted,not yet confirmed indexed. The Tool Directory free listing submitted
+for editorial review; receipt verified,no public backlink yet. Evidence/limits
+in [ledger](PUBLICATION-LEDGER.md). No duplicate sitemap or directory submission.
+
 OCR guide improved in place and deployed from1f289d2: original illustration,
 recognition checklist and truthful PDF-or-text output/page-skipping guidance.
 Seven guides/59 URLs retained. Fresh671 Python tests passed(two warnings60.91s),

@@ -9,7 +9,8 @@ cooldown and recovered usage. These states supersede older pending records.
 | Google homepage | Indexed | URL Inspection: URL is on Google / Page is indexed. No ranking/recommendation measured. |
 | Forms guide | Indexing requested | https://pdf.praritsidana.com/guides/fill-and-flatten-pdf-forms initially unknown/not indexed; priority crawl request accepted. Not claimed indexed. |
 | Bing property | Verified/dashboard accessible | Basic Google login,manual HTML-meta verification. No broad GSC access granted. Bing meta private; Google meta retained. |
-| Bing sitemap | Submitted,Processing | https://pdf.praritsidana.com/sitemap.xml submitted2026-10-23; discovered count unavailable. No duplicate. |
+| Bing sitemap | Success,59 discovered URLs | Existing submission now Success,59 discovered,zero errors/warnings on2026-10-23 follow-up. No duplicate. |
+| Bing homepage | Live indexable, indexing requested | Stored index report said indexing not allowed; fresh Live URL says URL can be indexed. Current HTTP200/meta index,follow/no X-Robots-Tag/robots Allow confirmed. One homepage request accepted: URL submitted successfully for review. Not claimed indexed. |
 | Illustrated article | Published/publicly verified | https://praritsidana-pdf.blogspot.com/2026/10/before-you-send-that-pdf-check-these.html — five-check tutorial with owner/AI-assistance disclosure. |
 | Article canonical | Verified | Exact public permalink is self-canonical; original for later full syndication. |
 | Illustration | Published/loaded | Original conceptual checklist,1774×887,alt present,observed desktop no overflow. [Provenance](assets/README.md); source pinned to bab9053. |
@@ -19,7 +20,7 @@ cooldown and recovered usage. These states supersede older pending records.
 | AlternativeTo | Ineligible | Current policy excludes PDF suites; no submission. |
 | OCR guide improvement | Published/live verified | https://pdf.praritsidana.com/guides/make-scanned-pdf-searchable — original illustration and practical recognition checks, corrected output choice, already-textual page limitation. Same canonical; seven guides/59 URLs retained, no new backlink. |
 | OCR illustration | Published/verified | 1774×887 WebP117598 bytes, loaded with alt and AI-disclosed caption; hash matches live. [Provenance](assets/README.md). Desktop no overflow; mobile not freshly checked. |
-| The Tool Directory | Researched, not submitted | https://thetooldirectory.com/submit-a-tool/ and official FAQ/community guidelines: active web utilities eligible, free editorial review, optional paid featuring skipped. Need duplicate search and Chrome form inspection. No public listing/backlink. |
+| The Tool Directory | Submitted, editorial review pending | https://thetooldirectory.com/submit-a-tool/?submitted=1 displays Thanks — your listing was submitted for review. Free Productivity listing,owner/AI disclosure,paid-feature interest unchecked,no optional growth review. Name/domain duplicate web searches returned no matches (not exhaustive). No account created or public listing/backlink verified. |
 
 Actual publication2026-10-23 UTC/Asia-Calcutta. Blogger theme displayed22 October
 while dashboard showed Published23 Oct; account timezone unchanged,no backdating.
@@ -63,3 +64,13 @@ Only app recreated, healthy/no OOM,15 other container IDs preserved. Standard
 build aborted before deployment on base-image cache miss; source-only derivative
 of prior image retained established engine/runtime layers. No dependency refresh
 deployed. Mobile/full staged/live PDF/hosted CI/19-host response checks not run.
+
+Directory/search follow-up2026-10-23: The Tool Directory receipt and Bing sitemap
+Success59/live-indexable/indexing-request screenshots saved privately as
+data-seo-launch/tool-directory-submitted-2026-10-23.png,
+bing-sitemap-success-2026-10-23.png,bing-home-live-indexable-2026-10-23.png and
+bing-home-indexing-request-2026-10-23.png. Bing notice lists two empty-alt images:
+both are decorative logo marks beside visible brand text (header link also has
+accessible name),so empty alt retained. Markup insights failed to load; no markup
+approval claimed. No sitemap resubmission,paid placement,votes or new account.
+Fresh app checks above remain on same source; no rerun for documentation/form work.
