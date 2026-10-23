@@ -20,6 +20,7 @@ cooldown and recovered usage. These states supersede older pending records.
 | AlternativeTo | Ineligible | Current policy excludes PDF suites; no submission. |
 | OCR guide improvement | Published/live verified | https://pdf.praritsidana.com/guides/make-scanned-pdf-searchable — original illustration and practical recognition checks, corrected output choice, already-textual page limitation. Same canonical; seven guides/59 URLs retained, no new backlink. |
 | OCR illustration | Published/verified | 1774×887 WebP117598 bytes, loaded with alt and AI-disclosed caption; hash matches live. [Provenance](assets/README.md). Desktop no overflow; mobile not freshly checked. |
+| OCR change notification | IndexNow accepted HTTP200 | One changed canonical guide URL notified after ownership-file and deployed illustration checks. Not the unchanged full sitemap; no Google submission or indexing/ranking confirmation. |
 | The Tool Directory | Submitted, editorial review pending | https://thetooldirectory.com/submit-a-tool/?submitted=1 displays Thanks — your listing was submitted for review. Free Productivity listing,owner/AI disclosure,paid-feature interest unchecked,no optional growth review. Name/domain duplicate web searches returned no matches (not exhaustive). No account created or public listing/backlink verified. |
 
 Actual publication2026-10-23 UTC/Asia-Calcutta. Blogger theme displayed22 October
@@ -74,3 +75,7 @@ both are decorative logo marks beside visible brand text (header link also has
 accessible name),so empty alt retained. Markup insights failed to load; no markup
 approval claimed. No sitemap resubmission,paid placement,votes or new account.
 Fresh app checks above remain on same source; no rerun for documentation/form work.
+
+Final cycle boundary2026-10-23T02:03:38Z:14% primary/71% weekly remaining;
+threshold not reached,no new cooldown. Updated existing heartbeat in place with
+actual outcomes. Local preview server stopped; production retained healthy.

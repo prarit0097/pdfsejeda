@@ -2,6 +2,10 @@
 
 ## Verified update — 2026-10-23
 
+Updated OCR canonical notified once via IndexNow after live ownership/content
+checks; HTTP200 accepted. Only the changed guide was sent,no full repeat batch.
+Acceptance is notification,not indexing or Google ranking evidence.
+
 Bing sitemap now **Success /59 URLs**,zero errors/warnings. Homepage fresh Live
 URL test says indexable,despite stored older report saying not allowed. HTTP
 robots/meta corroborate current eligibility. One homepage indexing request
