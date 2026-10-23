@@ -2,6 +2,11 @@
 
 ## Verified update — 2026-10-23
 
+Launching Next free submission received, reference165937, now In Queue with a
+displayed four-month estimate. Owner confirmed side-project/$0-budget facts and
+the visible anti-bot step. Newsletter off, no paid upgrade. Editorial approval
+and a public backlink remain unverified; do not submit again. [Ledger](PUBLICATION-LEDGER.md).
+
 Google sitemap now **Success / 59 discovered URLs**; homepage URL Inspection
 confirms indexed. Forms-guide indexing request accepted into priority crawl
 queue; guide not confirmed indexed. Bing ownership verified through manual meta

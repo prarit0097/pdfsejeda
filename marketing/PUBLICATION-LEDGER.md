@@ -15,7 +15,7 @@ cooldown and recovered usage. These states supersede older pending records.
 | Illustration | Published/loaded | Original conceptual checklist,1774×887,alt present,observed desktop no overflow. [Provenance](assets/README.md); source pinned to bab9053. |
 | Product links | Publicly verified | Article links to home,privacy,guides. One new owner-controlled referring host praritsidana-pdf.blogspot.com; not independent endorsement. GitHub plus blog are two verified referring sites; no ranking effect assumed. |
 | SaaSHub | Registration dependency | Approved Continue executed; password registration required. Human credential/anti-bot handling pending; no account/listing claimed. Same-platform terms consent retained. |
-| Launching Next | Prepared,not submitted | https://www.launchingnext.com/submit/ — factual fields,newsletter off. Await project-type/budget confirmation and permission for2+3 anti-bot check. Free path only,no$99 upgrade. |
+| Launching Next | Submitted, editorial review pending | Owner confirmed side project/$0 budget and anti-bot step. Receipt https://www.launchingnext.com/thanks/?i=165937 displays Submitted / In Queue (estimated wait 4 months). One free submission on2026-10-23; newsletter off, no$99 upgrade. No public listing/backlink verified. |
 | AlternativeTo | Ineligible | Current policy excludes PDF suites; no submission. |
 
 Actual publication2026-10-23 UTC/Asia-Calcutta. Blogger theme displayed22 October
@@ -37,8 +37,15 @@ container IDs preserved. Source21d0e18,image
 sha256:f4452f8b5eac8f2f467f1fbd0ac0712ec3fd9dc49ba611e3cf5a300acdfd0440.
 Historical19 host responses not rechecked; DNS/proxy/firewall unchanged.
 
-Next: await directory consent/account access; inspect Bing later without repeat
+Next: await directory editorial review/SaaSHub account access; inspect Bing later without repeat
 submission; continue useful content/eligible placements under usage guard.
+
+Submission follow-up2026-10-23: saved ignored screenshot
+data-seo-launch/launching-next-submitted-2026-10-23.png. No duplicate form
+submission after the delayed navigation; receipt confirmed in Chrome. No app or
+server change. Documentation checks and fresh Python results recorded in the
+project guide:671 passed,zero failures/skips,two existing warnings(66.85s);
+git diff --check passed. Latest usage32% primary/74% weekly remaining; no new cooldown.
 
 Final documentation validation: git diff --check passed;38 local references
 across8 changed/new Markdown files resolved. Existing heartbeat updated in place

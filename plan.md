@@ -224,7 +224,8 @@ Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 - [x] Set up Bing/import the verified property and submit sitemap (manual verification, sitemap Processing)
 - [x] Publish eligible original owner article and record verifiable external links (illustrated Blogger tutorial, one new owned referring site)
 - [ ] Complete eligible directory submissions without duplicates or invented endorsements
-- [x] Configure conditional usage checkpoint and 330-minute continuation through supported app scheduler (actual delayed execution not yet tested)
+- [x] Submit Launching Next free listing after owner confirmation; receipt165937 verified, editorial review/public listing pending
+- [x] Configure conditional usage checkpoint and 330-minute continuation through supported app scheduler (one delayed execution verified2026-10-23; exact-time availability not guaranteed)
 
 ## 3l. Repository review follow-ups (2026-10-22)
 
