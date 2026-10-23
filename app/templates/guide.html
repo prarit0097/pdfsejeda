@@ -7,6 +7,12 @@
   <h1>{{ guide.title }}</h1>
   <p>{{ guide.description }}</p>
   <p class="small muted">Published <time datetime="{{ guide.published }}">{{ guide.published }}</time>{% if guide.updated != guide.published %} · Updated <time datetime="{{ guide.updated }}">{{ guide.updated }}</time>{% endif %}</p>
+  {% if guide.figure %}
+  <figure class="guide-figure">
+    <img src="{{ guide.figure.src }}" alt="{{ guide.figure.alt }}" width="{{ guide.figure.width }}" height="{{ guide.figure.height }}" decoding="async">
+    <figcaption class="small muted">{{ guide.figure.caption }}</figcaption>
+  </figure>
+  {% endif %}
   {% for section in guide.sections %}
   <section>
     <h2>{{ section.heading }}</h2>

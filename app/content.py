@@ -125,7 +125,13 @@ GUIDES = {
         "title": "How to make a scanned PDF searchable",
         "description": "Use OCR to add searchable text to scanned PDFs, choose the document language and check recognition errors.",
         "published": "2026-10-22",
-        "updated": "2026-10-22",
+        "updated": "2026-10-23",
+        "figure": {
+            "src": "/static/img/ocr-searchable-text-2026-10-23.webp",
+            "alt": "Illustration of a scanned page, a magnifying glass and the same page with a selectable text layer and search icon.",
+            "caption": "OCR adds searchable text while keeping the scanned page appearance. Conceptual illustration created with AI assistance; not a product screenshot.",
+            "width": 1774, "height": 887,
+        },
         "related_tools": [("ocr-pdf", "OCR PDF"), ("deskew-pdf", "Deskew PDF"), ("pdf-to-word", "PDF to Word")],
         "sections": [
             {
@@ -147,10 +153,23 @@ GUIDES = {
                 "paragraphs": ["Choose the language used in the document from the languages available in the OCR tool. The correct language helps with vocabulary and character recognition; it does not guarantee an accurate transcription."],
                 "steps": [
                     "Open OCR PDF and upload the scanned document.",
-                    "Select the appropriate available language and the output formats you need: searchable PDF, text, or both.",
+                    "Select the appropriate available language and choose the output: Searchable PDF or Text file.",
                     "Run OCR, then download and open the result.",
                     "Search for a distinctive phrase and copy a sample paragraph into a text editor. Compare it with the visible scan.",
                 ],
+            },
+            {
+                "heading": "A search hit is only the first check",
+                "paragraphs": ["Finding a heading does not prove the scanned body was recognized. Check a copy of the downloaded output before relying on its text."],
+                "steps": [
+                    "Search for a distinctive phrase from the middle of the page, not only its heading. Repeat on a page with a different layout.",
+                    "Copy a name, a date and a total into a plain-text editor. Compare each character with the scan. Watch for O versus 0, l versus 1, missing decimal points and lost minus signs.",
+                    "Copy a paragraph from a two-column page. Check that the pasted lines follow the intended column order.",
+                ],
+            },
+            {
+                "heading": "When running OCR again does not help",
+                "paragraphs": ["The tool leaves pages that already have selectable text unchanged. An existing heading or an inaccurate older text layer can therefore leave a scanned body unrecognized. Re-running the same PDF is not a guaranteed repair. Keep the original scan and review the result; the current interface has no force-recognition control."],
             },
             {
                 "heading": "Review names, numbers and complex layouts",
