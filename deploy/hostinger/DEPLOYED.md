@@ -1,5 +1,20 @@
 # Hostinger deployment record
 
+## OCR guide release — 1f289d2 (2026-10-23)
+
+Original responsive illustration and OCR output-check guidance live. Standard
+Compose build was stopped before deployment after base-image cache miss began
+rebuilding engine dependencies. Used source-only derivative of existing
+f4452f8b image with COPY app /app/app, preserving its installed engine/runtime
+layers. Build file retained privately at /root/pdfnova-ocr-source-overlay.Dockerfile.
+New image:sha256:0cabb077021d5d280bb9bcc8cd37e672c6683bf0a8aeeca4fb4b2b2bbb7cb268.
+Rollback tag:pdfnova-web:release-before-ocr-20261023. Only app recreated;
+healthy/no OOM,15 other container IDs unchanged. Google/Bing settings retained;
+no proxy/DNS/firewall or other app changes. Local671 tests passed(two warnings,
+60.91s),public59-page HTTP/canonical/metadata crawl and asset hash passed;
+Chrome desktop loaded image/alt/no-overflow verified. No fresh mobile,full staged,
+live-PDF,hosted-CI or historical19-host response check. See publication ledger.
+
 ## Bing verification runtime update — 2026-10-23
 
 Configured the real Bing meta verification value only in the private server

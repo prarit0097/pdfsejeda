@@ -2,6 +2,13 @@
 
 ## Verified update — 2026-10-23
 
+OCR guide improved in place and deployed from1f289d2: original illustration,
+recognition checklist and truthful PDF-or-text output/page-skipping guidance.
+Seven guides/59 URLs retained. Fresh671 Python tests passed(two warnings60.91s),
+59-page HTTPS metadata/canonical crawl and live illustration hash passed;
+desktop Chrome render checked. No new backlink or indexing claim. Full evidence
+and check limits in [ledger](PUBLICATION-LEDGER.md).
+
 Launching Next free submission received, reference165937, now In Queue with a
 displayed four-month estimate. Owner confirmed side-project/$0-budget facts and
 the visible anti-bot step. Newsletter off, no paid upgrade. Editorial approval
