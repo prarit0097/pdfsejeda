@@ -1,5 +1,25 @@
 # Search launch evidence
 
+## Verified update — 2026-10-23
+
+Google sitemap now **Success / 59 discovered URLs**; homepage URL Inspection
+confirms indexed. Forms-guide indexing request accepted into priority crawl
+queue; guide not confirmed indexed. Bing ownership verified through manual meta
+method, sitemap submitted and **Processing**. No duplicate submissions.
+
+First illustrated owner tutorial [published publicly](https://praritsidana-pdf.blogspot.com/2026/10/before-you-send-that-pdf-check-these.html).
+Self-canonical, loaded image/alt, three product links and desktop no-overflow
+verified. One new owned referring site, alongside existing GitHub; not independent
+endorsement. [Current publication ledger](PUBLICATION-LEDGER.md) records actual
+URLs, asset provenance, pending directory consent/account access and check limits.
+
+Fresh Python:671 passed,zero failures/skips,two warnings (63.11s). Isolated app
+recreated only for private Bing setting; Google meta retained, healthy/no OOM,
+15 other container IDs preserved. Source/image remains21d0e18. Historical19-host
+comparison/full staged/mobile article/CI/public PDF smoke not rerun. Cooldown
+completed and scheduled work actually resumed01:25:37Z. Earlier states below
+are historical, not reasons to repeat registrations or indexing requests.
+
 ## Latest resumed launch — 2026-10-22 (supersedes historical account states below)
 
 2026-10-23 Asia/Calcutta update: owner expressly approved SaaSHub terms acceptance.

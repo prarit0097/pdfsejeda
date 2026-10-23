@@ -2,7 +2,9 @@
 
 **Read this first.** This is the main project handover document for the owner, contributors and coding agents. It explains what the app is, why it exists, what is included, how it was built, how to run and test it, and the rules for changing it. Read it before modifying the project. Update affected sections and §8 in the same commit whenever implementation or scope changes.
 
-**Last documentation review:** 2026-10-22. Descriptions below refer to the checked-in implementation. Historical verification results are dated, not a promise that later code has been tested.
+**Last documentation review:** 2026-10-23. Descriptions below refer to the checked-in implementation. Historical verification results are dated, not a promise that later code has been tested.
+
+**Latest verified promotion state (2026-10-23):** Google sitemap Success/59 URLs; homepage indexed; forms-guide indexing request accepted (guide not confirmed indexed). Bing ownership verified and sitemap submitted,Processing. First illustrated owner tutorial [published publicly](https://praritsidana-pdf.blogspot.com/2026/10/before-you-send-that-pdf-check-these.html), with canonical/image/real product links verified; one new owned referring site,not independent endorsement. [Publication ledger](marketing/PUBLICATION-LEDGER.md) holds current evidence. Scheduled work resumed2026-10-23T01:25:37Z after cooldown/recovered usage; no active new cooldown. SaaSHub needs human registration/anti-bot handling; Launching Next awaits project-type/budget and2+3 anti-bot confirmation. Earlier pending/pause records are historical. No duplicate submissions.
 
 **Ongoing promotion owner decision (2026-10-23 Asia/Calcutta):** after the existing cooldown and initial launch backlog, continue a recurring SEO/content/legitimate-placement program with the specialist agent team, useful original articles and visual stories with images. Keep the existing same-chat heartbeat active after initial task completion. This supersedes its earlier stop-after-launch instruction. Every cycle must add distinct reader value, respect platform rules, record real public evidence, image rights/provenance and alt text, and avoid duplicate/low-value submissions or invented endorsements/rankings. Read this guide first and the project Markdown before work. The <=10% remaining usage guard and checkpoint+330-minute cooldown remain unchanged; preserve the active deadline. The supported app scheduler is used instead of a Windows credential-scraping/background loop. PC/app/browser access must remain available; future execution and rankings are not guaranteed. See [continuation contract](marketing/USAGE-RESUME.md).
 
@@ -52,7 +54,7 @@
 
 **Current scope (user clarification, 2026-10-22):** accounts/billing, cloud integrations and email signing are deferred. Do not implement them or count their absence as a blocker for the current PDF-tool delivery. Local PDF signing (type/draw/upload/camera signatures), password protection, URL import and local workflows remain in scope.
 
-### Current handover snapshot (2026-10-22)
+### Historical delivery snapshot (2026-10-22; latest promotion state above)
 
 | Area | Completed / verified state | Remaining or deliberately deferred |
 | --- | --- | --- |
@@ -582,8 +584,8 @@ must not be renamed just to match display copy. Old release entries retain their
 historical product name.
 
 `app/seo.py` generates canonical metadata from trusted `SITE_URL`, never from the
-request Host header. Public inventory: 56 HTML pages (home, 43 tools, eight info/
-workflow/guide-index pages and four articles). `app/web.py` serves `/robots.txt`,
+request Host header. Public inventory: 59 HTML pages (home, 43 tools, eight info/
+workflow/guide-index pages and seven articles). `app/web.py` serves `/robots.txt`,
 `/sitemap.xml`, `/guides` and `/guides/{slug}`. Sitemap lastmod is included only
 for articles with an actual recorded publication/revision date. Do not set all
 lastmod values to today's date on every request. Tool/help/article descriptions,
@@ -619,6 +621,10 @@ bulk low-value backlink creation. No top position or recommendation is promised.
 
 ## 8. Change log
 
+- 2026-10-23: Updated the existing active same-chat heartbeat in place with completed Google/Bing/Blogger steps and pending directory dependencies to prevent duplicate actions; recurring cadence retained,no new automation. Recorded successful delayed execution after cooldown (not exact-time guarantee). Publication/placement ledger added,plan and runtime/search/content records updated. Fresh Python671 passed/two warnings(63.11s); final documentation diff/link checks recorded at close. No further application source changes or deployment; next cycle should inspect pending states or choose a distinct useful opportunity.
+
+- 2026-10-23: Scheduled continuation resumed after cooldown. Google sitemap Success59 URLs; homepage indexed; forms-guide indexing request accepted,not claimed indexed. Bing manual meta verified,sitemap submitted Processing. Published illustrated Blogger tutorial with owner/AI disclosure,canonical,3 product links,loaded1774×887 image/alt and desktop no overflow; one new owned referring site. See marketing/PUBLICATION-LEDGER.md and asset provenance. Fresh671 Python tests passed,no failures/skips,two warnings(63.11s); app healthy/no OOM,15 other containers preserved after private Bing-setting recreation. Source/image unchanged21d0e18;19 host responses/full staged/mobile article/CI/public PDF smoke not rerun. SaaSHub registration and Launching Next confirmation remain. No paid placement or ranking claim; recurring program active.
+
 - 2026-10-23: Prepared original checklist illustration for affiliated Blogger tutorial; builtin ImageGen output visually checked and copied to marketing/assets with source prompt/alt/hash. Blogger account blog now exists, draft article not yet published. Google forms-guide indexing request accepted; homepage confirmed indexed and sitemap59 URLs Success. Bing manual HTML-meta verification reached authenticated site dashboard; sitemap submission next. Fresh Python suite671 passed, zero failed/skipped, two warnings(63.11s); whitespace diff check passed. App source unchanged; only private Bing environment loaded through isolated app recreation. No new external referring domain claimed at this asset checkpoint.
 
 - 2026-10-23: Scheduled SEO work resumed after elapsed cooldown, usage88% remaining(primary)/83%(weekly). Google sitemap now Success with59 discovered URLs; homepage URL Inspection confirms indexed. Forms guide initially unknown to Google; indexing request accepted into priority crawl queue, not yet indexed. Blogger creation retry succeeded; first illustrated article remains draft. Prepared and visually inspected original built-in ImageGen checklist artwork in marketing/assets with prompt/hash/alt/provenance. Bing basic Google login/manual site addition completed, real private Bing meta setting configured and app alone recreated; final verification status still pending. SaaSHub approved Continue now reveals required password-account registration; no submission completed. Current check results and publication state will be finalized in marketing/SEO-STATUS.md; app source unchanged.
@@ -630,6 +636,7 @@ bulk low-value backlink creation. No top position or recommendation is promised.
 
 ### Active SEO continuation checkpoint — 2026-10-22
 
+- **Resumed2026-10-23T01:25:37Z:** preceding cooldown completed,primary88% remaining/weekly83% on entry. Old deadline below is historical; no active new cooldown. Latest bounded reading primary55% remaining/weekly78%. Future <=10% starts a new330-minute cooldown; do not reuse the completed deadline as active. Current results/dependencies:marketing/PUBLICATION-LEDGER.md. Skip resolved Google sitemap diagnosis and accepted guide indexing request.
 - **SaaSHub consent update (2026-10-23 Asia/Calcutta):** owner approved accepting the prepared submission's Terms of Service/Privacy Policy. Proceed at continuation without asking again for this same step; older pending-consent notes below are historical. No submission completed yet. Usage8% remaining at19:17:15Z; cooldown remains active, deadline unchanged.
 - checkpoint_at_utc: `2026-10-22T18:23:45Z`; resume_not_before_utc: `2026-10-22T23:53:45Z` (2026-10-23 05:23:45 Asia/Calcutta). Primary coding usage 90% used/10% remaining; weekly14% used. Owner-requested pause; stop substantive promotion until deadline and recovered usage.
 - Active current-chat heartbeat: `continue-pdf-seo-after-usage-cooldown`, 330-minute cadence. Successfully created with thread destination after initial missing-destination validation failure. PC/app/repo must be available; exact wakeup best effort. No Windows task, background Codex loop or credential scraping installed. Five specialist agents completed bounded work.

@@ -1,5 +1,10 @@
 # Search ownership and publication checklist
 
+**Verified2026-10-23:** both properties verified. Google sitemap Success/59 URLs,
+homepage indexed, forms-guide indexing request accepted. Bing sitemap submitted,
+Processing. [Ledger](PUBLICATION-LEDGER.md) supersedes earlier setup/deferral
+history below; do not repeat unchanged registrations or accepted requests.
+
 **Current update2026-10-22:** owner resumed setup. Google ownership is now
 verified; sitemap submitted but Google reports Couldn't fetch, requiring diagnosis.
 Bing pending. Earlier deferral/session-unavailable statements below are historical.

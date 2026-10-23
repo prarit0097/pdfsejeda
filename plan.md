@@ -220,9 +220,9 @@ Plan: [marketing/SEO-PLAN.md](marketing/SEO-PLAN.md).
 - [x] Five specialist workstreams; recheck current platform eligibility and prepare original useful articles
 - [x] Prepare three distinct guides and schema site-name alias; source inventory now 59 pages
 - [x] Complete final tests and deploy only this app; crawl all 59 public pages
-- [ ] Verify Search Console and submit sitemap; inspect homepage/guide indexing
-- [ ] Set up Bing/import the verified property and submit sitemap
-- [ ] Publish eligible original owner article and record verifiable external links
+- [x] Verify Search Console and submit sitemap; inspect homepage/guide indexing (homepage indexed, guide request accepted)
+- [x] Set up Bing/import the verified property and submit sitemap (manual verification, sitemap Processing)
+- [x] Publish eligible original owner article and record verifiable external links (illustrated Blogger tutorial, one new owned referring site)
 - [ ] Complete eligible directory submissions without duplicates or invented endorsements
 - [x] Configure conditional usage checkpoint and 330-minute continuation through supported app scheduler (actual delayed execution not yet tested)
 

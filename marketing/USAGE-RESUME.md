@@ -1,5 +1,13 @@
 # SEO work: usage guard and continuation
 
+**Execution update2026-10-23:** the scheduled continuation actually ran at
+01:25:37Z after the prior minimum deadline and recovered usage. Previous cooldown
+is completed; future threshold starts a new cooldown. The existing same-chat
+automation remains active and was updated in place with the actual Google/Bing/
+Blogger outcomes and pending directory dependencies. No duplicate automation or
+Windows process created. This verifies one delayed execution,not exact-time
+wakeup or continuous availability. [Current ledger](PUBLICATION-LEDGER.md).
+
 Prepared 2026-10-22. This is the continuation contract, not evidence that a
 scheduled task was created or that a future run succeeded. The root agent records
 the actual automation result in `sejedarules.md`.

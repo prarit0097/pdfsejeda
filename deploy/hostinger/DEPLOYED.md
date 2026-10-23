@@ -1,5 +1,17 @@
 # Hostinger deployment record
 
+## Bing verification runtime update — 2026-10-23
+
+Configured the real Bing meta verification value only in the private server
+environment; retained Google verification/stable secret and made a private
+mode600 backup outside Git. Recreated only this app, with no source/image rebuild.
+Existing source21d0e18/image f4452f8b5eac8f2f467f1fbd0ac0712ec3fd9dc49ba611e3cf5a300acdfd0440
+retained. Public homepage has both verification tags; Bing verified ownership
+and received sitemap,now Processing. App healthy/no OOM;15 other container IDs
+preserved. DNS/proxy/firewall unchanged;19 historical host responses/full staged/
+real-PDF smoke not rerun. Local Python671 passed,two warnings(63.11s).
+See [publication ledger](../../marketing/PUBLICATION-LEDGER.md) for actual states.
+
 ## Latest SEO/content release — 21d0e18
 
 2026-10-22: deployed seven guides/59 public URLs and PS PDF site-name alias.
